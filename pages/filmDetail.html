@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi Tiết Phim - Đang Tải...</title> <meta name="description" content="Xem thông tin chi tiết, trailer và các phiên bản của phim.">
+    <meta name="keywords" content="xem phim, chi tiết phim, trailer phim, phim online, phim lẻ">
+
+    <meta property="og:type" content="video.movie">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="Chi Tiết Phim - Đang Tải...">
+    <meta property="og:description" content="Xem thông tin chi tiết, trailer và các phiên bản.">
+    <meta property="og:image" content="https://placehold.co/1200x630/141414/ffffff?text=Loading+Details">
+    <meta property="og:site_name" content="LOGO PHIM">
+    <meta property="video:director" content="">
+    <meta property="video:actor" content="">
+    <meta property="video:release_date" content="">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="Chi Tiết Phim - Đang Tải...">
+    <meta property="twitter:description" content="Xem thông tin chi tiết, trailer và các phiên bản.">
+    <meta property="twitter:image" content="https://placehold.co/1200x630/141414/ffffff?text=Loading+Details">
+
+    <link rel="icon" href="../favicon.ico" sizes="any"> <link rel="icon" href="../favicon.svg" type="image/svg+xml"> <link rel="apple-touch-icon" href="../apple-touch-icon.png"> <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/style.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#e50914',
+                        'secondary': '#141414',
+                        'light-gray': '#222222',
+                        'text-muted': '#8c8c8c',
+                        'primary-hover': '#f40612',
+                        'border-color': '#333333',
+                        'skip-button-bg': '#4a90e2', // Màu xanh dương cho nút skip
+                        'skip-button-hover-bg': '#357abd',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Inline styles for Player, Skeleton, etc. (can be moved to style.css) */
+        .player-area {
+            background-color: var(--light-gray-color, #1f1f1f);
+            border-radius: 12px;
+            /* padding handled by Tailwind */
+            margin-bottom: 1.5rem; /* mb-6 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 8px;
+            margin-bottom: 1rem; /* mb-4 */
+            /* Removed cursor pointer here, add to overlay instead */
+        }
+        .video-container iframe, .video-container object, .video-container embed, #youtube-player { /* Added #youtube-player */
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;
+        }
+        #video-poster-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background-color: rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, opacity 0.3s ease;
+            opacity: 1; z-index: 2;
+            cursor: pointer; /* Added cursor pointer */
+        }
+         #video-poster-image {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; border-radius: 8px; z-index: 1;
+            transition: opacity 0.3s ease; opacity: 1;
+        }
+        #video-play-button { /* This button is inside the overlay */
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            /* Size adjusted with Tailwind */
+            font-size: 1.5rem; /* text-2xl */
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+            z-index: 3;
+        }
+        #video-poster-overlay:hover #video-play-button {
+            background: rgba(229, 9, 20, 0.8);
+            border-color: rgba(255, 255, 255, 0.9);
+            transform: scale(1.1);
+        }
+        .video-container.playing #video-poster-overlay,
+        .video-container.playing #video-poster-image {
+            opacity: 0; pointer-events: none;
+        }
+        /* Hide iframe placeholder when not playing */
+        #video-iframe-placeholder:not(.active) {
+             display: none;
+        }
+
+        .video-placeholder {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background-color: #0a0a0a; color: var(--text-muted-color, #8c8c8c);
+            border-radius: 8px; text-align: center; padding: 1rem;
+            z-index: 0;
+        }
+        .video-placeholder i { font-size: 3rem; margin-bottom: 0.75rem; color: #555; }
+
+        #video-message {
+            min-height: 45px; display: flex; align-items: center; justify-content: center;
+            border-radius: 6px; padding: 0.5rem 1rem; margin-bottom: 1rem; /* mb-4 */
+            font-size: 0.9rem; text-align: center;
+        }
+        #video-message.error-message { background-color: rgba(229, 9, 20, 0.15); color: #ff8a8a; border: 1px solid rgba(229, 9, 20, 0.3); }
+        #video-message.info-message { background-color: rgba(68, 68, 68, 0.5); color: var(--text-muted, #8c8c8c); border: 1px solid #444; }
+
+        .version-button {
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+            border: 1px solid var(--border-color, #333); border-radius: 6px;
+            padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 500;
+            background-color: #303030; color: #ccc;
+            display: inline-flex; align-items: center; gap: 0.4rem;
+        }
+        .version-button:not(:disabled):hover { background-color: #404040; border-color: #555; color: #fff; }
+        .version-button.active {
+            background-color: var(--primary-color, #e50914); border-color: var(--primary-color, #e50914);
+            color: white; font-weight: 600; box-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
+        }
+        .version-button:disabled { background-color: #2a2a2a; border-color: #333; color: #666; cursor: not-allowed; opacity: 0.5; }
+        .version-button i { font-size: 0.9em; }
+
+        /* --- START: Skip Intro Button Style --- */
+        #skip-intro-button {
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+            border: 1px solid #357abd; /* Border color matching hover */
+            border-radius: 6px;
+            padding: 0.5rem 0.9rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background-color: var(--skip-button-bg, #4a90e2);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+        }
+        #skip-intro-button:hover {
+            background-color: var(--skip-button-hover-bg, #357abd);
+            transform: translateY(-1px);
+        }
+        #skip-intro-button i {
+            font-size: 0.9em;
+        }
+        /* --- END: Skip Intro Button Style --- */
+
+        /* Lights off styles are in style.css */
+
+        #movie-poster, .related-movie-poster { aspect-ratio: 2 / 3; object-fit: cover; }
+
+        /* Skeleton Styles */
+        .skeleton { background-color: #333; border-radius: 4px; position: relative; overflow: hidden; }
+        .skeleton::before { content: ''; position: absolute; top: 0; left: -150%; height: 100%; width: 150%; background: linear-gradient(to right, transparent 0%, #444 50%, transparent 100%); animation: shimmer 1.5s infinite linear; }
+        @keyframes shimmer { 0% { left: -150%; } 100% { left: 150%; } }
+        .skeleton-player { height: 0; padding-bottom: 56.25%; margin-bottom: 1rem; border-radius: 8px; }
+        .skeleton-player-title { height: 28px; width: 60%; margin-bottom: 1rem; border-radius: 6px;}
+        .skeleton-version-buttons { display: flex; gap: 0.5rem; margin-top: 1rem; }
+        .skeleton-version-button { height: 34px; width: 100px; border-radius: 6px; }
+        .skeleton-poster { width: 100%; max-width: 250px; aspect-ratio: 2 / 3; border-radius: 8px; }
+        .skeleton-title-main { height: 36px; width: 70%; margin-bottom: 0.75rem; border-radius: 6px; }
+        .skeleton-meta { display: flex; flex-wrap: wrap; gap: 1rem; height: 16px; margin-bottom: 1rem; }
+        .skeleton-meta-item { height: 100%; width: 80px; border-radius: 4px; }
+        .skeleton-description { height: 16px; width: 100%; margin-bottom: 6px; border-radius: 4px; }
+        .skeleton-description.line-2 { width: 90%; }
+        .skeleton-description.line-3 { width: 85%; }
+        .skeleton-info { height: 16px; width: 80%; margin-bottom: 6px; border-radius: 4px; }
+        .skeleton-info.line-2 { width: 70%; }
+        .skeleton-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem; }
+        .skeleton-action-button { height: 40px; width: 120px; border-radius: 6px; }
+        .skeleton-related-heading { height: 28px; width: 200px; margin-bottom: 1.25rem; border-radius: 6px; border-left: 4px solid #555; padding-left: 0.75rem; }
+        /* Responsive skeleton grid columns match the final grid */
+        .skeleton-related-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; } /* Default mobile */
+        @media (min-width: 640px) { .skeleton-related-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; } } /* sm */
+        @media (min-width: 768px) { .skeleton-related-grid { grid-template-columns: repeat(4, 1fr); } } /* md */
+        @media (min-width: 1024px) { .skeleton-related-grid { grid-template-columns: repeat(5, 1fr); } } /* lg */
+        @media (min-width: 1280px) { .skeleton-related-grid { grid-template-columns: repeat(6, 1fr); } } /* xl */
+        .skeleton-related-card { background-color: var(--light-gray-color); border-radius: 8px; overflow: hidden; }
+        .skeleton-related-image { height: 0; padding-bottom: 150%; background-color: #333; }
+        .skeleton-related-text { height: 14px; width: 70%; margin: 8px; border-radius: 4px; background-color: #333; }
+        .skeleton-related-subtext { height: 12px; width: 40%; margin: 0 8px 8px 8px; border-radius: 4px; background-color: #333; }
+    </style>
+</head>
+<body class="bg-secondary text-white font-sans">
+
+    <div id="lights-overlay" aria-hidden="true" class="fixed inset-0 bg-black bg-opacity-85 z-[998] opacity-0 invisible transition-opacity duration-300 pointer-events-none backdrop-blur-sm"></div>
+
+    <header class="bg-secondary py-3 px-4 sm:px-6 md:px-10 sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto flex justify-between items-center max-w-screen-xl">
+            <a href="../index.html" class="text-2xl md:text-3xl font-bold text-primary" aria-label="LOGO PHIM - Về trang chủ">LOGO PHIM</a>
+            <div>
+                <a href="../index.html" class="text-gray-300 hover:text-white transition duration-300 mr-2 sm:mr-4 inline-flex items-center p-2 rounded hover:bg-light-gray" aria-label="Quay lại trang danh sách">
+                    <i class="fas fa-arrow-left mr-0 sm:mr-1" aria-hidden="true"></i>
+                    <span class="hidden sm:inline">Quay Lại</span>
+                </a>
+                 <button class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Tài khoản người dùng">
+                    <i class="fas fa-user text-lg sm:text-xl" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 md:px-10 py-8 sm:py-10 max-w-screen-xl">
+        <div id="loading-message" class="hidden text-center py-20" aria-live="assertive">
+            <p class="text-lg sm:text-xl text-text-muted">Đang tải thông tin...</p>
+            <div class="mt-4 animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" role="status" aria-label="Đang tải"></div>
+        </div>
+
+        <div id="error-message" class="hidden text-center py-16 sm:py-20 bg-red-900 bg-opacity-30 rounded-lg border border-red-700" role="alert">
+            <p id="error-text" class="text-lg sm:text-xl text-red-400"> <i class="fas fa-exclamation-triangle mr-2" aria-hidden="true"></i> Lỗi.</p>
+            <a href="../index.html" class="mt-4 inline-block bg-primary hover:bg-primary-hover text-white font-semibold py-2 px-4 rounded-md transition duration-300 text-sm sm:text-base">
+                Về Trang Chủ
+            </a>
+        </div>
+
+        <div id="movie-details-skeleton" class="animate-pulse">
+            <section class="mb-8 md:mb-12">
+                <div class="player-area p-4 md:p-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                         <div class="skeleton skeleton-player-title w-3/5 sm:w-2/5"></div>
+                         <div class="skeleton h-8 w-24 rounded-md flex-shrink-0"></div> </div>
+                    <div class="skeleton skeleton-player"></div>
+                    <div class="skeleton-version-buttons justify-center md:justify-start mt-4">
+                        <div class="skeleton skeleton-version-button"></div>
+                        <div class="skeleton skeleton-version-button"></div>
+                        <div class="skeleton skeleton-version-button"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-10 lg:gap-12">
+                <div class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex-shrink-0 mx-auto md:mx-0">
+                    <div class="skeleton skeleton-poster"></div>
+                </div>
+                <div class="w-full md:w-2/3 lg:w-3/4 xl:w-4/5">
+                    <div class="skeleton skeleton-title-main w-4/5 sm:w-3/4"></div>
+                    <div class="skeleton-meta mb-4">
+                        <div class="skeleton skeleton-meta-item w-16"></div>
+                        <div class="skeleton skeleton-meta-item w-24"></div>
+                        <div class="skeleton skeleton-meta-item w-20"></div>
+                        <div class="skeleton skeleton-meta-item w-20 hidden sm:block"></div>
+                    </div>
+                    <div class="space-y-2 mb-6">
+                        <div class="skeleton skeleton-description"></div>
+                        <div class="skeleton skeleton-description line-2"></div>
+                        <div class="skeleton skeleton-description line-3"></div>
+                    </div>
+                    <div class="space-y-2 mb-6">
+                        <div class="skeleton skeleton-info w-4/5"></div>
+                        <div class="skeleton skeleton-info line-2 w-3/5"></div>
+                    </div>
+                    <div class="skeleton-actions">
+                        <div class="skeleton skeleton-action-button"></div>
+                        <div class="skeleton skeleton-action-button"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-12 md:mt-16">
+                <div class="skeleton skeleton-related-heading"></div>
+                <div class="skeleton-related-grid">
+                    <div class="skeleton-related-card"><div class="skeleton-related-image"></div><div class="skeleton-related-text"></div><div class="skeleton-related-subtext"></div></div>
+                    <div class="skeleton-related-card"><div class="skeleton-related-image"></div><div class="skeleton-related-text"></div><div class="skeleton-related-subtext"></div></div>
+                    <div class="skeleton-related-card hidden sm:block"><div class="skeleton-related-image"></div><div class="skeleton-related-text"></div><div class="skeleton-related-subtext"></div></div>
+                    <div class="skeleton-related-card hidden md:block"><div class="skeleton-related-image"></div><div class="skeleton-related-text"></div><div class="skeleton-related-subtext"></div></div>
+                    <div class="skeleton-related-card hidden lg:block"><div class="skeleton-related-image"></div><div class="skeleton-related-text"></div><div class="skeleton-related-subtext"></div></div>
+                    <div class="skeleton-related-card hidden xl:block"><div class="skeleton-related-image"></div><div class="skeleton-related-text"></div><div class="skeleton-related-subtext"></div></div>
+                </div>
+            </section>
+        </div>
+
+        <div id="movie-details-content" class="hidden">
+
+            <section id="player-section" aria-labelledby="movie-title-player" class="mb-8 md:mb-12">
+                <div class="player-area p-4 md:p-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+                        <h2 class="text-lg sm:text-xl md:text-2xl font-semibold" id="movie-title-player">Xem: [Tên Phim]</h2>
+                        <button id="toggle-lights-button" class="px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-1.5 flex-shrink-0 self-start sm:self-center" title="Tắt hoặc bật đèn nền" aria-pressed="false">
+                            <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                            <span id="toggle-lights-text">Tắt đèn</span>
+                        </button>
+                    </div>
+
+                    <div id="video-player-container" class="video-container bg-black rounded-lg shadow-inner mb-4" aria-label="Trình phát video">
+                        <img id="video-poster-image" src="https://placehold.co/1280x720/000000/333333?text=Loading+Poster..." alt="Video poster" class="absolute inset-0 w-full h-full object-cover z-[1]">
+                        <div id="video-poster-overlay" class="absolute inset-0 flex items-center justify-center z-[2] bg-black bg-opacity-30 transition-opacity duration-300">
+                            <button id="video-play-button" aria-label="Phát video hoặc Xem lại" class="w-14 h-14 sm:w-16 sm:h-16 text-2xl"> <i class="fas fa-play"></i> </button>
+                        </div>
+                        <div id="video-iframe-placeholder" class="absolute inset-0 z-0">
+                            <div id="youtube-player"></div> </div>
+                        <div class="video-placeholder hidden" aria-live="polite">
+                            <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+                            <p>Đang tải trình phát...</p>
+                        </div>
+                    </div>
+                    <div id="video-message" class="hidden" role="status">
+                        </div>
+
+                    <div class="flex flex-wrap gap-2 justify-center md:justify-start mt-4 items-center">
+                        <div id="version-selection" class="flex flex-wrap gap-2" role="group" aria-label="Chọn phiên bản">
+                            <button id="btn-vietsub" data-version="vietsub" class="version-button" disabled>
+                                <i class="fas fa-closed-captioning" aria-hidden="true"></i> Vietsub
+                            </button>
+                            <button id="btn-dubbed" data-version="dubbed" class="version-button" disabled>
+                                <i class="fas fa-microphone-alt" aria-hidden="true"></i> Lồng tiếng
+                            </button>
+                            <button id="btn-voiceover" data-version="voiceover" class="version-button" disabled>
+                                <i class="fas fa-headphones-alt" aria-hidden="true"></i> Thuyết minh
+                            </button>
+                        </div>
+                        <button id="skip-intro-button" data-skip-seconds="0" class="hidden ml-auto" aria-label="Bỏ qua giới thiệu">
+                            <i class="fas fa-forward" aria-hidden="true"></i>
+                            <span>Bỏ qua Intro</span>
+                        </button>
+                        </div>
+                </div>
+            </section>
+
+            <section id="series-content-section" class="mb-8 md:mb-12 hidden">
+                </section>
+
+            <section class="flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-10 lg:gap-12" aria-labelledby="movie-title">
+                <div class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 flex-shrink-0 mx-auto md:mx-0">
+                    <img id="movie-poster" src="https://placehold.co/400x600/222222/555555?text=Loading+Poster" alt="Poster đang tải" class="w-full h-auto object-cover rounded-lg shadow-lg border border-border-color mx-auto md:mx-0 max-w-[250px] md:max-w-none" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/400x600/222222/555555?text=Image+Error'; this.alt='Lỗi tải ảnh poster';">
+                </div>
+
+                <div class="w-full md:w-2/3 lg:w-3/4 xl:w-4/5">
+                    <h1 id="movie-title" class="text-2xl sm:text-3xl md:text-4xl font-bold mb-3">[Tên Phim]</h1>
+                    <div class="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1 mb-4 text-text-muted text-xs sm:text-sm">
+                        <span id="movie-year" aria-label="Năm phát hành">[Năm]</span>
+                        <span class="hidden sm:inline" aria-hidden="true">|</span>
+                        <span id="movie-genre" aria-label="Thể loại">[Thể Loại]</span>
+                        <span class="hidden sm:inline movie-duration-separator" aria-hidden="true">|</span>
+                        <span id="movie-duration" aria-label="Thời lượng">[Thời lượng]</span>
+                         <span class="hidden sm:inline" aria-hidden="true">|</span>
+                         <span class="flex items-center" aria-label="Đánh giá">
+                             <i class="fas fa-star text-yellow-400 mr-1" aria-hidden="true"></i>
+                             <span id="movie-rating">[Đánh giá]</span>/10
+                         </span>
+                    </div>
+                    <p id="movie-description" class="text-gray-300 mb-6 leading-relaxed text-sm sm:text-base">[Mô tả chi tiết...]</p>
+
+                    <div class="space-y-2 text-gray-300 mb-6 text-sm sm:text-base">
+                        <p><strong class="font-semibold text-gray-100 w-20 sm:w-24 inline-block">Đạo diễn:</strong> <span id="movie-director">[Tên Đạo Diễn]</span></p>
+                        <p><strong class="font-semibold text-gray-100 w-20 sm:w-24 inline-block">Diễn viên:</strong> <span id="movie-cast">[Danh sách diễn viên]</span></p>
+                        <div id="series-info" class="hidden space-y-2 mt-2">
+                        </div>
+                    </div>
+
+                    <div class="mt-6 space-x-3">
+                         <button class="bg-primary hover:bg-primary-hover text-white font-semibold py-2 px-4 sm:px-5 rounded-md transition duration-300 inline-flex items-center gap-2 text-sm sm:text-base" aria-label="Thêm vào danh sách yêu thích">
+                            <i class="fas fa-heart" aria-hidden="true"></i> Yêu Thích
+                        </button>
+                         <button class="bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-4 sm:px-5 rounded-md transition duration-300 inline-flex items-center gap-2 text-sm sm:text-base" aria-label="Chia sẻ">
+                            <i class="fas fa-share-alt" aria-hidden="true"></i> Chia Sẻ
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-12 md:mt-16" aria-labelledby="related-movies-heading">
+                <h3 id="related-movies-heading" class="text-lg sm:text-xl md:text-2xl font-semibold mb-4 sm:mb-5 text-gray-100 border-l-4 border-primary pl-3">Có Thể Bạn Cũng Thích</h3>
+                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5" id="related-movies" aria-live="polite">
+                    </div>
+            </section>
+
+        </div> </main>
+
+    <footer class="bg-gray-900 text-text-muted py-8 px-4 sm:px-6 md:px-10 mt-12 border-t border-border-color" role="contentinfo">
+        <div class="container mx-auto text-center max-w-screen-xl">
+             <nav class="mb-4 flex flex-wrap justify-center gap-x-4 gap-y-2" aria-label="Liên kết phụ">
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Về Chúng Tôi</a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Điều Khoản</a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Bảo Mật</a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Liên Hệ</a>
+            </nav>
+            <div class="mb-4 text-xl space-x-5" aria-label="Liên kết mạng xã hội">
+                <a href="#" class="text-gray-400 hover:text-white" aria-label="Facebook của chúng tôi"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white" aria-label="Twitter của chúng tôi"><i class="fab fa-twitter" aria-hidden="true"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white" aria-label="Instagram của chúng tôi"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+            </div>
+            <p class="text-sm">&copy; <span id="footer-year-detail">2025</span> Tên Trang Web Của Bạn. Mọi quyền được bảo lưu.</p>
+            <p class="text-xs mt-2 opacity-70">Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn.</p>
+        </div>
+    </footer>
+
+    <button id="scroll-to-top" class="hidden fixed bottom-5 right-5 bg-primary hover:bg-primary-hover text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-lg transition-opacity duration-300 z-50" aria-label="Cuộn lên đầu trang">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Set current year in footer
+        const footerYearDetail = document.getElementById('footer-year-detail');
+        if (footerYearDetail) {
+            footerYearDetail.textContent = new Date().getFullYear();
+        }
+    </script>
+    <script src="../js/filmDetails.js"></script>
+</body>
+</html>

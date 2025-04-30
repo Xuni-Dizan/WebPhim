@@ -1,0 +1,131 @@
+[
+  {
+    "id": 101,
+    "title": "Khó Dỗ Dành",
+    "description": "Chuyển thể từ tiểu thuyết cùng tên của Trúc Dĩ. Phim kể về câu chuyện tình yêu giữa nữ phóng viên Ôn Dĩ Phàm và chàng trai 'oan gia' thời trung học Tang Diên. Tình cờ gặp lại tại quán bar, Ôn Dĩ Phàm phát hiện Tang Diên không chỉ là chủ nhà mới mà còn là hàng xóm của mình. Những lần chạm mặt trong công việc và cuộc sống dần kéo họ lại gần nhau, nhen nhóm lại tình cảm xưa giữa những thử thách.",
+    "posterUrl": "https://static.nutscdn.com/vimg/300-0/6001cdb554f395b4abcbb8adc87f8864.jpg",
+    "releaseYear": 2024,
+    "genre": ["Lãng mạn", "Chính kịch", "Hiện đại"],
+    "director": "Zhu Yi",
+    "cast": ["Bai Jingting", "Zhang Ruonan", "Edward Chen", "Zhang Miaoyi", "Zhai Xiaowen"],
+    "rating": null,
+    "numberOfSeasons": 1,
+    "totalEpisodes": 32,
+    "status": "Chưa chiếu",
+    "isTrending": true,
+    "isNew": true,
+    "heroImage": "https://daknong.1cdn.vn/2025/02/11/phim-kho-do-danh(1).jpg",
+    "skipIntroSeconds": 120,
+    "seasons": [
+      {
+        "seasonNumber": 1,
+        "numberOfEpisodes": 32,
+        "episodes": [
+          {"episodeNumber": 1, "title": "Tập 1", "thumbnailUrl": null, "videoUrls": {"vietsub": "https://www.youtube.com/watch?v=ghIpFFDezxk", "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 2, "title": "Tập 2", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 3, "title": "Tập 3", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 4, "title": "Tập 4", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 5, "title": "Tập 5", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 6, "title": "Tập 6", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 7, "title": "Tập 7", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 8, "title": "Tập 8", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 9, "title": "Tập 9", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 10, "title": "Tập 10", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 11, "title": "Tập 11", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 12, "title": "Tập 12", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 13, "title": "Tập 13", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 14, "title": "Tập 14", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 15, "title": "Tập 15", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 16, "title": "Tập 16", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 17, "title": "Tập 17", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 18, "title": "Tập 18", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 19, "title": "Tập 19", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 20, "title": "Tập 20", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 21, "title": "Tập 21", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 22, "title": "Tập 22", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 23, "title": "Tập 23", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 24, "title": "Tập 24", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 25, "title": "Tập 25", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 26, "title": "Tập 26", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 27, "title": "Tập 27", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 28, "title": "Tập 28", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 29, "title": "Tập 29", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 30, "title": "Tập 30", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 31, "title": "Tập 31", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 32, "title": "Tập 32", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}}
+        ]
+      }
+    ]
+  },
+    {
+      "id": 102,
+      "title": "Bí Ẩn Thị Trấn Đêm",
+      "description": "Những sự kiện kỳ bí liên tiếp xảy ra tại một thị trấn nhỏ sau khi màn đêm buông xuống. Bí ẩn này càng được hé lộ qua từng tập phim.",
+      "posterUrl": "https://placehold.co/400x600/2c3e50/ffffff?text=Phim+Bộ+2",
+      "releaseYear": 2023,
+      "genre": ["Kinh dị", "Bí ẩn", "Tâm lý"],
+      "director": "Đạo Diễn Beta",
+      "cast": ["Diễn Viên V", "Diễn Viên W", "Diễn Viên X"],
+      "rating": 8.2,
+      "numberOfSeasons": 1,
+      "totalEpisodes": 8,
+      "status": "Hoàn thành",
+      "isTrending": false,
+      "isNew": false,
+      "heroImage": null,
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "numberOfEpisodes": 8,
+          "episodes": [
+            {"episodeNumber": 1, "title": "Tập 1: Dấu Chân Trong Sương", "thumbnailUrl": "https://placehold.co/320x180/444444/ffffff?text=B2S1","videoUrls": {"vietsub": "https://youtu.be/B2S1vietsub", "dubbed": null, "voiceover": null}},
+            {"episodeNumber": 2, "title": "Tập 2: Tiếng Rì Rầm", "thumbnailUrl": "https://placehold.co/320x180/444444/ffffff?text=B2S2","videoUrls": {"vietsub": "https://youtu.be/B2S2vietsub", "dubbed": null, "voiceover": null}},
+            {"episodeNumber": 3, "title": "Tập 3: Bí Mật Bên Hồ", "thumbnailUrl": "https://placehold.co/320x180/444444/ffffff?text=B2S3","videoUrls": {"vietsub": "https://youtu.be/B2S3vietsub", "dubbed": null, "voiceover": null}}
+          ]
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "title": "Chiến Dịch Siêu Gián Điệp",
+      "description": "Cuộc đấu trí căng thẳng giữa các cơ quan tình báo hàng đầu thế giới, nơi mỗi sai lầm có thể dẫn đến thảm họa toàn cầu.",
+      "posterUrl": "https://placehold.co/400x600/c0392b/ffffff?text=Phim+Bộ+3",
+      "releaseYear": 2025,
+      "genre": ["Hành động", "Kịch tính", "Gián điệp"],
+      "director": "Đạo Diễn Gamma",
+      "cast": ["Diễn Viên Y", "Diễn Viên Z", "Diễn Viên A1"],
+      "rating": 9.0,
+      "numberOfSeasons": 3,
+      "totalEpisodes": 30,
+      "status": "Đang chiếu",
+      "isTrending": true,
+      "isNew": true,
+      "heroImage": "https://placehold.co/1920x1080/111111/c0392b?text=Phim+Bộ+3+Nổi+Bật",
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "numberOfEpisodes": 10,
+          "episodes": [
+            {"episodeNumber": 1, "title": "Tập 1: Án Mạng Bí Ẩn", "thumbnailUrl": "https://placehold.co/320x180/666666/ffffff?text=C3S1", "videoUrls": {"vietsub": "https://youtu.be/C3S1vietsub", "dubbed": null, "voiceover": null}},
+            {"episodeNumber": 2, "title": "Tập 2: Kẻ Phản Bội", "thumbnailUrl": "https://placehold.co/320x180/666666/ffffff?text=C3S2", "videoUrls": {"vietsub": "https://youtu.be/C3S2vietsub", "dubbed": null, "voiceover": null}},
+            {"episodeNumber": 3, "title": "Tập 3: Cuộc Đua Thời Gian", "thumbnailUrl": "https://placehold.co/320x180/666666/ffffff?text=C3S3", "videoUrls": {"vietsub": "https://youtu.be/C3S3vietsub", "dubbed": null, "voiceover": null}}
+          ]
+        },
+        {
+          "seasonNumber": 2,
+          "numberOfEpisodes": 10,
+          "episodes": [
+            {"episodeNumber": 1, "title": "Tập 1: Bóng Ma Quá Khứ", "thumbnailUrl": "https://placehold.co/320x180/666666/ffffff?text=C3S2", "videoUrls": {"vietsub": "https://youtu.be/C3S2vietsub", "dubbed": null, "voiceover": null}}
+          ]
+        },
+        {
+          "seasonNumber": 3,
+          "numberOfEpisodes": 10,
+          "episodes": [
+            {"episodeNumber": 1, "title": "Tập 1: Mật Mã Cuối Cùng", "thumbnailUrl": "https://placehold.co/320x180/666666/ffffff?text=C3S3", "videoUrls": {"vietsub": "https://youtu.be/C3S3vietsub", "dubbed": null, "voiceover": null}}
+          ]
+        }
+      ]
+    }
+  ]
+  

@@ -1,0 +1,852 @@
+/* style.css - Refreshed Look v3.4 - Enhanced Responsiveness */
+
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Material Icons Outlined (already linked in HTML) */
+
+/* CSS Variables */
+:root {
+    --primary-color: #e50914; /* Netflix Red */
+    --primary-hover-color: #f40612; /* Brighter Red */
+    --secondary-color: #101010; /* Slightly darker background */
+    --light-gray-color: #1f1f1f; /* Lighter gray for cards/elements */
+    --dark-gray-color: #181818; /* Even darker gray for dropdowns etc. */
+    --skeleton-base-color: #333; /* Base color for skeleton */
+    --skeleton-shine-color: #444; /* Shine color for skeleton animation */
+    --text-color: #e0e0e0; /* Slightly off-white text */
+    --text-muted-color: #8c8c8c;
+    --border-color: #333333; /* Subtle border color */
+    --highlight-color: #facc15; /* Tailwind yellow-400 for highlight */
+    --highlight-bg-color: rgba(250, 204, 21, 0.1); /* Background for highlight */
+    --gradient-start: rgba(16, 16, 16, 0.8); /* Gradient for overlays */
+    --gradient-end: rgba(16, 16, 16, 0);
+    --scroll-button-bg: rgba(229, 9, 20, 0.85); /* Semi-transparent primary */
+    --scroll-button-hover-bg: rgba(244, 6, 18, 1); /* Opaque primary hover */
+    --lights-off-overlay-bg: rgba(0, 0, 0, 0.88); /* Darker overlay for lights off */
+    --lights-off-blur: 4px; /* Blur effect for lights off */
+    --slider-connect-bg: var(--primary-color);
+    --slider-handle-bg: #fff;
+    --slider-handle-border: var(--primary-color);
+    --overlay-bg-color: rgba(0, 0, 0, 0.6); /* Card overlay background */
+    --overlay-text-shadow: 0 1px 3px rgba(0,0,0,0.8); /* Text shadow for overlay */
+
+    /* Animation Variables */
+    --animation-duration: 0.6s;
+    --animation-delay: 0.1s; /* Base delay for staggered items */
+    --animation-timing: ease-out;
+    --shimmer-duration: 1.5s; /* Duration for skeleton shimmer */
+    --tab-transition-duration: 0.3s; /* Duration for tab slide/fade */
+    --tab-transition-timing: cubic-bezier(0.4, 0, 0.2, 1); /* Easing for tab transition */
+    --overlay-transition-duration: 0.3s; /* Transition for card overlay */
+    --pulse-duration: 1s; /* Duration for pulse animation */
+}
+
+/* Base HTML and Body Styles */
+html {
+    scroll-behavior: smooth;
+    font-size: 16px; /* Base font size */
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    opacity: 0;
+    animation: pageFadeIn var(--animation-duration) var(--animation-timing) forwards;
+    animation-delay: 0.2s;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex-grow: 1; /* Ensure main content pushes footer down */
+}
+
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; border: 1px solid #1a1a1a; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+
+/* Header Styling */
+header#main-header {
+    position: sticky;
+    top: 0;
+    z-index: 50; /* Header z-index */
+    background-color: rgba(16, 16, 16, 0.85); /* Semi-transparent background */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+    transition: transform 0.3s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease-in-out, opacity 0.4s ease, filter 0.4s ease;
+}
+header#main-header.header-hidden { transform: translateY(-100%); }
+header#main-header.header-shadow { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
+/* Ensure touch targets are large enough */
+header button.p-2, header a.p-2 {
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* Mobile Menu Overlay & Panel */
+#mobile-menu-overlay {
+    /* Styles managed by Tailwind classes */
+}
+#mobile-menu-panel {
+    /* Styles managed by Tailwind classes */
+    overflow-y: auto; /* Ensure scrollable if content exceeds height */
+}
+#close-mobile-menu-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: var(--text-muted-color);
+    transition: color 0.2s ease, transform 0.2s ease;
+    min-width: 44px; /* Touch target size */
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+}
+#close-mobile-menu-button:hover { color: var(--text-color); transform: rotate(90deg); }
+
+/* Hero Section */
+#hero-section {
+    /* Background image set inline */
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    color: white;
+    /* Responsive height is handled by Tailwind */
+}
+#hero-section .hero-overlay {
+    position: absolute;
+    inset: 0;
+    /* Gradient adjusted for better visibility on different screens */
+    background: linear-gradient(to top, var(--secondary-color) 10%, transparent 70%);
+    z-index: 1;
+}
+/* Desktop gradient */
+@media (min-width: 768px) {
+    #hero-section .hero-overlay {
+        background: linear-gradient(to top, var(--secondary-color) 5%, transparent 60%), linear-gradient(to right, var(--secondary-color) 15%, transparent 80%);
+    }
+}
+#hero-section .hero-content {
+    position: relative;
+    z-index: 2;
+    /* Padding and max-width handled by Tailwind */
+}
+/* Text shadow for better readability */
+.text-shadow-lg { text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
+.text-shadow-md { text-shadow: 1px 1px 3px rgba(0,0,0,0.7); }
+
+/* Buttons Styling */
+button.bg-primary, button#hero-play-button {
+    background-color: var(--primary-color);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+button.bg-primary:hover, button#hero-play-button:hover {
+    background-color: var(--primary-hover-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+button.bg-gray-600, button#hero-detail-button {
+    background-color: rgba(110, 110, 110, 0.7);
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+button.bg-gray-600:hover, button#hero-detail-button:hover {
+    background-color: rgba(130, 130, 130, 0.8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Input and Select Styling */
+input[type="text"], select {
+    background-color: var(--light-gray-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    /* Padding, border-radius handled by Tailwind */
+}
+input[type="text"]:focus, select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.3);
+    outline: none;
+}
+/* Custom arrow for select */
+select.appearance-none {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23e0e0e0' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.7rem center;
+    background-repeat: no-repeat;
+    background-size: 1.2em 1.2em;
+    padding-right: 2.5rem; /* Space for the arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+select option {
+    background-color: #333;
+    color: var(--text-color);
+}
+
+/* --- Movie Card Styling --- */
+.movie-card, .related-movie-card {
+    background-color: var(--light-gray-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 1px solid transparent;
+    position: relative;
+    display: block;
+}
+
+.movie-card:hover, .related-movie-card:hover {
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    border-color: var(--border-color);
+    z-index: 10; /* Ensure hovered card is on top */
+}
+
+.movie-card img,
+.related-movie-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 2 / 3; /* Maintain aspect ratio */
+    background-color: var(--skeleton-base-color); /* Placeholder background */
+}
+
+/* --- Hover Overlay Styles --- */
+/* Overlay container is created by Tailwind classes on the card's <a> tag */
+.movie-card .group-hover\:opacity-100 { /* Target the overlay div */
+    background-color: var(--overlay-bg-color);
+    transition: opacity var(--overlay-transition-duration) ease-in-out;
+    /* Other overlay styles (padding, text alignment) handled by Tailwind */
+}
+.movie-card .group-hover\:opacity-100 .fa-play { /* Target the play icon */
+    text-shadow: var(--overlay-text-shadow);
+}
+
+/* --- Skeleton Loading Styles --- */
+.movie-card-skeleton { background-color: var(--light-gray-color); border-radius: 8px; overflow: hidden; padding: 0; border: 1px solid var(--border-color); }
+.skeleton { background-color: var(--skeleton-base-color); border-radius: 4px; position: relative; overflow: hidden; margin: 0; }
+.skeleton::before { content: ''; position: absolute; top: 0; left: -150%; height: 100%; width: 150%; background: linear-gradient(to right, transparent 0%, var(--skeleton-shine-color) 50%, transparent 100%); animation: shimmer var(--shimmer-duration) infinite linear; }
+.skeleton-image { display: block; width: 100%; height: 0; padding-bottom: 150%; /* 3:2 Aspect Ratio */ margin-bottom: 0; border-radius: 0; }
+.movie-card-skeleton .p-3 { padding: 0.75rem; }
+.skeleton-title { height: 18px; width: 75%; margin-bottom: 8px; border-radius: 3px; }
+.skeleton-text { height: 12px; width: 50%; border-radius: 3px; }
+@keyframes shimmer { 0% { left: -150%; } 100% { left: 150%; } }
+
+/* Filter Controls Section */
+#filter-controls {
+    background-color: rgba(31, 31, 31, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid var(--border-color);
+    position: relative;
+    z-index: 5; /* Ensure filters are above grid but below dropdowns */
+    /* Layout handled by Tailwind */
+}
+/* Genre Filter Dropdown Styles */
+#genre-filter-container .bg-gray-700 { background-color: var(--dark-gray-color); } /* Match theme */
+#genre-dropdown {
+    background-color: var(--dark-gray-color);
+    border: 1px solid var(--border-color);
+    max-height: 250px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #555 var(--dark-gray-color);
+    /* Positioning and display handled by JS/Tailwind */
+    z-index: 20; /* Higher than movie card hover */
+    /* Width, margin handled by Tailwind */
+}
+#genre-dropdown label {
+    display: flex; /* Use flex for alignment */
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+#genre-dropdown label:hover {
+    background-color: var(--light-gray-color);
+}
+#genre-dropdown input[type="checkbox"] {
+    margin-right: 8px;
+    accent-color: var(--primary-color);
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    flex-shrink: 0; /* Prevent checkbox from shrinking */
+}
+
+/* Filter Tag Styles */
+#filter-tags-container { min-height: 2rem; /* Ensure space even when empty */ }
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--light-gray-color);
+    color: var(--text-color);
+    padding: 4px 10px;
+    border-radius: 16px; /* Pill shape */
+    font-size: 0.8rem;
+    border: 1px solid var(--border-color);
+    transition: background-color 0.2s, color 0.2s;
+    white-space: nowrap; /* Prevent wrapping */
+    line-height: 1.2; /* Adjust line height if needed */
+}
+.filter-tag .tag-label {
+    margin-right: 4px;
+    overflow: hidden; /* Prevent long labels from breaking layout */
+    text-overflow: ellipsis;
+}
+.filter-tag .remove-tag {
+    margin-left: 6px;
+    font-size: 16px; /* Material icon size */
+    color: var(--text-muted-color);
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0; /* Prevent icon from shrinking */
+}
+.filter-tag:hover { background-color: #444; }
+.filter-tag:hover .remove-tag { color: var(--primary-hover-color); }
+
+/* noUiSlider Custom Styles */
+.slider-container { margin-top: 1rem; padding: 0 0.5rem; }
+.slider-label { display: block; font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-muted-color); }
+.noui-target {
+    height: 6px;
+    background: #444;
+    border-radius: 3px;
+    border: none;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.2);
+}
+.noui-connect {
+    background: var(--slider-connect-bg);
+    border-radius: 3px;
+    box-shadow: none;
+}
+.noui-handle {
+    height: 18px;
+    width: 18px;
+    top: -6px;
+    right: -9px;
+    border-radius: 50%;
+    background: var(--slider-handle-bg);
+    border: 2px solid var(--slider-handle-border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    cursor: grab;
+}
+.noui-handle:focus { outline: none; }
+.noui-handle:active { cursor: grabbing; transform: scale(1.1); }
+.noui-handle::before, .noui-handle::after { display: none; }
+/* Slider value display */
+.slider-label span {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-left: 4px;
+}
+
+/* Clear Filters Button Style */
+#clear-filters-button {
+    /* Tailwind handles hidden/display */
+    border: 1px solid var(--border-color);
+    background-color: var(--light-gray-color);
+    min-width: 44px; /* Touch target */
+    min-height: 44px;
+}
+#clear-filters-button:hover {
+    background-color: #444;
+    color: var(--primary-hover-color);
+}
+
+
+/* Search Suggestions Styling */
+.search-suggestions {
+    background-color: var(--dark-gray-color, #181818); /* Use darker gray */
+    border: 1px solid var(--border-color, #333);
+    border-radius: 8px;
+    max-height: 350px;
+    overflow-y: auto;
+    z-index: 100; /* High z-index */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+    display: none; /* Controlled by JS */
+    scrollbar-width: thin;
+    scrollbar-color: #555 var(--dark-gray-color);
+    position: absolute;
+    width: 100%; /* Full width relative to parent */
+    left: 0;
+    /* Top position handled by Tailwind classes */
+}
+.suggestion-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-color, #333);
+    transition: background-color 0.2s ease;
+    color: inherit;
+    text-decoration: none;
+}
+.suggestion-item:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
+.suggestion-item:last-child { border-bottom: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
+.suggestion-item:hover { background-color: var(--light-gray-color, #222); }
+.suggestion-item img { width: 40px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid #444; }
+.suggestion-item-info { display: flex; flex-direction: column; overflow: hidden; flex-grow: 1; }
+.suggestion-item-title { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color, #e0e0e0); }
+.suggestion-item-year { font-size: 0.75rem; color: var(--text-muted-color, #8c8c8c); }
+.no-suggestions-placeholder { padding: 20px; text-align: center; color: var(--text-muted-color); font-style: italic; font-size: 0.9rem; }
+.search-highlight { font-weight: bold; color: var(--highlight-color); background-color: var(--highlight-bg-color); padding: 0 2px; border-radius: 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+/* Footer Styling */
+footer {
+    background-color: #0a0a0a; /* Very dark footer */
+    border-top: 1px solid var(--border-color);
+    transition: opacity 0.4s ease, filter 0.4s ease;
+    margin-top: auto; /* Push footer to bottom */
+    /* Padding handled by Tailwind */
+}
+footer a:hover { color: var(--primary-color); }
+
+/* Scroll to Top Button */
+#scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--scroll-button-bg);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: grid; /* Use grid for centering icon */
+    place-items: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease, filter 0.4s ease;
+    z-index: 999;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    opacity: 0; /* Hidden by default */
+    visibility: hidden;
+    transform: translateY(20px) scale(0.9);
+}
+#scroll-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+#scroll-to-top:hover {
+    background-color: var(--scroll-button-hover-bg);
+    transform: scale(1.1); /* Slightly larger on hover */
+}
+
+/* Accessibility Focus Styles */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, [tabindex="0"]:focus-visible {
+    outline: 2px solid var(--primary-hover-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(244, 6, 18, 0.4);
+    border-radius: 4px; /* Consistent focus ring */
+}
+/* Remove default outline when focus is not visible (e.g., mouse click) */
+*:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Player Area Styles (Detail Pages) */
+.player-area {
+    background-color: var(--light-gray-color, #1f1f1f);
+    border-radius: 12px;
+    margin-bottom: 1.5rem; /* mb-6 */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.4s ease, filter 0.4s ease;
+    position: relative;
+    z-index: 1; /* Below lights-off overlay */
+    /* Padding handled by Tailwind */
+}
+/* Video Container (Detail Pages) */
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+    border-radius: 8px;
+    margin-bottom: 1rem; /* mb-4 */
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+}
+.video-container iframe, .video-container object, .video-container embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+.video-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #0a0a0a;
+    color: var(--text-muted-color, #8c8c8c);
+    border-radius: 8px;
+    text-align: center;
+    padding: 1rem;
+}
+.video-placeholder i { font-size: 3rem; margin-bottom: 0.75rem; color: #555; }
+.video-placeholder p { font-size: 0.9rem; }
+
+/* Video Message (Detail Pages) */
+#video-message {
+    min-height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem; /* mb-4 */
+    font-size: 0.9rem;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+#video-message.error-message { background-color: rgba(229, 9, 20, 0.15); color: #ff8a8a; border: 1px solid rgba(229, 9, 20, 0.3); }
+#video-message.info-message { background-color: rgba(68, 68, 68, 0.5); color: var(--text-muted, #8c8c8c); border: 1px solid #444; }
+#video-message i { margin-right: 0.5rem; }
+
+/* Version Selection Buttons (Detail Pages) */
+.version-button {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    border: 1px solid var(--border-color, #333);
+    border-radius: 6px;
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: #303030;
+    color: #ccc;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+}
+.version-button:not(:disabled):hover { background-color: #404040; border-color: #555; color: #fff; transform: translateY(-1px); }
+.version-button.active { background-color: var(--primary-color, #e50914); border-color: var(--primary-color, #e50914); color: white; font-weight: 600; box-shadow: 0 0 10px rgba(229, 9, 20, 0.4); }
+.version-button:disabled { background-color: #2a2a2a; border-color: #333; color: #666; cursor: not-allowed; opacity: 0.5; transform: none; box-shadow: none; }
+.version-button i { font-size: 0.9em; }
+
+/* Lights Off Feature (Detail Pages) */
+#lights-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--lights-off-overlay-bg);
+    z-index: 998; /* Below player area when active */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease, backdrop-filter 0.4s ease;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    pointer-events: none;
+}
+body.lights-off #lights-overlay {
+    opacity: 1;
+    visibility: visible;
+    backdrop-filter: blur(var(--lights-off-blur));
+    -webkit-backdrop-filter: blur(var(--lights-off-blur));
+    pointer-events: auto; /* Allow clicking overlay to turn lights on */
+}
+body.lights-off .player-area { z-index: 999; /* Bring player above overlay */ }
+/* Fade out other elements */
+body.lights-off header,
+body.lights-off main > *:not(#player-section):not(#series-content-section),
+body.lights-off footer,
+body.lights-off #scroll-to-top {
+    opacity: 0.1;
+    filter: blur(2px);
+    pointer-events: none; /* Prevent interaction with faded elements */
+}
+/* Ensure elements transition back smoothly */
+header, main > *:not(#player-section):not(#series-content-section), footer, #scroll-to-top {
+    transition: opacity 0.4s ease, filter 0.4s ease;
+}
+#toggle-lights-button {
+    background-color: rgba(50, 50, 50, 0.8);
+    color: #ccc;
+    border: 1px solid #444;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-size: 0.75rem; /* Smaller text */
+    z-index: 1000; /* Always clickable */
+    pointer-events: auto;
+    position: relative; /* Needed for z-index */
+    /* Padding, flex handled by Tailwind */
+}
+#toggle-lights-button:hover { background-color: rgba(70, 70, 70, 0.9); color: #fff; }
+#toggle-lights-button i { font-size: 0.8em; margin-right: 0.25rem; }
+
+/* Poster Image (Detail Pages) */
+#movie-poster, #series-poster {
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border: 1px solid var(--border-color, #333);
+    /* Width, max-width, margin handled by Tailwind */
+}
+
+/* Series Selectors & Episode List (Series Detail Page) */
+/* Select styles inherited */
+#episode-list-container {
+    margin-top: 1rem; /* Increased margin */
+    /* Grid layout will be replaced by flex/grid for buttons */
+}
+
+/* --- COMMENTED OUT OLD EPISODE ITEM STYLES --- */
+/*
+.episode-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background-color: var(--light-gray-color);
+    border-radius: 0.375rem;
+    overflow: hidden;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+.episode-item--inactive:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border-color: #555;
+}
+.episode-item--active {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(229, 9, 20, 0.2);
+}
+.episode-item .relative { position: relative; }
+.episode-item img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    aspect-ratio: 16 / 9;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.episode-item:hover img { transform: scale(1.1); }
+.episode-item .absolute {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-color 0.3s ease;
+}
+.episode-item:hover .absolute { background-color: rgba(0, 0, 0, 0.5); }
+.episode-item .fa-play, .episode-item .fa-volume-up {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    color: white;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+    font-size: 1.5rem;
+}
+.episode-item--inactive:hover .fa-play { opacity: 1; transform: scale(1.1); }
+.episode-item--inactive .fa-play { opacity: 0; transform: scale(0.8); }
+.episode-item--active .fa-volume-up { opacity: 1; color: var(--primary-color); }
+*/
+/* --- END COMMENTED OUT OLD STYLES --- */
+
+/* --- NEW EPISODE BUTTON STYLES --- */
+#episode-list-container {
+    display: flex; /* Use flexbox for wrapping */
+    flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+    gap: 0.5rem; /* Spacing between buttons (8px) */
+}
+
+.episode-button {
+    display: inline-flex; /* Behave like inline elements but allow padding/margin */
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem; /* Adjust padding for size (py-2 px-3 equivalent) */
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* medium */
+    line-height: 1.25rem; /* leading-5 */
+    border-radius: 0.375rem; /* rounded-md */
+    border: 1px solid var(--border-color);
+    background-color: var(--light-gray-color);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    min-width: 44px; /* Minimum width for touch targets and appearance */
+    text-align: center;
+    flex-shrink: 0; /* Prevent shrinking in flex container */
+}
+
+.episode-button:hover {
+    background-color: #333; /* Darker gray on hover */
+    border-color: #555;
+    transform: translateY(-1px);
+}
+
+.episode-button.active {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    font-weight: 600; /* semibold */
+    box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
+    transform: none; /* Reset transform for active state */
+}
+
+.episode-button:focus-visible { /* Accessibility focus */
+    outline: 2px solid var(--primary-hover-color);
+    outline-offset: 1px;
+    box-shadow: none; /* Override active shadow if focused */
+}
+/* --- END NEW EPISODE BUTTON STYLES --- */
+
+
+/* Tab Styles (Index Page) */
+.tab-button {
+    /* Padding handled by Tailwind */
+    font-weight: 600;
+    color: var(--text-muted-color);
+    border-bottom: 3px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.tab-button:hover { color: var(--text-color); }
+.tab-button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
+/* Hide scrollbar for tabs */
+#content-tabs::-webkit-scrollbar { display: none; }
+#content-tabs { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Tab Transition Styles */
+#movie-grid-section {
+    position: relative; /* Needed for absolute positioning of grid */
+    overflow: hidden; /* Hide overflowing content during transition */
+    min-height: 300px; /* Prevent collapsing during transition */
+}
+#movie-grid {
+    transition: transform var(--tab-transition-duration) var(--tab-transition-timing),
+                opacity var(--tab-transition-duration) var(--tab-transition-timing);
+    will-change: transform, opacity; /* Optimize for animation */
+}
+/* States for slide/fade transition */
+#movie-grid.slide-out-left {
+    transform: translateX(-50px);
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    pointer-events: none;
+}
+#movie-grid.slide-out-right {
+    transform: translateX(50px);
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    pointer-events: none;
+}
+#movie-grid.slide-in-from-right {
+    transform: translateX(50px);
+    opacity: 0;
+}
+#movie-grid.slide-in-from-left {
+    transform: translateX(-50px);
+    opacity: 0;
+}
+#movie-grid.is-visible { /* Final state after sliding in */
+    transform: translateX(0);
+    opacity: 1;
+    position: relative; /* Back to relative positioning */
+    pointer-events: auto;
+}
+
+
+/* Animation Keyframes */
+@keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+/* Animation Classes */
+.animate-on-scroll { opacity: 0; will-change: transform, opacity; }
+.animate-on-scroll.is-visible { animation: slideUpFadeIn var(--animation-duration) var(--animation-timing) forwards; }
+
+/* Responsive Adjustments */
+@media (max-width: 640px) { /* sm breakpoint */
+    html { font-size: 15px; } /* Slightly smaller base font */
+    /* Adjust card/skeleton radius */
+    .movie-card, .related-movie-card, .movie-card-skeleton { border-radius: 6px; }
+    /* Adjust scroll-to-top button size and position */
+    #scroll-to-top { width: 44px; height: 44px; font-size: 1rem; bottom: 15px; right: 15px; }
+    /* Ensure tabs are scrollable */
+    #tabs-section { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    #content-tabs { display: inline-flex; min-width: 100%; }
+    .tab-button { padding: 0.75rem 1rem; } /* Smaller padding for tabs */
+    /* Adjust episode list */
+    #episode-list-container { gap: 0.4rem; } /* Slightly smaller gap */
+    .episode-button { padding: 0.4rem 0.6rem; font-size: 0.8rem; min-width: 40px;} /* Smaller episode buttons */
+    /* Ensure skeleton image maintains aspect ratio */
+    .skeleton-image { padding-bottom: 150%; }
+    /* Adjust slider label margin */
+    .slider-label { margin-bottom: 1.5rem; margin-top: 0.5rem; }
+    /* Filter controls layout adjustments handled by Tailwind grid classes */
+    /* Adjust filter tag container margin */
+    #filter-tags-container { margin-bottom: 1rem; }
+    /* Adjust hero text sizes */
+    #hero-title { font-size: 1.75rem; /* Adjusted from text-2xl */ }
+    #hero-description { font-size: 0.875rem; /* Adjusted from text-sm */ }
+    /* Adjust main grid title size */
+    #movie-grid-title { font-size: 1.125rem; /* Adjusted from text-xl */ }
+}
+
+@media (max-width: 768px) { /* md breakpoint */
+    /* Adjustments for medium screens if needed */
+    #hero-title { font-size: 2.25rem; /* Adjusted from text-3xl/4xl */ }
+}
+
+@media (max-width: 1024px) { /* lg breakpoint */
+    /* Adjustments for large screens if needed */
+     #hero-title { font-size: 2.75rem; /* Adjusted from text-4xl/5xl */ }
+}

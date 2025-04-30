@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Xem Phim - Phim Lẻ & Phim Bộ Mới Nhất (Responsive)</title>
+    <meta name="description" content="Khám phá kho phim và phim bộ đa dạng: hành động, lãng mạn, kinh dị, hài hước... Tìm kiếm nhanh chóng, xem trailer và thông tin chi tiết. Cập nhật liên tục. Giao diện đáp ứng tốt trên mọi thiết bị.">
+    <meta name="keywords" content="xem phim, phim online, phim bộ, series phim, phim mới, phim hay, phim HD, phim vietsub, phim thuyết minh, phim hành động, phim tình cảm, phim kinh dị, phim chiếu rạp, responsive">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com/index.html"> <meta property="og:title" content="LOGO PHIM | Kho Phim Lẻ & Phim Bộ Cập Nhật (Responsive)">
+    <meta property="og:description" content="Khám phá kho phim lẻ và phim bộ đa dạng với hàng ngàn tựa phim thuộc nhiều thể loại. Trải nghiệm xem phim mượt mà trên mọi thiết bị.">
+    <meta property="og:image" content="https://placehold.co/1200x630/e50914/ffffff?text=LOGO+PHIM+Responsive"> <meta property="og:site_name" content="LOGO PHIM">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://yourdomain.com/index.html"> <meta property="twitter:title" content="LOGO PHIM | Kho Phim Lẻ & Phim Bộ Cập Nhật (Responsive)">
+    <meta property="twitter:description" content="Khám phá kho phim lẻ và phim bộ đa dạng với hàng ngàn tựa phim thuộc nhiều thể loại. Trải nghiệm xem phim mượt mà trên mọi thiết bị.">
+    <meta property="twitter:image" content="https://placehold.co/1200x630/e50914/ffffff?text=LOGO+PHIM+Responsive"> <link rel="icon" href="/favicon.ico" sizes="any"> <link rel="icon" href="/favicon.svg" type="image/svg+xml"> <link rel="apple-touch-icon" href="/apple-touch-icon.png"> <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'], // Use Inter font
+                    },
+                    colors: {
+                        'primary': '#e50914', // Netflix Red
+                        'secondary': '#141414', // Dark background
+                        'light-gray': '#222222', // Lighter gray for elements
+                        'text-muted': '#8c8c8c', // Muted text color
+                        'border-color': '#333333', // Subtle border color
+                        'highlight': '#facc15', // Yellow for highlighting search terms
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Inline styles for Skeleton, Highlight, Filter Tags, Slider (can be moved to style.css) */
+        .skeleton {
+            background-color: var(--skeleton-base-color, #333);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            height: 100%;
+            width: 150%;
+            background: linear-gradient(to right, transparent 0%, var(--skeleton-shine-color, #444) 50%, transparent 100%);
+            animation: shimmer var(--shimmer-duration, 1.5s) infinite linear;
+        }
+        .skeleton-image { height: 0; padding-bottom: 150%; margin-bottom: 0; border-radius: 0; }
+        .skeleton-title { height: 18px; width: 75%; margin-bottom: 8px; border-radius: 3px;}
+        .skeleton-text { height: 12px; width: 50%; border-radius: 3px;}
+        .movie-card-skeleton .p-3 { padding: 0.75rem; }
+
+        @keyframes shimmer {
+            0% { left: -150%; }
+            100% { left: 150%; }
+        }
+
+        /* Search highlight style */
+        .search-highlight {
+            font-weight: bold;
+            color: var(--highlight-color, #facc15);
+            background-color: var(--highlight-bg-color, rgba(250, 204, 21, 0.1));
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        /* Filter tag style */
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: var(--light-gray-color, #222);
+            color: var(--text-color, #e0e0e0);
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color, #333);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .filter-tag:hover { background-color: #444; }
+        .filter-tag .remove-tag {
+            margin-left: 6px;
+            font-size: 1rem; /* Material icon size */
+            color: var(--text-muted-color, #8c8c8c);
+            transition: color 0.2s;
+            line-height: 1;
+        }
+        .filter-tag:hover .remove-tag { color: var(--primary-hover-color, #f40612); }
+
+        /* Slider container style */
+        .slider-container { margin-top: 1rem; }
+        .slider-label { display: block; font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-muted-color, #8c8c8c); }
+        /* noUiSlider styles are in style.css */
+
+        /* Tab transition styles (using classes from style.css) */
+        #movie-grid {
+            /* Transitions managed by classes in style.css */
+        }
+    </style>
+</head>
+<body class="bg-secondary text-white font-sans">
+
+    <header id="main-header" class="py-3 px-4 md:px-6 lg:px-10">
+        <div class="container mx-auto flex justify-between items-center max-w-screen-xl">
+            <a href="index.html" class="text-2xl md:text-3xl font-bold text-primary flex-shrink-0" aria-label="LOGO PHIM - Trang chủ">LOGO PHIM</a>
+
+            <nav class="hidden md:flex flex-grow justify-center space-x-5 lg:space-x-7 items-center" aria-label="Điều hướng chính">
+                <a href="index.html" class="text-gray-300 hover:text-white transition duration-300 font-medium" aria-current="page">Trang Chủ</a>
+                <a href="#filter-controls" id="nav-category" class="text-gray-300 hover:text-white transition duration-300 font-medium">Thể Loại</a>
+                <a href="#" id="nav-latest" class="text-gray-300 hover:text-white transition duration-300 font-medium">Mới Nhất</a>
+                </nav>
+
+            <div class="hidden md:flex items-center space-x-4 flex-shrink-0">
+                <div class="relative">
+                    <label for="search-input-desktop" class="sr-only">Tìm kiếm phim hoặc phim bộ</label>
+                    <input type="text" id="search-input-desktop" placeholder="Tìm kiếm..." class="bg-light-gray text-white px-4 py-1.5 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:bg-gray-700 transition duration-300 w-40 sm:w-48 md:w-56 lg:w-64 text-sm" aria-label="Tìm kiếm" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-desktop" aria-expanded="false">
+                    <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
+                        <i class="fas fa-search text-xs"></i>
+                    </span>
+                    <div id="search-suggestions-desktop" role="listbox" class="search-suggestions search-suggestions-desktop absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm">
+                        <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
+                        </div>
+                </div>
+                <button class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Tài khoản người dùng">
+                    <i class="fas fa-user text-lg"></i>
+                </button>
+            </div>
+
+            <div class="md:hidden flex items-center space-x-2">
+                <button id="search-icon-mobile" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở tìm kiếm" aria-expanded="false" aria-controls="mobile-search-container">
+                    <i class="fas fa-search text-xl"></i>
+                </button>
+                <button id="mobile-menu-button" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu-panel">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-search-container" class="md:hidden hidden mt-3 px-4 pb-3 relative">
+            <label for="search-input-mobile" class="sr-only">Tìm kiếm phim hoặc phim bộ</label>
+            <input type="text" id="search-input-mobile" placeholder="Tìm kiếm phim, phim bộ..." class="bg-light-gray text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary w-full text-sm" aria-label="Tìm kiếm trên di động" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-mobile" aria-expanded="false">
+            <span class="absolute right-7 top-1/2 transform -translate-y-1/2 text-gray-400 -mt-px" aria-hidden="true">
+                <i class="fas fa-search text-xs"></i>
+            </span>
+            <div id="search-suggestions-mobile" role="listbox" class="search-suggestions search-suggestions-mobile absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm di động">
+                 <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
+                 </div>
+        </div>
+    </header>
+
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden hidden"></div>
+    <div id="mobile-menu-panel" class="fixed top-0 right-0 bottom-0 w-64 bg-light-gray p-5 pt-16 shadow-lg z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        <button id="close-mobile-menu-button" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white" aria-label="Đóng menu">
+            <i class="fas fa-times text-2xl"></i>
+        </button>
+        <nav class="flex flex-col space-y-4" aria-label="Điều hướng di động">
+            <a href="index.html" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium" aria-current="page">Trang Chủ</a>
+            <a href="#filter-controls" id="mobile-nav-category" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium">Thể Loại</a>
+            <a href="#" id="mobile-nav-latest" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium">Mới Nhất</a>
+            <hr class="border-gray-600 my-3">
+             <a href="#" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium flex items-center gap-2">
+                 <i class="fas fa-user w-4 text-center"></i> Tài Khoản
+             </a>
+             </nav>
+    </div>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-screen-xl">
+
+        <section id="hero-section" class="relative h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[75vh] flex items-end md:items-center justify-center md:justify-start text-white bg-cover bg-center bg-no-repeat mb-8 md:mb-10 rounded-lg overflow-hidden shadow-xl" style="background-image: url('https://placehold.co/1920x1080/000000/333333?text=Loading+Hero...');" aria-labelledby="hero-title">
+            <div class="hero-overlay absolute inset-0 z-10 bg-gradient-to-t from-secondary via-secondary/70 to-transparent md:bg-gradient-to-r md:from-secondary md:via-secondary/80 md:to-transparent" aria-hidden="true"></div>
+            <div class="hero-content relative z-20 max-w-md sm:max-w-lg lg:max-w-xl px-4 pb-8 md:px-0 md:pl-8 lg:pl-16 md:pb-0 text-center md:text-left">
+                <h1 id="hero-title" class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-shadow-lg">[Tên Phim Nổi Bật]</h1>
+                <p id="hero-description" class="text-sm sm:text-base md:text-lg mb-5 md:mb-6 text-gray-200 line-clamp-3 sm:line-clamp-4 text-shadow-md">[Mô tả ngắn gọn phim nổi bật...]</p>
+                <div class="space-x-3">
+                    <button id="hero-play-button" class="bg-primary hover:bg-red-700 text-white font-semibold py-2 px-4 sm:py-2.5 sm:px-5 rounded-md transition duration-300 text-sm sm:text-base">
+                        <i class="fas fa-play mr-1 md:mr-2" aria-hidden="true"></i> Xem Ngay
+                    </button>
+                    <button id="hero-detail-button" class="bg-gray-600 bg-opacity-70 hover:bg-opacity-90 text-white font-semibold py-2 px-4 sm:py-2.5 sm:px-5 rounded-md transition duration-300 text-sm sm:text-base">
+                        <i class="fas fa-info-circle mr-1 md:mr-2" aria-hidden="true"></i> Chi Tiết
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tabs-section" class="mb-6 border-b border-gray-700">
+            <div id="content-tabs" class="flex space-x-1 overflow-x-auto whitespace-nowrap" role="tablist" aria-label="Chọn loại nội dung">
+                <button id="tab-movies" role="tab" aria-selected="true" aria-controls="movie-grid-section" class="tab-button active px-4 py-2 sm:px-6">
+                    <i class="fas fa-film mr-2" aria-hidden="true"></i> Phim Lẻ
+                </button>
+                <button id="tab-series" role="tab" aria-selected="false" aria-controls="movie-grid-section" class="tab-button px-4 py-2 sm:px-6">
+                    <i class="fas fa-tv mr-2" aria-hidden="true"></i> Phim Bộ
+                </button>
+                </div>
+        </section>
+
+        <section id="filter-controls" aria-labelledby="filter-heading" class="mb-4 p-4 bg-light-gray rounded-lg shadow-md">
+             <div class="flex flex-wrap gap-4 items-start">
+                 <h2 id="filter-heading" class="text-lg sm:text-xl font-semibold text-gray-100 w-full sm:w-auto flex-shrink-0 mb-2 sm:mb-0">Bộ Lọc</h2>
+                 <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                     <div id="genre-filter-container" class="relative">
+                         <label for="genre-filter-button" class="block text-sm font-medium text-gray-300 mb-1">Thể loại</label>
+                         <button id="genre-filter-button" type="button" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 text-left flex justify-between items-center">
+                             <span class="truncate">Chọn thể loại...</span>
+                             <i class="fas fa-chevron-down text-xs text-gray-400 ml-2 flex-shrink-0"></i>
+                         </button>
+                         <div id="genre-dropdown" class="absolute hidden mt-1 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-20 p-2 space-y-1 max-h-60 overflow-y-auto">
+                             </div>
+                     </div>
+
+                     <div>
+                         <label for="sort-filter" class="block text-sm font-medium text-gray-300 mb-1">Sắp xếp theo</label>
+                         <select id="sort-filter" name="sort" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 appearance-none" aria-label="Chọn tiêu chí sắp xếp">
+                             <option selected value="default">Mặc định</option>
+                             <option value="newest">Mới nhất</option>
+                             <option value="rating_desc">Đánh giá cao nhất</option>
+                             <option value="rating_asc">Đánh giá thấp nhất</option>
+                             <option value="title_asc">Tên A-Z</option>
+                             <option value="title_desc">Tên Z-A</option>
+                         </select>
+                     </div>
+
+                     <div id="year-slider-container" class="slider-container lg:col-span-1">
+                        <label class="slider-label">Năm phát hành: <span id="year-slider-values">Tất cả</span></label>
+                        <div id="year-slider" class="noui-slider-target"></div>
+                     </div>
+
+                     <div id="rating-slider-container" class="slider-container lg:col-span-1">
+                         <label class="slider-label">Điểm đánh giá: <span id="rating-slider-values">Tất cả</span></label>
+                         <div id="rating-slider" class="noui-slider-target"></div>
+                     </div>
+                 </div>
+                 <div class="w-full sm:w-auto flex items-end flex-shrink-0 mt-4 sm:mt-0">
+                     <button id="clear-filters-button" title="Xóa tất cả bộ lọc" class="hidden p-2 text-gray-400 hover:text-white bg-gray-700 rounded-lg border border-gray-600 hover:bg-gray-600 transition duration-200 ml-auto sm:ml-2" aria-label="Xóa bộ lọc">
+                         <span class="material-icons-outlined text-lg">close</span>
+                     </button>
+                 </div>
+             </div>
+         </section>
+
+        <div id="filter-tags-container" class="mb-4 flex flex-wrap gap-2">
+            </div>
+
+        <section id="movie-grid-section" role="tabpanel" aria-labelledby="tab-movies">
+            <h2 id="movie-grid-title" class="text-xl sm:text-2xl font-semibold mb-6 text-gray-100">Phim Lẻ</h2>
+            <div id="movie-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5" aria-live="polite">
+                <div class="movie-card-skeleton"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton hidden sm:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton hidden md:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton hidden lg:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton hidden xl:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton hidden sm:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton hidden md:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton hidden lg:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <div class="movie-card-skeleton hidden xl:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
+                <p id="loading-movies" class="text-text-muted col-span-full text-center py-8 hidden">Đang tải...</p>
+                <p id="no-movies-found" class="text-text-muted col-span-full hidden text-center py-8">Không tìm thấy nội dung nào phù hợp.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-text-muted py-8 px-4 sm:px-6 lg:px-8 mt-12" role="contentinfo">
+        <div class="container mx-auto text-center max-w-screen-xl">
+            <nav class="mb-4 flex flex-wrap justify-center gap-x-4 gap-y-2" aria-label="Liên kết phụ">
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Về Chúng Tôi</a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Chính Sách Bảo Mật</a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Liên Hệ</a>
+            </nav>
+            <div class="mb-4 text-xl space-x-5" aria-label="Liên kết mạng xã hội">
+                <a href="#" class="text-gray-400 hover:text-white mx-2" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white mx-2" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white mx-2" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p class="text-sm">© <span id="footer-year">2025</span> Tên Trang Web. Mọi quyền được bảo lưu.</p>
+             <p class="text-xs mt-2 opacity-70">Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Elements ---
+            const header = document.getElementById('main-header');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenuPanel = document.getElementById('mobile-menu-panel');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const closeMobileMenuButton = document.getElementById('close-mobile-menu-button');
+            const searchIconMobile = document.getElementById('search-icon-mobile');
+            const mobileSearchContainer = document.getElementById('mobile-search-container');
+            const searchInputDesktop = document.getElementById('search-input-desktop');
+            const searchSuggestionsDesktop = document.getElementById('search-suggestions-desktop');
+            const searchInputMobile = document.getElementById('search-input-mobile');
+            const searchSuggestionsMobile = document.getElementById('search-suggestions-mobile');
+            const navCategoryLink = document.getElementById('nav-category');
+            const navLatestLink = document.getElementById('nav-latest');
+            const mobileNavCategoryLink = document.getElementById('mobile-nav-category');
+            const mobileNavLatestLink = document.getElementById('mobile-nav-latest');
+            const genreDropdown = document.getElementById('genre-dropdown'); // Needed for closing logic
+            const genreButton = document.getElementById('genre-filter-button'); // Needed for closing logic
+
+            let debounceTimer;
+
+            // --- Debounce Function ---
+            const debounce = (func, wait) => {
+                return (...args) => {
+                    clearTimeout(debounceTimer);
+                    debounceTimer = setTimeout(() => {
+                        func.apply(this, args);
+                    }, wait);
+                };
+            };
+
+            // --- Highlight Search Term ---
+            const highlightTerm = (text, term) => {
+                if (!term) return text;
+                const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(${escapedTerm})`, 'gi');
+                return text.replace(regex, `<span class="search-highlight">$1</span>`);
+            };
+
+            // --- Create Suggestion Item ---
+            const createSuggestionItem = (item, type, searchTerm) => {
+                const detailPageUrl = type === 'series'
+                    ? `pages/filmDetails_phimBo.html?id=${item.id}&type=series`
+                    : `pages/filmDetail.html?id=${item.id}&type=movies`;
+                const altText = `Poster nhỏ của ${type === 'movies' ? 'phim' : 'phim bộ'} ${item.title || 'không có tiêu đề'}`;
+                const typeLabel = type === 'series' ? ' (Bộ)' : '';
+                const posterSrc = item.posterUrl || 'https://placehold.co/40x60/111111/eeeeee?text=N/A';
+                const highlightedTitle = highlightTerm(item.title || 'Không có tiêu đề', searchTerm);
+
+                return `
+                    <a href="${detailPageUrl}" class="suggestion-item" data-item-id="${item.id}" data-item-type="${type}" role="option" aria-label="Xem chi tiết ${item.title || ''}${typeLabel}">
+                        <img src="${posterSrc}" alt="${altText}" loading="lazy" class="w-10 h-15 object-cover rounded border border-border-color" onerror="this.onerror=null; this.src='https://placehold.co/40x60/111111/eeeeee?text=Err'; this.alt='Lỗi tải ảnh nhỏ ${item.title || ''}';">
+                        <div class="suggestion-item-info">
+                            <span class="suggestion-item-title">${highlightedTitle}${typeLabel}</span>
+                            <span class="suggestion-item-year">${item.releaseYear || 'N/A'}</span>
+                        </div>
+                    </a>`;
+            };
+
+            // --- Display Search Suggestions ---
+            const displaySearchSuggestions = (searchTerm, inputElement, suggestionsContainer) => {
+                if (!suggestionsContainer) return;
+                const placeholder = suggestionsContainer.querySelector('.no-suggestions-placeholder');
+
+                if (!searchTerm) {
+                    suggestionsContainer.style.display = 'none';
+                    inputElement.setAttribute('aria-expanded', 'false');
+                    if (placeholder) placeholder.textContent = 'Nhập để tìm kiếm...';
+                    return;
+                }
+
+                if (placeholder) placeholder.textContent = 'Đang tìm...';
+                suggestionsContainer.innerHTML = ''; // Clear previous
+
+                const moviesData = window.allMovies || [];
+                const seriesData = window.allSeries || [];
+
+                const matchedMovies = moviesData.filter(movie => movie.title && movie.title.toLowerCase().includes(searchTerm)).map(item => ({ item, type: 'movies' }));
+                const matchedSeries = seriesData.filter(series => series.title && series.title.toLowerCase().includes(searchTerm)).map(item => ({ item, type: 'series' }));
+
+                const allMatches = [...matchedMovies, ...matchedSeries]
+                    .sort((a, b) => (a.item.title || '').localeCompare(b.item.title || ''))
+                    .slice(0, 7); // Limit results
+
+                if (allMatches.length > 0) {
+                    suggestionsContainer.innerHTML = allMatches.map(({ item, type }) => createSuggestionItem(item, type, searchTerm)).join('');
+                    suggestionsContainer.style.display = 'block';
+                    inputElement.setAttribute('aria-expanded', 'true');
+                } else {
+                    suggestionsContainer.innerHTML = `<div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Không tìm thấy kết quả nào.</div>`;
+                    suggestionsContainer.style.display = 'block';
+                    inputElement.setAttribute('aria-expanded', 'true');
+                }
+            };
+
+            // --- Hide Search Suggestions ---
+            const hideAllSearchSuggestions = () => {
+                if (searchSuggestionsDesktop) {
+                    searchSuggestionsDesktop.style.display = 'none';
+                    if(searchInputDesktop) searchInputDesktop.setAttribute('aria-expanded', 'false');
+                }
+                if (searchSuggestionsMobile) {
+                    searchSuggestionsMobile.style.display = 'none';
+                    if(searchInputMobile) searchInputMobile.setAttribute('aria-expanded', 'false');
+                }
+            };
+            window.hideAllSearchSuggestions = hideAllSearchSuggestions; // Expose globally
+
+            // --- Mobile Menu ---
+            const openMobileMenu = () => {
+                mobileMenuPanel?.classList.remove('translate-x-full');
+                mobileMenuPanel?.classList.add('translate-x-0');
+                mobileMenuOverlay?.classList.remove('hidden');
+                mobileMenuButton?.setAttribute('aria-expanded', 'true');
+                document.body.style.overflow = 'hidden'; // Prevent body scroll
+            };
+            const closeMobileMenu = () => {
+                mobileMenuPanel?.classList.remove('translate-x-0');
+                mobileMenuPanel?.classList.add('translate-x-full');
+                mobileMenuOverlay?.classList.add('hidden');
+                mobileMenuButton?.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = ''; // Restore body scroll
+            };
+            mobileMenuButton?.addEventListener('click', openMobileMenu);
+            closeMobileMenuButton?.addEventListener('click', closeMobileMenu);
+            mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
+
+            // --- Mobile Search Toggle ---
+            searchIconMobile?.addEventListener('click', () => {
+                const isHidden = mobileSearchContainer?.classList.toggle('hidden');
+                searchIconMobile.setAttribute('aria-expanded', String(!isHidden));
+                if (!isHidden) searchInputMobile?.focus();
+                else hideAllSearchSuggestions();
+            });
+
+            // --- Search Input Handling (Debounced) ---
+            const handleSearchInput = (event) => {
+                const inputEl = event.target;
+                const suggestionsEl = inputEl === searchInputDesktop ? searchSuggestionsDesktop : searchSuggestionsMobile;
+                const term = inputEl.value.trim().toLowerCase();
+                debounce(() => displaySearchSuggestions(term, inputEl, suggestionsEl), 300)();
+            };
+            searchInputDesktop?.addEventListener('input', handleSearchInput);
+            searchInputMobile?.addEventListener('input', handleSearchInput);
+
+            // --- Click Outside Search & Genre Dropdown ---
+            document.addEventListener('click', (event) => {
+                const target = event.target;
+                const isInsideDesktopSearch = searchInputDesktop?.contains(target) || searchSuggestionsDesktop?.contains(target);
+                const isInsideMobileSearch = searchInputMobile?.contains(target) || searchSuggestionsMobile?.contains(target) || searchIconMobile?.contains(target);
+                const isInsideGenreFilter = genreDropdown?.contains(target) || genreButton?.contains(target);
+
+                if (!isInsideDesktopSearch && !isInsideMobileSearch) {
+                    hideAllSearchSuggestions();
+                }
+                // Hide genre dropdown if clicked outside
+                if (!isInsideGenreFilter && genreDropdown && !genreDropdown.classList.contains('hidden')) {
+                    genreDropdown.classList.add('hidden');
+                }
+            });
+
+            // --- Search Submit (Enter Key) ---
+            const handleSearchSubmit = (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    const searchTerm = event.target.value.trim();
+                    console.log(`Perform search for: ${searchTerm}`);
+                    // Call the global filtering function from script.js
+                    if (typeof window.filterAndSortContent === 'function') {
+                        window.filterAndSortContent(); // This function now reads the input value itself
+                    } else {
+                        console.warn("Function 'filterAndSortContent' not found globally.");
+                    }
+                    hideAllSearchSuggestions();
+                    event.target.blur(); // Remove focus from input
+                }
+            };
+            searchInputDesktop?.addEventListener('keydown', handleSearchSubmit);
+            searchInputMobile?.addEventListener('keydown', handleSearchSubmit);
+
+            // --- Sticky Header ---
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (header) {
+                    if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                        // Scrolling Down
+                        header.classList.add('header-hidden');
+                        header.classList.remove('header-shadow');
+                    } else {
+                        // Scrolling Up or at Top
+                        header.classList.remove('header-hidden');
+                        // Add shadow only if scrolled down a bit OR if header is not hidden (at top)
+                        header.classList.toggle('header-shadow', scrollTop > 50 || !header.classList.contains('header-hidden'));
+                    }
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+            }, false);
+
+            // --- Footer Year ---
+            const footerYear = document.getElementById('footer-year');
+            if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+            // --- Navigation Link Handlers ---
+            const handleLatestClick = (event) => {
+                event.preventDefault();
+                const sortFilterElement = document.getElementById('sort-filter');
+                if (sortFilterElement) {
+                    sortFilterElement.value = 'newest';
+                    // Trigger the filter update from script.js
+                    if (typeof window.handleFilterChange === 'function') {
+                         window.handleFilterChange(); // Assuming handleFilterChange reads the sort value
+                    } else if (typeof window.filterAndSortContent === 'function') {
+                        // Fallback if handleFilterChange isn't exposed
+                        window.currentFilters.sort = 'newest'; // Manually update state
+                        window.filterAndSortContent();
+                        window.updateUrlParams();
+                        window.updateFilterTags();
+                    } else {
+                        console.warn("Filter update function not found.");
+                    }
+                    const filterSection = document.getElementById('filter-controls');
+                    filterSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                if (mobileMenuPanel && !mobileMenuPanel.classList.contains('translate-x-full')) closeMobileMenu();
+            };
+
+            const handleCategoryClick = (event) => {
+                 const filterSection = document.getElementById('filter-controls');
+                 if (filterSection) {
+                     event.preventDefault(); // Prevent default jump
+                     filterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                     // Optionally focus the genre button after scrolling
+                     // setTimeout(() => genreButton?.focus(), 300); // Delay focus until scroll likely finishes
+                 }
+                if (mobileMenuPanel && !mobileMenuPanel.classList.contains('translate-x-full')) {
+                    closeMobileMenu();
+                }
+            };
+
+            navLatestLink?.addEventListener('click', handleLatestClick);
+            mobileNavLatestLink?.addEventListener('click', handleLatestClick);
+            navCategoryLink?.addEventListener('click', handleCategoryClick);
+            mobileNavCategoryLink?.addEventListener('click', handleCategoryClick);
+
+            console.log("Inline header & search script (responsive) loaded.");
+        });
+    </script>
+    <script src="js/script.js" defer></script>
+</body>
+</html>

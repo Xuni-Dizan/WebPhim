@@ -1,0 +1,187 @@
+[
+  {
+    "id": 1,
+    "title": "Avengers: Hồi kết",
+    "description": "Sau những sự kiện tàn khốc của Avengers: Infinity War (2018), vũ trụ chìm trong đống đổ nát do Thanos gây ra. Với sự giúp đỡ của các đồng minh còn lại, nhóm Avengers phải tập hợp một lần nữa để đảo ngược hành động của Thanos và khôi phục lại trật tự cho vũ trụ, bất kể hậu quả có thể xảy ra.",
+    "posterUrl": "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
+    "releaseYear": 2019,
+    "genre": ["Hành động", "Khoa học viễn tưởng", "Phiêu lưu"],
+    "director": "Anthony Russo, Joe Russo",
+    "cast": ["Robert Downey Jr.", "Chris Evans", "Mark Ruffalo", "Chris Hemsworth", "Scarlett Johansson", "Jeremy Renner", "Don Cheadle", "Paul Rudd", "Brie Larson", "Karen Gillan", "Danai Gurira", "Josh Brolin"],
+    "rating": 8.4,
+    "duration": "181 phút",
+    "videoUrls": {
+      "vietsub": "https://www.youtube.com/watch?v=lj3_o7Nk2Z4",
+      "dubbed": null,
+      "voiceover": "https://drive.google.com/file/d/1mU7h6wFAg43U9GPMIn6q4OlBjXUCKADM/view?usp=drive_link"
+    },
+    "isTrending": false,
+    "isNew": false,
+    "heroImage": "https://image.tmdb.org/t/p/original/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg",
+    "skipIntroSeconds": 120 
+  },
+  {
+    "id": 2,
+    "title": "Bí kíp luyện rồng 2",
+    "description": "Năm năm sau khi Hiccup và Toothless thành công trong việc đoàn kết rồng và người Viking trên đảo Berk, cả hai khám phá ra một hang băng bí mật là nơi trú ngụ của hàng trăm loài rồng hoang dã mới và một Kỵ sĩ Rồng bí ẩn. Hiccup và Toothless thấy mình ở trung tâm của một cuộc chiến để bảo vệ nền hòa bình.",
+    "posterUrl": "https://kritikanstvo.ru/movies/h/howtotrainyourdragon2/posters/howtotrainyourdragon2_178975.jpg",
+    "releaseYear": 2014,
+    "genre": ["Hoạt hình", "Gia đình", "Phiêu lưu", "Giả tưởng", "Hành động"],
+    "director": "Dean DeBlois",
+    "cast": ["Jay Baruchel", "Cate Blanchett", "Gerard Butler", "America Ferrera", "Jonah Hill", "Kristen Wiig", "Djimon Hounsou", "Kit Harington"],
+    "rating": 7.8,
+    "duration": "102 phút",
+    "videoUrls": {
+      "vietsub":
+        "https://drive.google.com/file/d/1---5A93dn-Wb-40-vuk3FjOYH2OHIXcW/view?usp=drive_link",
+      "dubbed": null,
+      "voiceover": [
+        "https://drive.google.com/file/d/2bCdEfGhIjKlMnOpQrStUvWxYzAbCdEfG/preview"
+      ]
+    },
+    "isTrending": false,
+    "isNew": false,
+    "heroImage": "https://kritikanstvo.ru/movies/h/howtotrainyourdragon2/posters/howtotrainyourdragon2_178975.jpg",
+    "skipIntroSeconds": 65 
+  },
+  {
+    "id": 3,
+    "title": "Giữa Các Vì Sao",
+    "description": "Nỗi ám ảnh về sự diệt vong bao trùm Trái Đất khi tài nguyên dần cạn kiệt buộc con người phải tìm kiếm hy vọng mới. Một đoàn thám hiểm dũng cảm đã được cử đi, mang theo sứ mệnh xuyên qua không gian bao la, đặt chân đến những vì sao xa xôi để tìm kiếm miền đất hứa cho nhân loại. Interstellar chính là cuốn biên niên sử ghi chép hành trình phi thường ấy, nơi những nhà thám hiểm không chỉ đối mặt với muôn vàn thử thách mà còn mang theo niềm hy vọng le lói cho sự sống còn của cả loài người.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/b/bc/Interstellar_film_poster.jpg",
+    "releaseYear": 2014,
+    "genre": ["Chính kịch", "Khoa học viễn tưởng", "Phiêu lưu"],
+    "director": "Christopher Nolan",
+    "cast": ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain", "Bill Irwin", "Ellen Burstyn", "Michael Caine"],
+    "rating": 8.7,
+    "duration": "169 phút",
+    "videoUrls": {
+      "vietsub": "https://drive.google.com/file/d/1yIx5x5eoBfbo88sWcJyCQicfoQFJkGhF/view?usp=drive_link",
+      "dubbed": null,
+      "voiceover": null
+    },
+    "isTrending": false,
+    "isNew": false,
+    "heroImage": "https://cdn.bhdw.net/im/interstellar-movie-wallpaper-11787_w635.webp"
+  },
+  {
+    "id": 4,
+    "title": "Chiến Binh Báo Đen",
+    "description": "Wakanda hiện ra như một vương quốc bí ẩn, ẩn mình giữa núi rừng sâu thẳm. Nơi đây sở hữu lượng Vibranium - kim loại quý hiếm và quyền lực nhất trên thế giới. Black Panther, vị vua trẻ tuổi trị vì Wakanda, khoác lên mình bộ giáp chống đạn và sở hữu móng vuốt sắc bén như dao găm. Tuy nhiên, trái tim anh lại ẩn chứa lòng nhân ái và sự trắc ẩn, điều này vô tình trở thành rào cản khi Black Panther đối mặt với những hiểm nguy và âm mưu tranh giành quyền lực sau khi vua cha băng hà.",
+    "posterUrl": "https://tse1.mm.bing.net/th/id/OIP.WdPS3WOJQ4zXXa3uk2Lo2wHaKn?rs=1&pid=ImgDetMain",
+    "releaseYear": 2018,
+    "genre": ["Hành động", "Siêu Anh hùng", "Khoa học viễn tưởng", "Phiêu lưu"],
+    "director": "Ryan Coogler",
+    "cast": ["Chadwick Boseman", "Michael B. Jordan", "Lupita Nyong'o", "Danai Gurira", "Martin Freeman", "Daniel Kaluuya", "Letitia Wright", "Winston Duke", "Angela Bassett", "Forest Whitaker", "Andy Serkis"],
+    "rating": 7.3,
+    "duration": "135 phút",
+    "videoUrls": {
+      "vietsub": "https://drive.google.com/file/d/1_cpSZGNGBxAV78mNogDHPJ9BdRvMOvzk/view?usp=drive_link",
+      "dubbed": null,
+      "voiceover": null
+    },
+    "isTrending": false,
+    "isNew": false,
+    "heroImage": "https://terrigen-cdn-dev.marvel.com/content/prod/1x/blackpanther_lob_mas_hlf_01_0.jpg"
+  },
+  {
+    "id": 5,
+    "title": "Avatar: Dòng Chảy Của Nước",
+    "description": "Jake Sully và Neytiri đã tạo dựng một gia đình và cố gắng giữ gìn sự bình yên cho Pandora. Nhưng khi một mối đe dọa mới xuất hiện từ thế giới con người, họ phải rời khỏi quê hương và khám phá những vùng đất chưa từng thấy.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/6/60/Avatar_The_Way_of_Water_poster.jpg",
+    "releaseYear": 2022,
+    "genre": ["Hành động", "Khoa học viễn tưởng", "Phiêu lưu"],
+    "director": "James Cameron",
+    "cast": ["Sam Worthington", "Zoe Saldana", "Sigourney Weaver", "Stephen Lang", "Kate Winslet"],
+    "rating": 7.8,
+    "duration": "192 phút",
+    "videoUrls": {
+      "vietsub": null,
+      "dubbed": null,
+      "voiceover": null
+    },
+    "isTrending": false,
+    "isNew": false,
+    "heroImage": null
+  },
+  {
+    "id": 6,
+    "title": "Người Nhện: Vũ Trụ Mới",
+    "description": "Miles Morales trở lại trong một cuộc phiêu lưu mới, nơi anh gặp gỡ những Người Nhện khác từ các vũ trụ khác nhau.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/3/3f/Spider-Man_No_Way_Home_poster.jpg",
+    "releaseYear": 2023,
+    "genre": ["Hành động", "Khoa học viễn tưởng", "Phiêu lưu"],
+    "director": "Jon Watts",
+    "cast": ["Tom Holland", "Zendaya", "Benedict Cumberbatch", "Jacob Batalon", "Alfred Molina"],
+    "rating": 8.0,
+    "duration": "140 phút",
+    "videoUrls": {
+      "vietsub": null,
+      "dubbed": null,
+      "voiceover": null
+    },
+    "isTrending": false,
+    "isNew": false,
+    "heroImage": null
+  },
+  {
+    "id": 7,
+    "title": "Kẻ Hủy Diệt",
+    "description": "Một người máy từ tương lai được gửi về quá khứ để tiêu diệt Sarah Connor, mẹ của John Connor, người lãnh đạo cuộc kháng chiến chống lại các cỗ máy.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/5/57/The_Terminator_poster.jpg",
+    "releaseYear": 1984,
+    "genre": ["Hành động", "Khoa học viễn tưởng"],
+    "director": "James Cameron",
+    "cast": ["Arnold Schwarzenegger", "Linda Hamilton", "Michael Biehn"],
+    "rating": 8.0,
+    "duration": "107 phút",
+    "videoUrls": {
+      "vietsub": null,
+      "dubbed": null,
+      "voiceover": null
+    },
+    "isTrending": false,
+    "isNew": false,
+    "heroImage": null
+  },
+  {
+    "id": 8,
+    "title": "Cướp Biển Vùng Caribbean: Lời Nguyền Tàu Ngọc Trai Đen",
+    "description": "Jack Sparrow, một tên cướp biển lừng danh, phải hợp tác với Will Turner để cứu Elizabeth Swann khỏi tay những hồn ma của tàu Ngọc Trai Đen.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/2/23/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl_poster.jpg",
+    "releaseYear": 2003,
+    "genre": ["Hành động", "Phiêu lưu", "Hài"],
+    "director": "Gore Verbinski",
+    "cast": ["Johnny Depp", "Orlando Bloom", "Keira Knightley", "Geoffrey Rush"],
+    "rating": 8.0,
+    "duration": "143 phút",
+    "videoUrls": {
+      "vietsub": null,
+      "dubbed": null,
+      "voiceover": null
+    },
+    "isTrending": false,
+    "isNew": false,
+    "heroImage": null
+  },
+  {
+    "id": 9,
+    "title": "Kẻ Hủy Diệt 2: Ngày Phán Xét",
+    "description": "Một người máy từ tương lai được gửi về quá khứ để bảo vệ John Connor khỏi một kẻ hủy diệt mới.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/3/3f/Terminator_2_Judgment_Day_poster.jpg",
+    "releaseYear": 1991,
+    "genre": ["Hành động", "Khoa học viễn tưởng"],
+    "director": "James Cameron",
+    "cast": ["Arnold Schwarzenegger", "Linda Hamilton", "Edward Furlong"],
+    "rating": 8.5,
+    "duration": "137 phút",
+    "videoUrls": {
+      "vietsub": null,
+      "dubbed": null,
+      "voiceover": null
+    },
+    "isTrending": false,
+    "isNew": false,
+    "heroImage": null
+  }
+]

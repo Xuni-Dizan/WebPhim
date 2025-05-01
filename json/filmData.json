@@ -18,7 +18,7 @@
     "isTrending": false,
     "isNew": false,
     "isHot": true, 
-    "hotnumber": 2, 
+    "hotnumber": 3, 
     "heroImage": "https://image.tmdb.org/t/p/original/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg",
     "skipIntroSeconds": 120,
     "format": ["Live Action", "Feature"]
@@ -109,7 +109,7 @@
     "isTrending": false,
     "isNew": false,
     "isHot": true, 
-    "hotnumber": 3, 
+    "hotnumber": 4, 
     "heroImage": "https://rare-gallery.com/uploads/posts/343163-Tenet-2020-Movie-Poster-John-David-Washington.jpg",
     "skipIntroSeconds": 20,
     "format": ["Live Action", "Feature"]
@@ -133,7 +133,7 @@
     "isTrending": false,
     "isNew": false,
     "isHot": true, 
-    "hotnumber": 1, 
+    "hotnumber": 2, 
     "heroImage": "https://wallpaperaccess.com/full/9631283.jpg",
     "format": ["Live Action", "Feature"]
   },
@@ -155,7 +155,8 @@
     },
     "isTrending": false,
     "isNew": true,
-    "isHot": false,
+    "isHot": true, 
+    "hotnumber": 1,
     "heroImage": "https://images.hdqwalls.com/download/captain-america-brave-new-world-official-poster-vx-3840x2160.jpg",
     "format": ["Live Action", "Feature"]
   },

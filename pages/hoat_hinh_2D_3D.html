@@ -47,36 +47,90 @@
 
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        /* Hero Section Styles */
+        /* --- START: Enhanced Hero Section Styles --- */
+        /* --- BẮT ĐẦU: Kiểu Phần Hero Nâng cao --- */
+        @keyframes slowZoom {
+            0% { background-size: 100%; }
+            100% { background-size: 110%; }
+        }
+        @keyframes fadeInContent {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .hero-2d3d {
-            background-size: cover;
-            background-position: center;
-            min-height: 40vh;
+            background-size: 100%; /* Initial size for zoom */
+            background-position: center center;
+            min-height: 45vh; /* Slightly taller */
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: flex-end; /* Align content to bottom */
+            justify-content: center; /* Center content horizontally */
             text-align: center;
-            border-radius: 0.5rem;
-            margin-bottom: 2rem;
+            border-radius: 0.75rem; /* Slightly larger radius */
+            margin-bottom: 2.5rem; /* Increased margin */
             position: relative;
             color: white;
-            overflow: hidden;
+            overflow: hidden; /* Important for zoom effect */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+            /* Add subtle zoom animation */
+            animation: slowZoom 20s infinite alternate ease-in-out;
         }
         .hero-2d3d::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7));
+            /* Smoother, darker gradient from bottom */
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 15%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.1) 70%, transparent 100%);
             z-index: 1;
+            transition: background 0.5s ease; /* Smooth transition if needed */
         }
         .hero-2d3d .hero-content {
             position: relative;
             z-index: 2;
-            padding: 1rem;
+            padding: 1.5rem 1rem; /* Increased padding */
+            max-width: 800px; /* Limit width for better readability */
+            margin-bottom: 2rem; /* Add some space from the bottom edge */
+            /* Add subtle background for more contrast if needed */
+            /* background-color: rgba(0, 0, 0, 0.2); */
+            /* border-radius: 0.5rem; */
+            /* Add fade-in animation */
+            opacity: 0;
+            animation: fadeInContent 0.8s ease-out 0.3s forwards;
         }
         .hero-2d3d h1 {
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+            /* Enhanced text shadow */
+            text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.8);
+            /* Tailwind classes handle size, weight */
+            margin-bottom: 0.75rem; /* Increased spacing */
         }
+        .hero-2d3d p {
+             text-shadow: 0px 1px 6px rgba(0, 0, 0, 0.7);
+             /* Tailwind classes handle size */
+        }
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .hero-2d3d {
+                min-height: 50vh;
+                align-items: center; /* Center vertically on larger screens */
+                justify-content: flex-start; /* Align left on larger screens */
+                text-align: left;
+            }
+             .hero-2d3d::before {
+                 /* Gradient from left as well on larger screens */
+                 background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0.4) 40%, transparent 80%),
+                             linear-gradient(to right, rgba(0,0,0,0.8) 15%, rgba(0,0,0,0.3) 50%, transparent 80%);
+             }
+            .hero-2d3d .hero-content {
+                 padding: 2rem 3rem; /* More padding */
+                 margin-left: 3rem; /* Indent from left */
+                 margin-bottom: 0; /* Reset bottom margin */
+                 max-width: 50%; /* Limit width more */
+                 /* background-color: transparent; Remove background on larger screens */
+            }
+        }
+        /* --- END: Enhanced Hero Section Styles --- */
+        /* --- KẾT THÚC: Kiểu Phần Hero Nâng cao --- */
+
 
         /* Skeleton Styles */
         .skeleton { background-color: var(--skeleton-base-color, #333); border-radius: 4px; position: relative; overflow: hidden; }
@@ -96,7 +150,7 @@
         /* Badge Styles */
         .format-badge-2d { background-color: var(--badge-2d, #10b981); }
         .format-badge-3d { background-color: var(--badge-3d, #8b5cf6); }
-        .series-badge { background-color: #2563eb; }
+        .series-badge { background-color: #2563eb; } /* Blue for Series */
 
         /* Custom select arrow */
         select.custom-select-arrow {
@@ -109,6 +163,48 @@
             -moz-appearance: none;
             appearance: none;
         }
+
+        /* --- START: Search Suggestions Styles --- */
+        /* --- BẮT ĐẦU: Kiểu Gợi ý Tìm kiếm --- */
+        .search-suggestions {
+            background-color: var(--dark-gray-color, #181818);
+            border: 1px solid var(--border-color, #333);
+            border-radius: 8px;
+            max-height: 350px;
+            overflow-y: auto;
+            z-index: 100; /* High z-index */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            display: none; /* Controlled by JS */
+            scrollbar-width: thin;
+            scrollbar-color: #555 var(--dark-gray-color);
+            position: absolute;
+            width: 100%;
+            left: 0;
+            /* Top position handled by Tailwind classes */
+        }
+        .suggestion-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border-color, #333);
+            transition: background-color 0.2s ease;
+            color: inherit;
+            text-decoration: none;
+        }
+        .suggestion-item:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
+        .suggestion-item:last-child { border-bottom: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
+        .suggestion-item:hover { background-color: var(--light-gray-color, #222); }
+        .suggestion-item img { width: 40px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid #444; }
+        .suggestion-item-info { display: flex; flex-direction: column; overflow: hidden; flex-grow: 1; }
+        .suggestion-item-title { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color, #e0e0e0); }
+        .suggestion-item-year { font-size: 0.75rem; color: var(--text-muted-color, #8c8c8c); }
+        .no-suggestions-placeholder { padding: 20px; text-align: center; color: var(--text-muted-color); font-style: italic; font-size: 0.9rem; }
+        .search-highlight { font-weight: bold; color: var(--highlight-color); background-color: var(--highlight-bg-color); padding: 0 2px; border-radius: 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        /* --- END: Search Suggestions Styles --- */
+        /* --- KẾT THÚC: Kiểu Gợi ý Tìm kiếm --- */
+
     </style>
 </head>
 <body class="bg-secondary text-white font-sans">
@@ -128,21 +224,38 @@
 
             <div class="flex items-center space-x-4 flex-shrink-0">
                  <div class="relative hidden md:block">
-                    <label for="search-input-desktop" class="sr-only">Tìm kiếm phim</label>
-                    <input type="text" id="search-input-desktop" placeholder="Tìm kiếm 2D/3D..." class="bg-light-gray text-white px-4 py-1.5 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:bg-gray-700 transition duration-300 w-40 sm:w-48 md:w-56 text-sm" aria-label="Tìm kiếm phim 2D/3D">
+                    <label for="search-input-desktop-2d3d" class="sr-only">Tìm kiếm phim 2D/3D</label>
+                    <input type="text" id="search-input-desktop-2d3d" placeholder="Tìm kiếm 2D/3D..." class="bg-light-gray text-white px-4 py-1.5 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:bg-gray-700 transition duration-300 w-40 sm:w-48 md:w-56 text-sm" aria-label="Tìm kiếm phim 2D/3D" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-desktop-2d3d" aria-expanded="false">
                     <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
                         <i class="fas fa-search text-xs"></i>
                     </span>
+                    <div id="search-suggestions-desktop-2d3d" role="listbox" class="search-suggestions absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm 2D/3D">
+                        <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
                     </div>
+                 </div>
                 <button class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Tài khoản người dùng">
                     <i class="fas fa-user text-lg"></i>
                 </button>
             </div>
 
-            <div class="md:hidden">
+            <div class="md:hidden flex items-center space-x-2">
+                 <button id="search-icon-mobile-2d3d" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở tìm kiếm" aria-expanded="false" aria-controls="mobile-search-container-2d3d">
+                     <i class="fas fa-search text-xl"></i>
+                 </button>
                  <button id="mobile-menu-button-2d3d" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu-panel-2d3d">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
+            </div>
+        </div>
+
+        <div id="mobile-search-container-2d3d" class="md:hidden hidden mt-3 px-4 pb-3 relative">
+            <label for="search-input-mobile-2d3d" class="sr-only">Tìm kiếm phim 2D/3D</label>
+            <input type="text" id="search-input-mobile-2d3d" placeholder="Tìm kiếm phim 2D/3D..." class="bg-light-gray text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary w-full text-sm" aria-label="Tìm kiếm 2D/3D trên di động" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-mobile-2d3d" aria-expanded="false">
+            <span class="absolute right-7 top-1/2 transform -translate-y-1/2 text-gray-400 -mt-px" aria-hidden="true">
+                <i class="fas fa-search text-xs"></i>
+            </span>
+            <div id="search-suggestions-mobile-2d3d" role="listbox" class="search-suggestions absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm 2D/3D di động">
+                 <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
             </div>
         </div>
     </header>
@@ -169,7 +282,7 @@
         <section id="hero-section-2d3d" class="hero-2d3d" style="background-image: url('https://placehold.co/1920x500/141414/333333?text=Loading+2D/3D+Hero...');" aria-labelledby="hero-title-2d3d">
             <div class="hero-content">
                 <h1 id="hero-title-2d3d" class="text-3xl sm:text-4xl md:text-5xl font-bold mb-3">Đang tải...</h1>
-                <p id="hero-description-2d3d" class="text-lg sm:text-xl text-gray-300">Khám phá thế giới 2D và 3D sống động.</p>
+                <p id="hero-description-2d3d" class="text-base sm:text-lg md:text-xl text-gray-300">Khám phá thế giới 2D và 3D sống động.</p>
             </div>
         </section>
 
@@ -226,23 +339,57 @@
 
     </main>
 
-    <footer class="bg-gray-900 text-text-muted py-8 px-4 sm:px-6 md:px-10 mt-12 border-t border-border-color" role="contentinfo">
-        <div class="container mx-auto text-center max-w-screen-xl">
-             <nav class="mb-4 flex flex-wrap justify-center gap-x-4 gap-y-2" aria-label="Liên kết phụ">
-                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Về Chúng Tôi</a>
-                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Điều Khoản</a>
-                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Bảo Mật</a>
-                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Liên Hệ</a>
-            </nav>
-            <div class="mb-4 text-xl space-x-5" aria-label="Liên kết mạng xã hội">
-                <a href="#" class="text-gray-400 hover:text-white" aria-label="Facebook của chúng tôi"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white" aria-label="Twitter của chúng tôi"><i class="fab fa-twitter" aria-hidden="true"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white" aria-label="Instagram của chúng tôi"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+    <footer class="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8 mt-16 border-t border-gray-700" role="contentinfo">
+        <div class="container mx-auto max-w-screen-xl grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="space-y-4">
+                <a href="index.html" class="inline-block mb-2" aria-label="Trang chủ LOGO PHIM">
+                    <img src="../access/img/logo.png" alt="Logo Trang Web Phim" class="h-10 hover:opacity-80 transition-opacity duration-300">
+                </a>
+                <p class="text-sm pr-4">
+                    Khám phá thế giới điện ảnh với hàng ngàn phim lẻ và phim bộ hấp dẫn. Cập nhật liên tục, chất lượng cao.
+                </p>
             </div>
-            <p class="text-sm">&copy; <span id="footer-year-2d3d">2025</span> Tên Trang Web Của Bạn. Mọi quyền được bảo lưu.</p>
-            <p class="text-xs mt-2 opacity-70">Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn.</p>
+    
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-4">Liên Kết Nhanh</h3>
+                <nav class="space-y-2" aria-label="Liên kết phụ">
+                    <a href="#" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Về Chúng Tôi</a>
+                    <a href="#" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
+                    <a href="#" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Chính Sách Bảo Mật</a>
+                    <a href="#" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Liên Hệ Hỗ Trợ</a>
+                    <a href="hoat_hinh_2D_3D.html" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Phim 2D/3D</a>
+                </nav>
+            </div>
+    
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-4">Theo Dõi Chúng Tôi</h3>
+                <div class="flex space-x-4 mb-4" aria-label="Liên kết mạng xã hội">
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                </div>
+                 <h3 class="text-lg font-semibold text-white mb-2 mt-6">Thông Tin Liên Hệ</h3>
+                 <p class="text-sm">Email: support@yourdomain.com</p>
+                 <p class="text-sm">Hotline: 1900 xxxx</p>
+            </div>
+        </div>
+    
+        <div class="mt-10 pt-8 border-t border-gray-700 text-center">
+            <p class="text-sm">© <span id="footer-year">2025</span> LOGO PHIM. Mọi quyền được bảo lưu.</p>
+            <p class="text-xs mt-2 opacity-70">
+                Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn và học tập.
+            </p>
         </div>
     </footer>
+    
+    <script>
+        // Set current year in footer if the span exists
+        const footerYearSpan = document.getElementById('footer-year');
+        if (footerYearSpan) {
+            footerYearSpan.textContent = new Date().getFullYear();
+        }
+    </script>
 
     <button id="scroll-to-top" class="hidden fixed bottom-5 right-5 bg-primary hover:bg-primary-hover text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-lg transition-opacity duration-300 z-50" aria-label="Cuộn lên đầu trang">
         <i class="fas fa-arrow-up"></i>
@@ -250,12 +397,14 @@
 
     <script>
         // Set current year in footer
+        // Đặt năm hiện tại trong footer
         const footerYear = document.getElementById('footer-year-2d3d');
         if (footerYear) {
             footerYear.textContent = new Date().getFullYear();
         }
 
         // Basic Scroll-to-Top functionality
+        // Chức năng Cuộn lên đầu cơ bản
         const scrollToTopButton = document.getElementById('scroll-to-top');
         if (scrollToTopButton) {
             const handleScroll = () => {
@@ -269,10 +418,11 @@
             };
             window.addEventListener('scroll', handleScroll);
             scrollToTopButton.addEventListener('click', scrollToTop);
-            handleScroll(); // Initial check
+            handleScroll(); // Initial check - Kiểm tra ban đầu
         }
 
         // Mobile Menu Toggle (Specific for this page)
+        // Chuyển đổi Menu Di động (Cụ thể cho trang này)
         const mobileMenuButton2d3d = document.getElementById('mobile-menu-button-2d3d');
         const mobileMenuPanel2d3d = document.getElementById('mobile-menu-panel-2d3d');
         const mobileMenuOverlay2d3d = document.getElementById('mobile-menu-overlay-2d3d');
@@ -297,10 +447,11 @@
         closeMobileMenuButton2d3d?.addEventListener('click', closeMobileMenu2d3d);
         mobileMenuOverlay2d3d?.addEventListener('click', closeMobileMenu2d3d);
 
-
-        // --- START: JavaScript for 2D/3D Page with Filters ---
+        // --- START: JavaScript for 2D/3D Page with Filters & Search Suggestions ---
+        // --- BẮT ĐẦU: JavaScript cho Trang 2D/3D với Bộ lọc & Gợi ý Tìm kiếm ---
         document.addEventListener('DOMContentLoaded', () => {
             // DOM Elements
+            // Các phần tử DOM
             const gridContainer = document.getElementById('grid-container');
             const loadingIndicator = document.getElementById('loading-films');
             const noResultsIndicator = document.getElementById('no-films-found');
@@ -310,18 +461,126 @@
             const dimensionFilter = document.getElementById('dimension-filter');
             const typeFilter = document.getElementById('type-filter-2d3d');
             const sortFilter = document.getElementById('sort-filter-2d3d');
+            const searchInputDesktop = document.getElementById('search-input-desktop-2d3d');
+            const searchInputMobile = document.getElementById('search-input-mobile-2d3d');
+            const searchIconMobile = document.getElementById('search-icon-mobile-2d3d');
+            const mobileSearchContainer = document.getElementById('mobile-search-container-2d3d');
+            const gridTitle = document.getElementById('grid-title-2d3d');
+            const suggestionsDesktop = document.getElementById('search-suggestions-desktop-2d3d'); // Suggestions container
+            const suggestionsMobile = document.getElementById('search-suggestions-mobile-2d3d');   // Suggestions container
 
             // State Variables
-            let allFetchedItems = []; // Store initially fetched 2D/3D items
+            // Biến trạng thái
+            let allFetchedItems = []; // Store initially fetched 2D/3D items - Lưu trữ các mục 2D/3D được tìm nạp ban đầu
             let currentFilters = {
                 dimension: 'all', // 'all', '2D', '3D'
                 type: 'all',      // 'all', 'movies', 'series'
-                sort: 'default'
+                sort: 'default',
+                search: ''        // Added search state - Đã thêm trạng thái tìm kiếm
+            };
+            let searchDebounceTimer; // Timer for search input debounce - Bộ hẹn giờ cho debounce đầu vào tìm kiếm
+
+            /**
+             * Debounce function to limit the rate at which a function can fire.
+             * Hàm debounce để giới hạn tần suất một hàm có thể được gọi.
+             */
+             const debounce = (func, wait) => {
+                 let timeout;
+                 return (...args) => {
+                     clearTimeout(timeout);
+                     timeout = setTimeout(() => {
+                         func.apply(this, args);
+                     }, wait);
+                 };
+             };
+
+            /**
+             * Highlights the search term within a given text.
+             * Tô sáng thuật ngữ tìm kiếm trong một văn bản nhất định.
+             */
+            const highlightTerm = (text, term) => {
+                if (!term || !text) return text || '';
+                const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape regex special chars
+                const regex = new RegExp(`(${escapedTerm})`, 'gi');
+                return text.replace(regex, `<span class="search-highlight">$1</span>`);
+            };
+
+            /**
+             * Creates the HTML string for a single search suggestion item.
+             * Tạo chuỗi HTML cho một mục gợi ý tìm kiếm đơn lẻ.
+             */
+            const createSuggestionItem = (item, type, searchTerm) => {
+                const detailPageUrl = type === 'series'
+                    ? `filmDetails_phimBo.html?id=${item.id}&type=series`
+                    : `filmDetail.html?id=${item.id}&type=movies`;
+                const altText = `Poster nhỏ của ${type === 'movies' ? 'phim' : 'phim bộ'} ${item.title || 'không có tiêu đề'}`;
+                const typeLabel = type === 'series' ? ' (Bộ)' : '';
+                const posterSrc = item.posterUrl || 'https://placehold.co/40x60/111111/eeeeee?text=N/A';
+                const highlightedTitle = highlightTerm(item.title || 'Không có tiêu đề', searchTerm);
+
+                return `
+                    <a href="${detailPageUrl}" class="suggestion-item" data-item-id="${item.id}" data-item-type="${type}" role="option" aria-label="Xem chi tiết ${item.title || ''}${typeLabel}">
+                        <img src="${posterSrc}" alt="${altText}" loading="lazy" class="w-10 h-15 object-cover rounded border border-border-color" onerror="this.onerror=null; this.src='https://placehold.co/40x60/111111/eeeeee?text=Err'; this.alt='Lỗi tải ảnh nhỏ ${item.title || ''}';">
+                        <div class="suggestion-item-info">
+                            <span class="suggestion-item-title">${highlightedTitle}${typeLabel}</span>
+                            <span class="suggestion-item-year">${item.releaseYear || 'N/A'}</span>
+                        </div>
+                    </a>`;
+            };
+
+            /**
+             * Displays search suggestions based on the input term.
+             * Hiển thị gợi ý tìm kiếm dựa trên thuật ngữ nhập vào.
+             */
+            const displaySearchSuggestions = (searchTerm, inputElement, suggestionsContainer) => {
+                if (!suggestionsContainer) return;
+                const placeholder = suggestionsContainer.querySelector('.no-suggestions-placeholder');
+
+                if (!searchTerm) {
+                    suggestionsContainer.style.display = 'none';
+                    inputElement.setAttribute('aria-expanded', 'false');
+                    if (placeholder) placeholder.textContent = 'Nhập để tìm kiếm...';
+                    return;
+                }
+
+                if (placeholder) placeholder.textContent = 'Đang tìm...';
+                suggestionsContainer.innerHTML = ''; // Clear old suggestions - Xóa gợi ý cũ
+
+                // Filter the already 2D/3D filtered items
+                // Lọc các mục đã được lọc 2D/3D
+                const matchedItems = allFetchedItems
+                    .filter(item => item.title && item.title.toLowerCase().includes(searchTerm))
+                    .slice(0, 7); // Limit results - Giới hạn kết quả
+
+                if (matchedItems.length > 0) {
+                    suggestionsContainer.innerHTML = matchedItems.map(item => createSuggestionItem(item, item.itemType, searchTerm)).join('');
+                    suggestionsContainer.style.display = 'block';
+                    inputElement.setAttribute('aria-expanded', 'true');
+                } else {
+                    suggestionsContainer.innerHTML = `<div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Không tìm thấy kết quả nào.</div>`;
+                    suggestionsContainer.style.display = 'block';
+                    inputElement.setAttribute('aria-expanded', 'true');
+                }
+            };
+
+            /**
+             * Hides all search suggestion dropdowns.
+             * Ẩn tất cả các dropdown gợi ý tìm kiếm.
+             */
+            const hideAllSearchSuggestions = () => {
+                if (suggestionsDesktop) {
+                    suggestionsDesktop.style.display = 'none';
+                    if(searchInputDesktop) searchInputDesktop.setAttribute('aria-expanded', 'false');
+                }
+                if (suggestionsMobile) {
+                    suggestionsMobile.style.display = 'none';
+                    if(searchInputMobile) searchInputMobile.setAttribute('aria-expanded', 'false');
+                }
             };
 
             /**
              * Creates the HTML string for a movie or series card with badges.
-             * (Includes badge logic from previous update)
+             * Tạo chuỗi HTML cho thẻ phim hoặc phim bộ với các huy hiệu.
              */
             const createItemCard = (item, type) => {
                 const detailPageUrl = type === 'series'
@@ -336,22 +595,26 @@
                 let formatBadgeClass = '';
                 if (format.includes("3D")) {
                     formatBadgeText = '3D';
-                    formatBadgeClass = 'format-badge-3d';
+                    formatBadgeClass = 'format-badge-3d'; // Use CSS variable class
                 } else if (format.includes("2D")) {
                     formatBadgeText = '2D';
-                    formatBadgeClass = 'format-badge-2d';
+                    formatBadgeClass = 'format-badge-2d'; // Use CSS variable class
                 }
                 if (formatBadgeText) {
                     badgesHTML += `<span class="absolute top-2 left-2 ${formatBadgeClass} text-white text-xs font-semibold px-2 py-1 rounded shadow-md z-10">${formatBadgeText}</span>`;
                 }
 
                 if (type === 'series') {
-                    badgesHTML += `<span class="absolute top-2 right-2 series-badge text-white text-xs font-semibold px-2 py-1 rounded shadow-md z-10">Bộ</span>`;
+                    badgesHTML += `<span class="absolute top-2 right-2 series-badge text-white text-xs font-semibold px-2 py-1 rounded shadow-md z-10">Bộ</span>`; // Use CSS variable class
                 }
 
                 const posterUrl = item.posterUrl || 'https://placehold.co/300x450/111111/eeeeee?text=No+Poster';
                 const titleText = item.title || 'Không có tiêu đề';
                 const yearText = item.releaseYear || 'N/A';
+
+                // Highlight search term in title if search is active
+                // Tô sáng thuật ngữ tìm kiếm trong tiêu đề nếu tìm kiếm đang hoạt động
+                const displayTitle = currentFilters.search ? highlightTerm(titleText, currentFilters.search) : titleText;
 
                 return `
                     <a href="${detailPageUrl}" class="bg-light-gray rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 cursor-pointer group relative block movie-card" data-item-id="${item.id}" data-item-type="${type}" aria-label="Xem chi tiết ${type === 'movies' ? 'phim' : 'phim bộ'} ${titleText}">
@@ -363,7 +626,7 @@
                             </div>
                         </div>
                         <div class="p-3">
-                            <h3 class="font-semibold text-gray-200 text-sm md:text-base truncate" title="${titleText}">${titleText}</h3>
+                            <h3 class="font-semibold text-gray-200 text-sm md:text-base truncate" title="${titleText}">${displayTitle}</h3>
                             <p class="text-xs text-text-muted">${yearText}</p>
                         </div>
                     </a>
@@ -371,95 +634,121 @@
             };
 
             /**
-             * Updates the hero section.
-             * (Same as previous update)
+             * Updates the hero section UI.
+             * Cập nhật giao diện người dùng phần hero.
+             * Now uses the enhanced CSS styles.
+             * Bây giờ sử dụng các kiểu CSS nâng cao.
              */
-            const updateHero = (featuredItem, itemType) => {
-                if (!heroSection || !featuredItem) {
-                    console.warn("Hero section or featured item not available for update.");
-                    if(heroSection) heroSection.style.backgroundImage = `url('https://placehold.co/1920x500/141414/333333?text=No+Featured+Item')`;
-                    if(heroTitle) heroTitle.textContent = 'Không có phim 2D/3D nổi bật';
-                    if(heroDescription) heroDescription.textContent = 'Vui lòng kiểm tra lại sau.';
-                    return;
-                }
-                const heroImageUrl = featuredItem.heroImage || featuredItem.posterUrl || 'https://placehold.co/1920x500/141414/333333?text=Image+Error';
-                heroSection.style.backgroundImage = `url('${heroImageUrl}')`;
-                heroSection.setAttribute('aria-label', `Phim nổi bật: ${featuredItem.title || 'Không có tiêu đề'}`);
-                if (heroTitle) heroTitle.textContent = featuredItem.title || 'Không có tiêu đề';
-                if (heroDescription) heroDescription.textContent = featuredItem.description ? featuredItem.description.substring(0, 150) + '...' : 'Không có mô tả.';
-            };
+             const updateHeroUI = (item) => {
+                 if (!heroSection || !item) {
+                     console.warn("Hero section or item data is missing for UI update.");
+                     heroSection.style.backgroundImage = `url('https://placehold.co/1920x500/141414/333333?text=No+Featured+Item')`;
+                     if (heroTitle) heroTitle.textContent = "Không có phim nổi bật";
+                     if (heroDescription) heroDescription.textContent = "";
+                     return;
+                 }
+
+                 const backgroundImageUrl = item.heroImage || item.posterUrl || 'https://placehold.co/1920x500/141414/333333?text=Image+Error';
+
+                 // Apply new background image
+                 // Áp dụng hình nền mới
+                 heroSection.style.backgroundImage = `url('${backgroundImageUrl}')`;
+                 heroSection.setAttribute('aria-label', `Phim nổi bật: ${item.title || 'Đang tải'}`);
+
+                 // Update text content (animation handled by CSS)
+                 // Cập nhật nội dung văn bản (hoạt ảnh được xử lý bởi CSS)
+                 if (heroTitle) heroTitle.textContent = item.title || 'Đang tải...';
+                 if (heroDescription) {
+                     heroDescription.textContent = item.description ? (item.description.length > 150 ? item.description.substring(0, 150) + '...' : item.description) : 'Đang tải mô tả...';
+                 }
+             };
+
 
             /**
              * Applies filters and sorting to the fetched data and renders the grid.
+             * Áp dụng bộ lọc và sắp xếp cho dữ liệu đã tìm nạp và hiển thị lưới.
              */
             const applyFiltersAndRender = () => {
                 if (!gridContainer) return;
-                if (loadingIndicator) loadingIndicator.classList.remove('hidden'); // Show loading indicator
+                if (loadingIndicator) loadingIndicator.classList.remove('hidden');
                 if (noResultsIndicator) noResultsIndicator.classList.add('hidden');
-                gridContainer.innerHTML = ''; // Clear previous results immediately
+                gridContainer.innerHTML = '';
 
-                // Start with the initially fetched 2D/3D items
                 let itemsToDisplay = [...allFetchedItems];
+                let titlePrefix = "Danh Sách Phim 2D/3D";
+                let filterDescriptions = [];
 
-                // Apply Dimension Filter
+                // Apply Search Filter FIRST
+                // Áp dụng Bộ lọc Tìm kiếm TRƯỚC TIÊN
+                if (currentFilters.search) {
+                    const searchTerm = currentFilters.search.toLowerCase();
+                    itemsToDisplay = itemsToDisplay.filter(item =>
+                        item.title && item.title.toLowerCase().includes(searchTerm)
+                    );
+                    titlePrefix = `Kết quả tìm kiếm cho "${currentFilters.search}"`;
+                }
+
+                // Apply other filters
+                // Áp dụng các bộ lọc khác
                 if (currentFilters.dimension === '2D') {
                     itemsToDisplay = itemsToDisplay.filter(item => Array.isArray(item.format) && item.format.includes('2D') && !item.format.includes('3D'));
+                    if (!currentFilters.search) filterDescriptions.push("Chỉ 2D");
                 } else if (currentFilters.dimension === '3D') {
                     itemsToDisplay = itemsToDisplay.filter(item => Array.isArray(item.format) && item.format.includes('3D'));
+                    if (!currentFilters.search) filterDescriptions.push("Chỉ 3D");
                 }
-                // 'all' keeps both
 
-                // Apply Type Filter
                 if (currentFilters.type === 'movies') {
                     itemsToDisplay = itemsToDisplay.filter(item => item.itemType === 'movies');
+                    if (!currentFilters.search) filterDescriptions.push("Phim lẻ");
                 } else if (currentFilters.type === 'series') {
                     itemsToDisplay = itemsToDisplay.filter(item => item.itemType === 'series');
+                    if (!currentFilters.search) filterDescriptions.push("Phim bộ");
                 }
-                // 'all' keeps both
 
                 // Apply Sorting
+                // Áp dụng Sắp xếp
                 switch (currentFilters.sort) {
-                    case 'newest':
-                        itemsToDisplay.sort((a, b) => (b.releaseYear || 0) - (a.releaseYear || 0));
-                        break;
-                    case 'rating_desc':
-                        itemsToDisplay.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-                        break;
-                    case 'rating_asc':
-                        itemsToDisplay.sort((a, b) => (a.rating || 0) - (b.rating || 0));
-                        break;
-                    case 'title_asc':
-                        itemsToDisplay.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
-                        break;
-                    case 'title_desc':
-                        itemsToDisplay.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
-                        break;
-                    // Default: No additional sort needed
+                    case 'newest': itemsToDisplay.sort((a, b) => (b.releaseYear || 0) - (a.releaseYear || 0)); break;
+                    case 'rating_desc': itemsToDisplay.sort((a, b) => (b.rating || 0) - (a.rating || 0)); break;
+                    case 'rating_asc': itemsToDisplay.sort((a, b) => (a.rating || 0) - (b.rating || 0)); break;
+                    case 'title_asc': itemsToDisplay.sort((a, b) => (a.title || '').localeCompare(b.title || '')); break;
+                    case 'title_desc': itemsToDisplay.sort((a, b) => (b.title || '').localeCompare(a.title || '')); break;
                 }
 
-                // Render the filtered and sorted list
-                if (loadingIndicator) loadingIndicator.classList.add('hidden'); // Hide loading indicator
+                // Update Grid Title
+                // Cập nhật Tiêu đề Lưới
+                if (gridTitle) {
+                    gridTitle.textContent = filterDescriptions.length > 0 ? `${titlePrefix} (${filterDescriptions.join(', ')})` : titlePrefix;
+                }
 
+                // Render
+                // Hiển thị
+                if (loadingIndicator) loadingIndicator.classList.add('hidden');
                 if (itemsToDisplay.length > 0) {
+                    // Pass the search term to highlight in the cards
+                    // Truyền thuật ngữ tìm kiếm để tô sáng trong các thẻ
                     gridContainer.innerHTML = itemsToDisplay.map(item => createItemCard(item, item.itemType)).join('');
                 } else {
-                    if (noResultsIndicator) noResultsIndicator.classList.remove('hidden');
-                    gridContainer.innerHTML = ''; // Clear grid if no results
+                    if (noResultsIndicator) {
+                        noResultsIndicator.textContent = currentFilters.search
+                            ? `Không tìm thấy kết quả nào cho "${currentFilters.search}".`
+                            : "Không tìm thấy phim nào phù hợp với bộ lọc.";
+                        noResultsIndicator.classList.remove('hidden');
+                    }
+                    gridContainer.innerHTML = '';
                 }
             };
 
             /**
              * Fetches initial data, filters for 2D/3D, updates hero, and renders the grid.
+             * Tìm nạp dữ liệu ban đầu, lọc 2D/3D, cập nhật hero và hiển thị lưới.
              */
             const loadAndDisplayFilms = async () => {
                 if (loadingIndicator) loadingIndicator.classList.remove('hidden');
                 if (noResultsIndicator) noResultsIndicator.classList.add('hidden');
-                // Show skeleton cards while fetching
                 const skeletons = gridContainer?.querySelectorAll('.movie-card-skeleton');
-                if (!skeletons || skeletons.length === 0) {
-                    // Add skeleton logic if needed (assuming it's present in HTML initially)
-                }
-
+                // Show skeleton cards - Hiển thị thẻ skeleton
 
                 try {
                     const [moviesResponse, seriesResponse] = await Promise.all([
@@ -467,9 +756,7 @@
                         fetch('../json/filmData_phimBo.json').catch(e => { console.error("Fetch series failed:", e); return { ok: false }; })
                     ]);
 
-                    if (!moviesResponse.ok && !seriesResponse.ok) {
-                        throw new Error('Lỗi khi tải cả dữ liệu phim lẻ và phim bộ.');
-                    }
+                    if (!moviesResponse.ok && !seriesResponse.ok) throw new Error('Lỗi khi tải cả dữ liệu phim lẻ và phim bộ.');
 
                     const moviesData = moviesResponse.ok ? await moviesResponse.json() : [];
                     const seriesData = seriesResponse.ok ? await seriesResponse.json() : [];
@@ -479,40 +766,70 @@
                         ...seriesData.map(item => ({ ...item, itemType: 'series' }))
                     ];
 
-                    // Initial filter for 2D/3D items only
-                    allFetchedItems = allItems.filter(item =>
-                        Array.isArray(item.format) && (item.format.includes('2D') || item.format.includes('3D'))
-                    );
+                    allFetchedItems = allItems.filter(item => Array.isArray(item.format) && (item.format.includes('2D') || item.format.includes('3D')));
 
-                    // Update Hero Section with the first available 2D/3D item
+                    // Update Hero using the new function
+                    // Cập nhật Hero bằng hàm mới
                     if (allFetchedItems.length > 0) {
-                        updateHero(allFetchedItems[0], allFetchedItems[0].itemType);
+                        updateHeroUI(allFetchedItems[0]); // Use the enhanced UI update function
                     } else {
-                        updateHero(null, null);
-                        console.warn("Không tìm thấy phim hoặc phim bộ nào có định dạng '2D' hoặc '3D' trong dữ liệu JSON.");
+                         updateHeroUI(null); // Handle case with no items
                     }
 
-                    // Remove skeleton cards before initial render
+
                     const initialSkeletons = gridContainer?.querySelectorAll('.movie-card-skeleton');
                     initialSkeletons?.forEach(skeleton => skeleton.remove());
 
-                    // Initial render with default filters
-                    applyFiltersAndRender();
+                    applyFiltersAndRender(); // Initial render
 
-                    // Add event listeners for the new filters
-                    dimensionFilter?.addEventListener('change', (e) => {
-                        currentFilters.dimension = e.target.value;
-                        applyFiltersAndRender();
-                    });
-                    typeFilter?.addEventListener('change', (e) => {
-                        currentFilters.type = e.target.value;
-                        applyFiltersAndRender();
-                    });
-                    sortFilter?.addEventListener('change', (e) => {
-                        currentFilters.sort = e.target.value;
-                        applyFiltersAndRender();
+                    // Add event listeners
+                    // Thêm trình lắng nghe sự kiện
+                    dimensionFilter?.addEventListener('change', (e) => { currentFilters.dimension = e.target.value; applyFiltersAndRender(); });
+                    typeFilter?.addEventListener('change', (e) => { currentFilters.type = e.target.value; applyFiltersAndRender(); });
+                    sortFilter?.addEventListener('change', (e) => { currentFilters.sort = e.target.value; applyFiltersAndRender(); });
+
+                    // --- SEARCH EVENT LISTENERS & SUGGESTIONS ---
+                    // --- TRÌNH LẮNG NGHE SỰ KIỆN TÌM KIẾM & GỢI Ý ---
+                    const handleSearchInput = (event) => {
+                         const searchTerm = event.target.value.trim().toLowerCase();
+                         const inputElement = event.target;
+                         const suggestionsContainer = inputElement === searchInputDesktop ? suggestionsDesktop : suggestionsMobile;
+
+                         // Debounce filtering the main grid
+                         // Debounce lọc lưới chính
+                         debounce(() => {
+                             currentFilters.search = searchTerm;
+                             applyFiltersAndRender();
+                         }, 300)();
+
+                         // Show/hide suggestions immediately (or with slight debounce)
+                         // Hiển thị/ẩn gợi ý ngay lập tức (hoặc với debounce nhẹ)
+                         debounce(() => displaySearchSuggestions(searchTerm, inputElement, suggestionsContainer), 150)();
+                    };
+
+                    searchInputDesktop?.addEventListener('input', handleSearchInput);
+                    searchInputMobile?.addEventListener('input', handleSearchInput);
+
+                    // Hide suggestions on click outside
+                    // Ẩn gợi ý khi nhấp ra ngoài
+                    document.addEventListener('click', (event) => {
+                        const target = event.target;
+                        const isInsideDesktopSearch = searchInputDesktop?.contains(target) || suggestionsDesktop?.contains(target);
+                        const isInsideMobileSearch = searchInputMobile?.contains(target) || suggestionsMobile?.contains(target) || searchIconMobile?.contains(target);
+
+                        if (!isInsideDesktopSearch && !isInsideMobileSearch) {
+                            hideAllSearchSuggestions();
+                        }
                     });
 
+                    // Mobile Search Toggle
+                    // Chuyển đổi Tìm kiếm Di động
+                    searchIconMobile?.addEventListener('click', () => {
+                         const isHidden = mobileSearchContainer?.classList.toggle('hidden');
+                         searchIconMobile.setAttribute('aria-expanded', String(!isHidden));
+                         if (!isHidden) searchInputMobile?.focus();
+                         else hideAllSearchSuggestions(); // Hide suggestions when closing mobile search
+                    });
 
                 } catch (error) {
                     console.error('Lỗi tải và hiển thị phim 2D/3D:', error);
@@ -523,16 +840,16 @@
                         noResultsIndicator.classList.remove('hidden');
                     }
                     if (gridContainer) gridContainer.innerHTML = '';
-                    updateHero(null, null);
+                    updateHeroUI(null); // Update hero for error state
                 } finally {
                     if (loadingIndicator) loadingIndicator.classList.add('hidden');
                 }
             };
 
-            // Load the films when the page is ready
             loadAndDisplayFilms();
         });
-        // --- END: JavaScript for 2D/3D Page with Filters ---
+        // --- END: JavaScript for 2D/3D Page with Filters & Search Suggestions ---
+        // --- KẾT THÚC: JavaScript cho Trang 2D/3D với Bộ lọc & Gợi ý Tìm kiếm ---
 
     </script>
     </body>

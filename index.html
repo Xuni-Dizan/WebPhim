@@ -349,23 +349,57 @@
 
     </main>
 
-    <footer class="bg-gray-900 text-text-muted py-8 px-4 sm:px-6 lg:px-8 mt-12" role="contentinfo">
-        <div class="container mx-auto text-center max-w-screen-xl">
-            <nav class="mb-4 flex flex-wrap justify-center gap-x-4 gap-y-2" aria-label="Liên kết phụ">
-                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Về Chúng Tôi</a>
-                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
-                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Chính Sách Bảo Mật</a>
-                <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-sm">Liên Hệ</a>
-            </nav>
-            <div class="mb-4 text-xl space-x-5" aria-label="Liên kết mạng xã hội">
-                <a href="#" class="text-gray-400 hover:text-white mx-2" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white mx-2" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="text-gray-400 hover:text-white mx-2" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+    <footer class="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8 mt-16 border-t border-gray-700" role="contentinfo">
+        <div class="container mx-auto max-w-screen-xl grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="space-y-4">
+                <a href="index.html" class="inline-block mb-2" aria-label="Trang chủ LOGO PHIM">
+                    <img src="access/img/logo.png" alt="Logo Trang Web Phim" class="h-10 hover:opacity-80 transition-opacity duration-300">
+                </a>
+                <p class="text-sm pr-4">
+                    Khám phá thế giới điện ảnh với hàng ngàn phim lẻ và phim bộ hấp dẫn. Cập nhật liên tục, chất lượng cao.
+                </p>
             </div>
-            <p class="text-sm">© <span id="footer-year">2025</span> Tên Trang Web. Mọi quyền được bảo lưu.</p>
-            <p class="text-xs mt-2 opacity-70">Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn.</p>
+    
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-4">Liên Kết Nhanh</h3>
+                <nav class="space-y-2" aria-label="Liên kết phụ">
+                    <a href="#" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Về Chúng Tôi</a>
+                    <a href="#" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
+                    <a href="#" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Chính Sách Bảo Mật</a>
+                    <a href="#" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Liên Hệ Hỗ Trợ</a>
+                    <a href="pages/hoat_hinh_2D_3D.html" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Phim 2D/3D</a>
+                </nav>
+            </div>
+    
+            <div>
+                <h3 class="text-lg font-semibold text-white mb-4">Theo Dõi Chúng Tôi</h3>
+                <div class="flex space-x-4 mb-4" aria-label="Liên kết mạng xã hội">
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                </div>
+                 <h3 class="text-lg font-semibold text-white mb-2 mt-6">Thông Tin Liên Hệ</h3>
+                 <p class="text-sm">Email: support@yourdomain.com</p>
+                 <p class="text-sm">Hotline: 1900 xxxx</p>
+            </div>
+        </div>
+    
+        <div class="mt-10 pt-8 border-t border-gray-700 text-center">
+            <p class="text-sm">© <span id="footer-year">2025</span> LOGO PHIM. Mọi quyền được bảo lưu.</p>
+            <p class="text-xs mt-2 opacity-70">
+                Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn và học tập.
+            </p>
         </div>
     </footer>
+    
+    <script>
+        // Set current year in footer if the span exists
+        const footerYearSpan = document.getElementById('footer-year');
+        if (footerYearSpan) {
+            footerYearSpan.textContent = new Date().getFullYear();
+        }
+    </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>

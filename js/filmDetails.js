@@ -1,5 +1,6 @@
 // filmDetails.js - Handles MOVIE Details Page Logic ONLY
-// Enhanced with YouTube API for end-of-video handling, Skeleton, Lazy Loading, Skip Intro Option
+// Enhanced with YouTube API, Skip Intro Option, Show Poster First & Remember Version Preference
+// v1.2: Improved YouTube API error message for code 5 and added more detailed logging.
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements (Movie Specific) ---
@@ -38,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const skipIntroButton = document.getElementById('skip-intro-button');
 
     // --- Meta Tag Elements ---
-    // (Keep meta tag elements as before)
     const pageTitleElement = document.querySelector('title');
     const metaDescriptionTag = document.querySelector('meta[name="description"]');
     const metaKeywordsTag = document.querySelector('meta[name="keywords"]');
@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let allMoviesData = [];
     let allSeriesData = [];
     let currentMovieData = null;
-    let currentActiveVersion = null;
-    let currentVideoUrl = null; // URL of the currently selected version
+    let currentActiveVersion = null; // Key of the active video version (e.g., 'vietsub')
+    let currentVideoUrl = null; // URL of the video *ready* to be played
     let observer;
     let youtubePlayer = null; // Stores the YT.Player instance
     let ytApiReady = false; // Flag to track if YT API is loaded
@@ -89,25 +89,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    /**
+     * Extracts the YouTube video ID from various URL formats.
+     * Trích xuất ID video YouTube từ các định dạng URL khác nhau.
+     * @param {string} url - The URL to parse. URL cần phân tích.
+     * @returns {string|null} The 11-character YouTube video ID or null if not found/invalid. ID video YouTube 11 ký tự hoặc null nếu không tìm thấy/không hợp lệ.
+     */
     const getYouTubeVideoId = (url) => {
-        if (!url || typeof url !== 'string') return null;
+        if (!url || typeof url !== 'string') {
+            console.log("getYouTubeVideoId: URL không hợp lệ hoặc không phải chuỗi:", url);
+            return null;
+        }
         let videoId = null;
         try {
             const patterns = [
-                /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([\w-]{11})(?:\S+)?/,
-                /(?:https?:\/\/)?googleusercontent\.com\/youtube\.com\/([\w-]+)(?:\?.*)?$/,
+                /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([\w-]{11})(?:\S+)?/, // Standard YouTube URLs
+                /(?:https?:\/\/)?googleusercontent\.com\/youtube\.com\/([\w-]+)(?:\?.*)?$/, // Google User Content URLs
             ];
             for (const pattern of patterns) {
                 const match = url.match(pattern);
+                // Ensure the extracted ID is exactly 11 characters long and contains valid characters
+                // Đảm bảo ID được trích xuất dài đúng 11 ký tự và chứa các ký tự hợp lệ
                 if (match && match[1] && /^[\w-]{11}$/.test(match[1])) {
                     videoId = match[1];
-                    if (url.includes('https://www.youtube.com/iframe_api') || url.includes('https://youtu.be/C3S2vietsub8')) { // Example URLs
-                        break;
-                    }
+                    console.log(`getYouTubeVideoId: Đã tìm thấy ID hợp lệ '${videoId}' từ URL: ${url}`);
+                    break; // Found a valid ID
                 }
             }
+            if (!videoId) {
+                console.log(`getYouTubeVideoId: Không tìm thấy ID YouTube hợp lệ trong URL: ${url}`);
+            }
         } catch (e) { console.error("Lỗi phân tích URL YouTube:", e, url); }
-        return videoId;
+        return videoId; // Returns null if no valid 11-char ID is found
     };
 
     const getGoogleDriveEmbedUrl = (url) => {
@@ -117,12 +130,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const match = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/);
             if (match && match[1]) {
                 embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+                console.log(`getGoogleDriveEmbedUrl: Đã tạo URL nhúng: ${embedUrl}`);
+            } else {
+                 console.log(`getGoogleDriveEmbedUrl: Không tìm thấy ID Google Drive trong URL: ${url}`);
             }
         } catch (e) { console.error("Lỗi phân tích URL Google Drive:", e, url); }
         if (embedUrl) console.warn("Nhúng Google Drive có thể yêu cầu quyền chia sẻ cụ thể.");
         return embedUrl;
     };
 
+    /**
+     * Sets the poster image and ensures the player is in the 'poster' state.
+     * Đặt ảnh poster và đảm bảo trình phát ở trạng thái 'poster'.
+     */
     const setPlayerPoster = () => {
         const playerPosterUrl = currentMovieData?.heroImage
                                || currentMovieData?.posterUrl
@@ -130,13 +150,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (videoPosterImage) {
             videoPosterImage.src = playerPosterUrl;
             videoPosterImage.alt = `Poster xem phim ${currentMovieData?.title || 'không có tiêu đề'}`;
+            console.log("setPlayerPoster: Đã đặt ảnh poster trình phát:", playerPosterUrl);
         } else {
-            console.warn("Không tìm thấy phần tử ảnh poster video.");
+            console.warn("setPlayerPoster: Không tìm thấy phần tử ảnh poster video.");
         }
         // Ensure poster overlay is visible when setting poster
         // Đảm bảo lớp phủ poster hiển thị khi đặt poster
         if (videoPlayerContainer) {
             videoPlayerContainer.classList.remove('playing');
+            console.log("setPlayerPoster: Đã xóa lớp 'playing' khỏi video container.");
+        }
+        // Destroy any existing player if resetting to poster
+        // Hủy mọi trình phát hiện có nếu đặt lại về poster
+        if (youtubePlayer) {
+             try {
+                 youtubePlayer.destroy();
+                 console.log("setPlayerPoster: Đã hủy trình phát YouTube hiện có.");
+             } catch (e) {
+                 console.error("setPlayerPoster: Lỗi khi hủy trình phát YouTube:", e);
+             }
+             youtubePlayer = null;
+        }
+        if (videoIframePlaceholder) {
+             videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; // Ensure div exists but is empty
+             videoIframePlaceholder.classList.remove('active'); // Hide placeholder area
+             console.log("setPlayerPoster: Đã đặt lại placeholder iframe.");
         }
     };
 
@@ -148,20 +186,17 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function loadYouTubeApiScript() {
         if (window.YT && window.YT.Player) {
-            // API already loaded
-            // API đã được tải
             ytApiReady = true;
             console.log("YouTube API đã sẵn sàng (đã tải trước đó).");
             return;
         }
         if (document.getElementById('youtube-api-script')) {
-            // Script tag already added, waiting for it to load
-            // Thẻ script đã được thêm, đang chờ tải
+            console.log("Script YouTube API đang được tải.");
             return;
         }
         const tag = document.createElement('script');
         tag.id = 'youtube-api-script';
-        tag.src = "https://www.youtube.com/iframe_api";
+        tag.src = "https://www.youtube.com/iframe_api"; // Use official API URL
         document.body.appendChild(tag);
         console.log("Đang tải script YouTube API...");
     }
@@ -172,11 +207,15 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     window.onYouTubeIframeAPIReady = function() {
         ytApiReady = true;
-        console.log("YouTube API đã sẵn sàng.");
-        // If a video was intended to play before API was ready, try playing it now
-        // Nếu một video dự định phát trước khi API sẵn sàng, hãy thử phát nó ngay bây giờ
-        // (This might need more complex state management depending on exact flow)
-        // (Điều này có thể cần quản lý trạng thái phức tạp hơn tùy thuộc vào luồng chính xác)
+        console.log("YouTube API đã sẵn sàng (onYouTubeIframeAPIReady được gọi).");
+        // Attempt to play if a video was waiting for the API
+        // Thử phát nếu có video đang chờ API
+        if (window.pendingYouTubeLoad) {
+             console.log("Phát video đang chờ sau khi API sẵn sàng.");
+             const { videoId, startSeconds } = window.pendingYouTubeLoad;
+             loadYouTubePlayer(videoId, startSeconds);
+             delete window.pendingYouTubeLoad;
+        }
     };
 
     /**
@@ -185,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {object} event - The event object from the API. Đối tượng sự kiện từ API.
      */
     function onPlayerReady(event) {
-        console.log("Trình phát YouTube đã sẵn sàng.");
+        console.log("Trình phát YouTube đã sẵn sàng (onPlayerReady).");
         event.target.playVideo(); // Start playing
     }
 
@@ -203,30 +242,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if (videoPlayerContainer) {
                 videoPlayerContainer.classList.remove('playing'); // Show poster overlay
             }
-             // Destroy the player to prevent related videos and clean up
-             // Hủy trình phát để ngăn video liên quan và dọn dẹp
             if (youtubePlayer) {
                 try {
                     youtubePlayer.destroy(); // Destroy the player instance
+                    console.log("Đã hủy trình phát YouTube sau khi kết thúc.");
                 } catch (e) {
-                    console.error("Lỗi khi hủy trình phát YouTube:", e);
+                    console.error("Lỗi khi hủy trình phát YouTube sau khi kết thúc:", e);
                 }
                 youtubePlayer = null; // Clear the reference
             }
-            // Clear the div where the player was
-            // Xóa div chứa trình phát
             const playerDiv = document.getElementById(youtubePlayerDivId);
             if (playerDiv) {
                 playerDiv.innerHTML = ''; // Remove the iframe content
             }
-             // Optionally, change the play button icon to replay, or just rely on the poster click
-             // Tùy chọn, thay đổi biểu tượng nút phát thành xem lại, hoặc chỉ dựa vào việc nhấp vào poster
-            // Example: if(videoPlayButton) videoPlayButton.querySelector('i').className = 'fas fa-redo';
+            if (videoIframePlaceholder) {
+                 videoIframePlaceholder.classList.remove('active'); // Hide placeholder area
+            }
         } else if (event.data == YT.PlayerState.PLAYING) {
-             // Ensure poster is hidden when playing starts (useful if autoplay fails initially)
-             // Đảm bảo poster bị ẩn khi bắt đầu phát (hữu ích nếu tự động phát ban đầu không thành công)
+             // Ensure poster is hidden when playing starts
+             // Đảm bảo poster bị ẩn khi bắt đầu phát
              if (videoPlayerContainer && !videoPlayerContainer.classList.contains('playing')) {
                  videoPlayerContainer.classList.add('playing');
+                 console.log("Đã thêm lớp 'playing' vào video container.");
              }
         }
     }
@@ -238,91 +275,110 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {number} [startSeconds=0] - Time in seconds to start the video. Thời gian tính bằng giây để bắt đầu video.
      */
     function loadYouTubePlayer(videoId, startSeconds = 0) {
+        // *** NEW: Validate videoId format before proceeding ***
+        // *** MỚI: Xác thực định dạng videoId trước khi tiếp tục ***
+        if (!videoId || typeof videoId !== 'string' || !/^[\w-]{11}$/.test(videoId)) {
+            console.error(`loadYouTubePlayer: ID video YouTube không hợp lệ: "${videoId}". Phải là chuỗi 11 ký tự.`);
+            showVideoMessage(`<i class="fas fa-exclamation-circle mr-2"></i> ID video YouTube không hợp lệ được cung cấp. Video này không thể phát.`, true);
+            if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing'); // Show poster
+            if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active'); // Hide iframe area
+            // Destroy any potentially broken player instance
+            // Hủy mọi phiên bản trình phát có thể bị hỏng
+            if (youtubePlayer) {
+                try { youtubePlayer.destroy(); } catch(e){}
+                youtubePlayer = null;
+            }
+            return; // Stop execution for this invalid ID
+        }
+
         if (!ytApiReady) {
-            console.warn("API YouTube chưa sẵn sàng, đang thử tải lại...");
-            loadYouTubeApiScript(); // Try loading API if not ready
-            // Optionally, queue the playback request or show a message
-            // Tùy chọn, đưa yêu cầu phát lại vào hàng đợi hoặc hiển thị thông báo
+            console.warn("loadYouTubePlayer: API YouTube chưa sẵn sàng, đang thử tải lại và đặt video vào hàng chờ...");
+            loadYouTubeApiScript();
             showVideoMessage("Đang chuẩn bị trình phát YouTube...", false, true);
-             // Try again after a short delay
-             setTimeout(() => loadYouTubePlayer(videoId, startSeconds), 1000);
+             // Store the request to be executed when API is ready
+             // Lưu yêu cầu để thực thi khi API sẵn sàng
+             window.pendingYouTubeLoad = { videoId, startSeconds };
             return;
         }
 
-        hideVideoMessage(); // Hide any previous messages
-        if (videoIframePlaceholder) videoIframePlaceholder.classList.add('active'); // Make sure placeholder area is visible
+        hideVideoMessage();
+        if (videoIframePlaceholder) videoIframePlaceholder.classList.add('active');
 
-        // Destroy existing player if it exists
-        // Hủy trình phát hiện có nếu nó tồn tại
         if (youtubePlayer) {
             try {
                  youtubePlayer.destroy();
                  youtubePlayer = null;
-                 console.log("Đã hủy trình phát YouTube cũ.");
+                 console.log("loadYouTubePlayer: Đã hủy trình phát YouTube cũ.");
             } catch (e) {
-                 console.error("Lỗi khi hủy trình phát YouTube cũ:", e);
+                 console.error("loadYouTubePlayer: Lỗi khi hủy trình phát YouTube cũ:", e);
             }
         }
-         // Ensure the target div exists
-         // Đảm bảo div mục tiêu tồn tại
-         if (!document.getElementById(youtubePlayerDivId)) {
-             console.error(`Không tìm thấy div trình phát YouTube với ID: ${youtubePlayerDivId}`);
-             // Attempt to recreate the div if missing
-             // Cố gắng tạo lại div nếu thiếu
+         const playerDivTarget = document.getElementById(youtubePlayerDivId);
+         if (!playerDivTarget) {
+             console.error(`loadYouTubePlayer: Không tìm thấy div trình phát YouTube với ID: ${youtubePlayerDivId}`);
              if (videoIframePlaceholder) {
                  videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`;
-                 console.log(`Đã tạo lại div #${youtubePlayerDivId}.`);
+                 console.log(`loadYouTubePlayer: Đã tạo lại div #${youtubePlayerDivId}.`);
              } else {
                  showVideoMessage("Lỗi: Không thể tạo vùng chứa trình phát.", true);
                  return;
              }
          } else {
-             // Clear the div content before creating a new player
-             // Xóa nội dung div trước khi tạo trình phát mới
-             document.getElementById(youtubePlayerDivId).innerHTML = '';
+             playerDivTarget.innerHTML = ''; // Clear any previous content
          }
 
 
-        console.log(`Đang tạo trình phát YouTube mới cho video ID: ${videoId}, bắt đầu từ: ${startSeconds}s`);
+        console.log(`loadYouTubePlayer: Đang tạo trình phát YouTube mới cho video ID: ${videoId}, bắt đầu từ: ${startSeconds}s`);
         try {
             youtubePlayer = new YT.Player(youtubePlayerDivId, {
                 height: '100%',
                 width: '100%',
                 videoId: videoId,
                 playerVars: {
-                    'playsinline': 1, // Important for mobile playback
-                    'autoplay': 1,    // Attempt autoplay
-                    'rel': 0,         // Disable related videos at end (though ENDED event is better)
+                    'playsinline': 1,
+                    'autoplay': 1,
+                    'rel': 0,
                     'modestbranding': 1,
                     'iv_load_policy': 3,
-                    'hl': 'vi',       // Language
-                    'cc_load_policy': 1, // Show captions if available
-                    'start': startSeconds // Start time
+                    'hl': 'vi', // Set language to Vietnamese
+                    'cc_load_policy': 1, // Attempt to show captions
+                    'start': startSeconds
                 },
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': onPlayerStateChange,
-                    'onError': (event) => { // Basic error handling
-                         console.error('Lỗi trình phát YouTube:', event.data);
-                         showVideoMessage(`Lỗi trình phát YouTube: ${event.data}`, true);
-                         // Reset to poster on error
-                         // Đặt lại thành poster khi có lỗi
+                    'onError': (event) => {
+                         console.error('Lỗi trình phát YouTube (onError):', event.data);
+                         // Provide more specific error messages based on event.data
+                         // Cung cấp thông báo lỗi cụ thể hơn dựa trên event.data
+                         let errorMsg = `Lỗi trình phát YouTube: ${event.data}`;
+                         switch(event.data) {
+                             case 2: errorMsg = "Yêu cầu chứa giá trị tham số không hợp lệ (ID video có thể sai)."; break;
+                             case 5: errorMsg = "Lỗi liên quan đến trình phát HTML5. Video có thể bị giới hạn phát nhúng, riêng tư, đã bị xóa hoặc có vấn đề về tương thích trình duyệt."; break; // ** IMPROVED MESSAGE **
+                             case 100: errorMsg = "Không tìm thấy video yêu cầu (có thể đã bị xóa hoặc ID sai)."; break;
+                             case 101:
+                             case 150: errorMsg = "Chủ sở hữu video không cho phép phát video này trên các trang web khác."; break;
+                             default: errorMsg = `Đã xảy ra lỗi không xác định khi tải video (${event.data}).`;
+                         }
+                         showVideoMessage(`<i class="fas fa-exclamation-circle mr-2"></i> ${errorMsg}`, true);
                          if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
-                         if (youtubePlayer) youtubePlayer.destroy();
-                         youtubePlayer = null;
+                         if (youtubePlayer) {
+                             try { youtubePlayer.destroy(); } catch(e) {}
+                             youtubePlayer = null;
+                         }
                          const playerDiv = document.getElementById(youtubePlayerDivId);
                          if(playerDiv) playerDiv.innerHTML = '';
+                          if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
                     }
                 }
             });
-            // Ensure container is marked as playing immediately after creating player
-            // Đảm bảo container được đánh dấu là đang phát ngay sau khi tạo trình phát
-             if (videoPlayerContainer) videoPlayerContainer.classList.add('playing');
+            if (videoPlayerContainer) videoPlayerContainer.classList.add('playing');
 
         } catch (error) {
-             console.error("Lỗi khi tạo trình phát YouTube:", error);
-             showVideoMessage("Không thể khởi tạo trình phát YouTube.", true);
-             if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing'); // Show poster on error
+             console.error("Lỗi khi tạo trình phát YouTube (try/catch):", error);
+             showVideoMessage("Không thể khởi tạo trình phát YouTube do lỗi.", true);
+             if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
+             if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
         }
     }
 
@@ -330,58 +386,65 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Starts video playback using the appropriate method (YouTube API or iframe).
      * Bắt đầu phát video bằng phương pháp thích hợp (API YouTube hoặc iframe).
+     * This function is now primarily called by user interaction (play/skip buttons).
+     * Hàm này giờ chủ yếu được gọi bởi tương tác người dùng (nút phát/bỏ qua).
      * @param {string|null} urlToPlay - The URL of the video to play. URL của video cần phát.
      * @param {boolean} [shouldSkipIntro=false] - Whether to add the 'start' parameter for skipping intro (YouTube only). Có thêm tham số 'start' để bỏ qua giới thiệu hay không (chỉ YouTube).
      */
     const startVideoPlayback = (urlToPlay, shouldSkipIntro = false) => {
+        console.log(`startVideoPlayback: Yêu cầu phát: ${urlToPlay}, Bỏ qua Intro: ${shouldSkipIntro}`);
         // Destroy any existing YouTube player first
         // Hủy mọi trình phát YouTube hiện có trước
         if (youtubePlayer) {
             try {
                 youtubePlayer.destroy();
-            } catch(e) { console.error("Lỗi khi hủy trình phát YT cũ:", e); }
+                 console.log("startVideoPlayback: Đã hủy trình phát YT hiện có trước khi bắt đầu phát mới.");
+            } catch(e) { console.error("startVideoPlayback: Lỗi khi hủy trình phát YT cũ:", e); }
             youtubePlayer = null;
         }
-         // Clear the placeholder content
-         // Xóa nội dung placeholder
+         // Clear the placeholder content and ensure target div exists
+         // Xóa nội dung placeholder và đảm bảo div mục tiêu tồn tại
          if (videoIframePlaceholder) {
-            videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; // Ensure the target div exists
+            videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`;
             videoIframePlaceholder.classList.remove('active'); // Hide placeholder initially
          } else {
-             console.error("Video iframe placeholder not found.");
+             console.error("startVideoPlayback: Video iframe placeholder not found.");
              return;
          }
 
         if (!urlToPlay) {
-            console.error("Không có URL video hợp lệ để phát.");
+            console.error("startVideoPlayback: Không có URL video hợp lệ để phát.");
             showVideoMessage(`<i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>Không có URL video hợp lệ để phát.`, true);
             if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing'); // Show poster
             return;
         }
 
-        currentVideoUrl = urlToPlay; // Store the URL intended for playback
+        // No need to set currentVideoUrl here, it's set by prepareVideoPlayback
+        // Không cần đặt currentVideoUrl ở đây, nó được đặt bởi prepareVideoPlayback
         hideVideoMessage(); // Clear any previous messages
 
-        const youtubeId = getYouTubeVideoId(urlToPlay);
+        const youtubeId = getYouTubeVideoId(urlToPlay); // This now returns null for invalid IDs like '0'
         const googleDriveEmbedUrl = getGoogleDriveEmbedUrl(urlToPlay);
         const skipSeconds = currentMovieData?.skipIntroSeconds || 0;
         const effectiveStartSeconds = shouldSkipIntro ? skipSeconds : 0;
 
         if (youtubeId) {
-            console.log(`Chuẩn bị phát YouTube: ${youtubeId}, Bỏ qua: ${shouldSkipIntro}, Giây bắt đầu: ${effectiveStartSeconds}`);
+            console.log(`startVideoPlayback: Chuẩn bị phát YouTube: ${youtubeId}, Bỏ qua: ${shouldSkipIntro}, Giây bắt đầu: ${effectiveStartSeconds}`);
             if (videoIframePlaceholder) videoIframePlaceholder.classList.add('active'); // Show placeholder area
-            loadYouTubePlayer(youtubeId, effectiveStartSeconds); // Use API
+            // loadYouTubePlayer will now handle the invalid ID check internally
+            // loadYouTubePlayer giờ sẽ xử lý kiểm tra ID không hợp lệ bên trong
+            loadYouTubePlayer(youtubeId, effectiveStartSeconds);
         } else if (googleDriveEmbedUrl) {
-            console.log("Chuẩn bị phát Google Drive:", googleDriveEmbedUrl);
+            console.log("startVideoPlayback: Chuẩn bị phát Google Drive:", googleDriveEmbedUrl);
             if (videoIframePlaceholder) {
                  videoIframePlaceholder.innerHTML = `<iframe src="${googleDriveEmbedUrl}" frameborder="0" allow="autoplay; fullscreen" title="Trình phát video Google Drive cho phim ${currentMovieData?.title || ''}"></iframe>`;
                  videoIframePlaceholder.classList.add('active'); // Show placeholder area
                  if (videoPlayerContainer) videoPlayerContainer.classList.add('playing'); // Hide poster
             }
         } else {
-            // Handle unsupported URL format
-            // Xử lý định dạng URL không được hỗ trợ
-            console.error("Định dạng URL không được hỗ trợ:", urlToPlay);
+            // Handle unsupported URL format or URLs that didn't yield a valid YouTube ID
+            // Xử lý định dạng URL không được hỗ trợ hoặc URL không trả về ID YouTube hợp lệ
+            console.error("startVideoPlayback: Định dạng URL không được hỗ trợ hoặc ID YouTube không hợp lệ:", urlToPlay);
             showVideoMessage(`<i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>Định dạng video không được hỗ trợ hoặc URL không hợp lệ.`, true);
             if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing'); // Show poster on error
              if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
@@ -391,7 +454,6 @@ document.addEventListener('DOMContentLoaded', () => {
          const playerTitleText = currentMovieData?.title || 'Không có tiêu đề';
          if (movieTitlePlayer) movieTitlePlayer.textContent = `Xem Phim: ${playerTitleText}`;
     };
-
 
     // --- Function to update Skip Intro button visibility ---
     /**
@@ -406,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const skipSeconds = currentMovieData.skipIntroSeconds || 0;
         const activeUrl = currentMovieData.videoUrls?.[currentActiveVersion];
-        const isYouTube = !!getYouTubeVideoId(activeUrl); // Check if the active URL is YouTube
+        const isYouTube = !!getYouTubeVideoId(activeUrl); // Check if the active URL has a VALID YouTube ID
 
         if (isYouTube && skipSeconds > 0) {
             skipIntroButton.dataset.skipSeconds = skipSeconds; // Store seconds in data attribute
@@ -414,7 +476,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Nút Bỏ qua Intro hiển thị cho video YouTube (bỏ qua ${skipSeconds}s).`);
         } else {
             skipIntroButton.classList.add('hidden');
-            console.log(`Nút Bỏ qua Intro bị ẩn (Không phải YouTube hoặc skipSeconds=0).`);
+            console.log(`Nút Bỏ qua Intro bị ẩn (Không phải YouTube hợp lệ hoặc skipSeconds=0).`);
         }
     };
 
@@ -444,19 +506,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update the ready-to-play URL based on the active version
         // Cập nhật URL sẵn sàng phát dựa trên phiên bản đang hoạt động
         currentVideoUrl = availableUrls[currentActiveVersion] || null;
+        console.log(`updateVersionButtonStates: Phiên bản hoạt động: ${currentActiveVersion}, URL sẵn sàng: ${currentVideoUrl}`);
 
 
          // If no versions have URLs, show an info message
          // Nếu không có phiên bản nào có URL, hiển thị thông báo thông tin
         if (!hasAnyUrl) {
              showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Rất tiếc, không có phiên bản video nào khả dụng cho phim này.`, false, true);
-             // Ensure player shows poster if no versions are available
-             // Đảm bảo trình phát hiển thị poster nếu không có phiên bản nào
-             if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
-             if (videoIframePlaceholder) videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; // Reset placeholder
-             if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
              setPlayerPoster(); // Reset to default poster
-             // currentVideoUrl is already null
         } else if (currentActiveVersion === null && activeVersionKey && !availableUrls[activeVersionKey]) {
             // If the intended active version has no URL, but others do, show info message
             // Nếu phiên bản dự định kích hoạt không có URL, nhưng các phiên bản khác có, hiển thị thông báo thông tin
@@ -471,9 +528,87 @@ document.addEventListener('DOMContentLoaded', () => {
          updateSkipIntroButtonVisibility();
     };
 
+    // --- START: localStorage Functions ---
     /**
-     * Handles clicks on the version selection buttons. Starts playback immediately.
-     * Xử lý các lần nhấp vào nút chọn phiên bản. Bắt đầu phát lại ngay lập tức.
+     * Saves the preferred version for a movie to localStorage.
+     * Lưu phiên bản ưu tiên cho một phim vào localStorage.
+     * @param {number} movieId - The ID of the movie. ID của phim.
+     * @param {string} versionKey - The selected version key ('vietsub', 'dubbed', etc.). Khóa phiên bản đã chọn.
+     */
+    const saveVersionPreference = (movieId, versionKey) => {
+        if (!movieId || !versionKey) return;
+        try {
+            localStorage.setItem(`moviePref_${movieId}_version`, versionKey);
+            console.log(`Đã lưu lựa chọn phiên bản '${versionKey}' cho phim ID ${movieId}`);
+        } catch (e) {
+            console.error("Lỗi khi lưu lựa chọn vào localStorage:", e);
+        }
+    };
+
+    /**
+     * Loads the preferred version for a movie from localStorage.
+     * Tải phiên bản ưu tiên cho một phim từ localStorage.
+     * @param {number} movieId - The ID of the movie. ID của phim.
+     * @returns {string|null} The preferred version key or null. Khóa phiên bản ưu tiên hoặc null.
+     */
+    const loadVersionPreference = (movieId) => {
+        if (!movieId) return null;
+        try {
+            const preferredVersion = localStorage.getItem(`moviePref_${movieId}_version`);
+            if (preferredVersion) {
+                console.log(`Đã tải lựa chọn phiên bản '${preferredVersion}' cho phim ID ${movieId}`);
+            }
+            return preferredVersion;
+        } catch (e) {
+            console.error("Lỗi khi tải lựa chọn từ localStorage:", e);
+            return null;
+        }
+    };
+    // --- END: localStorage Functions ---
+
+    // --- START: New function to prepare video without playing ---
+    /**
+     * Prepares the video player for playback without starting it.
+     * Chuẩn bị trình phát video để phát lại mà không cần bắt đầu.
+     * Updates UI states, sets the poster, and saves preference.
+     * Cập nhật trạng thái giao diện người dùng, đặt poster và lưu lựa chọn.
+     * @param {string} versionKey - The version key to prepare. Khóa phiên bản cần chuẩn bị.
+     */
+    const prepareVideoPlayback = (versionKey) => {
+        if (!currentMovieData) return;
+
+        const url = currentMovieData.videoUrls?.[versionKey];
+
+        if (url) {
+            console.log(`prepareVideoPlayback: Đang chuẩn bị phiên bản: ${versionKey}, URL: ${url}`);
+            // Update button states (this also sets currentActiveVersion and currentVideoUrl)
+            // Cập nhật trạng thái nút (điều này cũng đặt currentActiveVersion và currentVideoUrl)
+            updateVersionButtonStates(versionKey);
+            // Set the poster (resets player if it was playing)
+            // Đặt poster (đặt lại trình phát nếu nó đang phát)
+            setPlayerPoster();
+            // Save the preference
+            // Lưu lựa chọn
+            saveVersionPreference(currentMovieData.id, versionKey);
+             // Update player title initially
+             // Cập nhật tiêu đề trình phát ban đầu
+             const playerTitleText = currentMovieData?.title || 'Không có tiêu đề';
+             if (movieTitlePlayer) movieTitlePlayer.textContent = `Xem Phim: ${playerTitleText}`;
+
+        } else {
+            console.warn(`prepareVideoPlayback: Không tìm thấy URL cho phiên bản: ${versionKey} khi chuẩn bị.`);
+            // Update buttons to show this version is not active/available
+            // Cập nhật các nút để hiển thị phiên bản này không hoạt động/khả dụng
+            updateVersionButtonStates(null); // Pass null to deactivate all if the target is invalid
+            showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Phiên bản "${versionKey}" không có sẵn.`, false, true);
+        }
+    };
+    // --- END: New function ---
+
+
+    /**
+     * Handles clicks on the version selection buttons. Now prepares instead of playing.
+     * Xử lý các lần nhấp vào nút chọn phiên bản. Bây giờ chuẩn bị thay vì phát.
      * @param {Event} event - The click event. Sự kiện nhấp chuột.
      */
     const handleVersionClick = (event) => {
@@ -483,19 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const versionKey = button.dataset.version;
         if (!versionKey) return;
 
-        const url = currentMovieData.videoUrls?.[versionKey];
-
-        if (url) {
-            // Update button states (this also updates currentActiveVersion and currentVideoUrl)
-            // Cập nhật trạng thái nút (điều này cũng cập nhật currentActiveVersion và currentVideoUrl)
-            updateVersionButtonStates(versionKey);
-            // Start playing the selected video version WITHOUT skipping intro by default
-            // Bắt đầu phát phiên bản video đã chọn MÀ KHÔNG bỏ qua giới thiệu theo mặc định
-            startVideoPlayback(url, false); // Pass false for shouldSkipIntro
-        } else {
-            console.warn(`Không tìm thấy URL cho phiên bản: ${versionKey}, mặc dù nút đã được nhấp.`);
-            showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Phiên bản "${versionKey}" không có sẵn.`, false, true);
-        }
+        prepareVideoPlayback(versionKey); // Prepare the selected version
     };
 
     /**
@@ -511,8 +634,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (errorTextElement) errorTextElement.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> ${message}`;
         else console.error("Không tìm thấy phần tử văn bản lỗi.");
 
-        // Update page title and meta tags for error state
-        // Cập nhật tiêu đề trang và thẻ meta cho trạng thái lỗi
         const errorTitle = "Lỗi - Không tìm thấy phim";
         if (pageTitleElement) pageTitleElement.textContent = errorTitle;
         if (ogTitleTag) ogTitleTag.content = errorTitle;
@@ -543,7 +664,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const strData = (typeof data === 'string' && data.trim()) ? data : 'N/A';
         if (strData === 'N/A') return 'N/A';
-        return strData.split(separator).slice(0, limit).join(separator);
+        // Ensure string splitting handles the limit correctly
+        return strData.split(separator).map(s => s.trim()).filter(Boolean).slice(0, limit).join(separator);
     };
 
     /**
@@ -614,20 +736,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }).map(item => ({ item, type: 'series' }));
 
         const allRelated = [...relatedMovies, ...relatedSeries]
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 6);
+            .sort(() => 0.5 - Math.random()) // Randomize related items
+            .slice(0, 6); // Limit to 6 items
 
         if (allRelated.length > 0) {
             relatedMoviesContainer.innerHTML = allRelated.map(({ item, type }, index) => {
                  const cardHTML = createRelatedItemCard(item, type);
+                 // Add data-index for animation staggering
                  const cardWithIndex = cardHTML.replace('<a ', `<a data-index="${index}" `);
                  return cardWithIndex;
             }).join('');
-            if (observer) {
-                observeElements(relatedMoviesContainer.querySelectorAll('.related-movie-card.animate-on-scroll'));
-            } else {
-                console.warn("Intersection Observer chưa được khởi tạo khi cố gắng quan sát các mục liên quan.");
-            }
+            // Observe the newly added elements
+            observeElements(relatedMoviesContainer.querySelectorAll('.related-movie-card.animate-on-scroll'));
         } else {
              relatedMoviesContainer.innerHTML = '<p class="text-text-muted col-span-full">Không tìm thấy nội dung nào tương tự.</p>';
         }
@@ -648,19 +768,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let description = `Xem phim ${movieTitleText} ${movieYearText} online. `;
         if (movie.description) {
-            description += movie.description.substring(0, 120) + '...';
+            // Take the first sentence or first 120 chars
+            const firstSentence = movie.description.split('.')[0];
+            description += (firstSentence.length < 120 ? firstSentence + '.' : movie.description.substring(0, 120) + '...');
         } else {
             description += `Thông tin chi tiết, diễn viên, đạo diễn, và các phiên bản Vietsub, Thuyết minh.`;
         }
-        description = description.substring(0, 160);
+        description = description.substring(0, 160); // Max length for meta description
 
         const genresText = formatArrayData(movie.genre, ', ');
         const keywords = `xem phim ${movieTitleText}, ${movieTitleText} online, ${movieTitleText} vietsub, ${movieTitleText} thuyết minh, ${genresText}, phim ${movie.releaseYear || ''}, ${movie.director || ''}, ${formatArrayData(movie.cast, ', ', 3)}`;
 
+        // Update standard meta tags
         if (pageTitleElement) pageTitleElement.textContent = fullTitle;
         if (metaDescriptionTag) metaDescriptionTag.content = description;
         if (metaKeywordsTag) metaKeywordsTag.content = keywords;
 
+        // Update Open Graph meta tags
         if (ogUrlTag) ogUrlTag.content = pageUrl;
         if (ogTitleTag) ogTitleTag.content = fullTitle;
         if (ogDescriptionTag) ogDescriptionTag.content = description;
@@ -670,6 +794,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (ogVideoActorTag) ogVideoActorTag.content = formatArrayData(movie.cast, ', ', 4);
         if (ogVideoReleaseDateTag && movie.releaseYear) ogVideoReleaseDateTag.content = movie.releaseYear.toString();
 
+        // Update Twitter Card meta tags
         if (twitterUrlTag) twitterUrlTag.content = pageUrl;
         if (twitterTitleTag) twitterTitleTag.content = fullTitle;
         if (twitterDescriptionTag) twitterDescriptionTag.content = description;
@@ -682,6 +807,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const handleScroll = () => {
         if (!scrollToTopButton) return;
         const isVisible = window.scrollY > 300;
+        // Use classList.toggle for cleaner logic
         scrollToTopButton.classList.toggle('visible', isVisible);
         scrollToTopButton.classList.toggle('hidden', !isVisible);
         scrollToTopButton.setAttribute('aria-hidden', String(!isVisible));
@@ -698,8 +824,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const icon = toggleLightsButton?.querySelector('i');
         if (icon) {
             icon.classList.toggle('fa-lightbulb', !isLightsOff);
-            icon.classList.toggle('fa-solid', !isLightsOff);
+            icon.classList.toggle('fa-solid', !isLightsOff); // Ensure solid is used when on
             icon.classList.toggle('fa-moon', isLightsOff);
+            icon.classList.toggle('fa-regular', isLightsOff); // Use regular moon icon
         }
         console.log("Đèn đã được:", isLightsOff ? "Tắt" : "Bật");
     };
@@ -708,6 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const initObserver = () => {
         if (!('IntersectionObserver' in window)) {
             console.warn("Intersection Observer không được hỗ trợ. Hoạt ảnh bị vô hiệu hóa.");
+            // Make all elements visible immediately if observer not supported
             document.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('is-visible'));
             return;
         }
@@ -716,20 +844,22 @@ document.addEventListener('DOMContentLoaded', () => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     const delayIndex = parseInt(entry.target.dataset.index || '0', 10);
-                    const delay = delayIndex * 100;
+                    const delay = delayIndex * 100; // Stagger animation
                     entry.target.style.animationDelay = `${delay}ms`;
                     entry.target.classList.add('is-visible');
-                    observerInstance.unobserve(entry.target);
+                    observerInstance.unobserve(entry.target); // Unobserve after animating once
                 }
             });
         }, options);
+        // Initial observation pass
         observeElements(document.querySelectorAll('.animate-on-scroll'));
     };
 
     const observeElements = (elements) => {
         if (!observer) return;
         elements.forEach((el) => {
-            if (el.classList.contains('animate-on-scroll')) {
+            // Only observe elements that have the class and aren't already visible
+            if (el.classList.contains('animate-on-scroll') && !el.classList.contains('is-visible')) {
                  observer.observe(el);
             }
         });
@@ -742,15 +872,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!movieId || isNaN(parseInt(movieId)) || typeParam === 'series') {
         let errorMsg = "ID phim không hợp lệ hoặc bị thiếu.";
-        if (typeParam === 'series') errorMsg = "Trang này chỉ dành cho phim lẻ.";
+        if (typeParam === 'series') errorMsg = "Trang này chỉ dành cho phim lẻ. Vui lòng kiểm tra URL.";
         console.error(errorMsg, "URL:", window.location.href);
         displayError(errorMsg);
-        return;
+        return; // Stop execution
     }
 
     const numericMovieId = parseInt(movieId);
 
-    if (loadingMessage) loadingMessage.classList.add('hidden');
+    if (loadingMessage) loadingMessage.classList.add('hidden'); // Hide initial text loading message
 
     // Load YouTube API script early
     // Tải script API YouTube sớm
@@ -761,16 +891,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) return Promise.reject(new Error(`HTTP error! status: ${res.status} fetching filmData.json`));
             return res.json();
         }),
-        fetch('../json/filmData_phimBo.json').then(res => res.ok ? res.json() : [])
+        // Fetch series data as well for the related content section
+        // Tải dữ liệu phim bộ cho phần nội dung liên quan
+        fetch('../json/filmData_phimBo.json').then(res => res.ok ? res.json() : []) // Handle potential error gracefully
     ])
     .then(([movies, series]) => {
         allMoviesData = movies || [];
-        allSeriesData = series || [];
+        allSeriesData = series || []; // Store series data
         currentMovieData = allMoviesData.find(m => m.id === numericMovieId);
 
         if (currentMovieData) {
-            updateMetaTags(currentMovieData);
+            updateMetaTags(currentMovieData); // Update SEO tags
 
+            // Populate movie details
             if(moviePoster) {
                 moviePoster.src = currentMovieData.posterUrl || 'https://placehold.co/400x600/222222/555555?text=No+Poster';
                 moviePoster.alt = `Poster phim ${currentMovieData.title || 'không có tiêu đề'}`;
@@ -785,49 +918,64 @@ document.addEventListener('DOMContentLoaded', () => {
             if(movieDirector) movieDirector.textContent = currentMovieData.director || 'N/A';
             if(movieCast) movieCast.textContent = formatArrayData(currentMovieData.cast);
 
-            setPlayerPoster();
-
-            let defaultVersionKey = null;
-            let defaultUrl = null;
+            // --- START: Determine initial version (check localStorage first) ---
+            let initialVersionKey = loadVersionPreference(numericMovieId); // Load preference
             const availableUrls = currentMovieData.videoUrls || {};
-            const versionPriority = ['vietsub', 'dubbed', 'voiceover'];
-            for (const key of versionPriority) {
-                if (availableUrls[key]) {
-                    defaultVersionKey = key;
-                    defaultUrl = availableUrls[key];
-                    break;
-                }
-            }
-            if (!defaultVersionKey) {
-                for (const key in availableUrls) {
+
+            // Validate the loaded preference
+            // Xác thực lựa chọn đã tải
+            if (!initialVersionKey || !availableUrls[initialVersionKey]) {
+                console.log(`Lựa chọn đã lưu '${initialVersionKey}' không hợp lệ hoặc không có sẵn, đang tìm mặc định...`);
+                initialVersionKey = null; // Reset if invalid
+                // Find default if no valid preference
+                // Tìm mặc định nếu không có lựa chọn hợp lệ
+                const versionPriority = ['vietsub', 'dubbed', 'voiceover']; // Define preferred order
+                for (const key of versionPriority) {
                     if (availableUrls[key]) {
-                        defaultVersionKey = key;
-                        defaultUrl = availableUrls[key];
+                        initialVersionKey = key;
+                        console.log(`Tìm thấy phiên bản mặc định ưu tiên: ${initialVersionKey}`);
                         break;
                     }
                 }
+                // Fallback to the first available if none of the preferred exist
+                // Dự phòng về cái đầu tiên có sẵn nếu không có cái nào trong số ưu tiên tồn tại
+                if (!initialVersionKey) {
+                    for (const key in availableUrls) {
+                        if (availableUrls[key]) {
+                            initialVersionKey = key;
+                            console.log(`Tìm thấy phiên bản mặc định dự phòng: ${initialVersionKey}`);
+                            break;
+                        }
+                    }
+                }
+            }
+            // --- END: Determine initial version ---
+
+            // Prepare the initial/preferred version without playing
+            // Chuẩn bị phiên bản ban đầu/ưu tiên mà không cần phát
+            if(initialVersionKey) {
+                prepareVideoPlayback(initialVersionKey);
+            } else {
+                // Handle case where NO versions are available at all
+                // Xử lý trường hợp KHÔNG có phiên bản nào khả dụng
+                console.warn(`Không có phiên bản video nào cho phim ID ${numericMovieId}`);
+                updateVersionButtonStates(null); // Disable all buttons
+                setPlayerPoster(); // Show poster
             }
 
-            // currentVideoUrl is set inside updateVersionButtonStates now
-            // currentVideoUrl hiện được đặt bên trong updateVersionButtonStates
-            updateVersionButtonStates(defaultVersionKey);
 
-            if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
-            if (videoIframePlaceholder) videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; // Ensure div exists
-            if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active'); // Keep placeholder hidden initially
+            loadRelatedItems(currentMovieData); // Load related movies/series
 
-             const playerTitleText = currentMovieData?.title || 'Không có tiêu đề';
-             if (movieTitlePlayer) movieTitlePlayer.textContent = `Xem Phim: ${playerTitleText}`;
-
-            loadRelatedItems(currentMovieData);
-
+            // Hide skeleton and show content after a short delay
+            // Ẩn skeleton và hiển thị nội dung sau một khoảng trễ ngắn
             setTimeout(() => {
                 if(movieDetailsSkeleton) movieDetailsSkeleton.classList.add('hidden');
                 if(errorMessageContainer) errorMessageContainer.classList.add('hidden');
                 if(movieDetailsContent) movieDetailsContent.classList.remove('hidden');
-            }, 150);
+                console.log("Đã hiển thị nội dung chi tiết phim.");
+            }, 150); // Small delay for smoother transition
 
-            initObserver();
+            initObserver(); // Initialize scroll animations
 
         } else {
             console.error(`Không tìm thấy phim với ID: ${numericMovieId}`);
@@ -842,15 +990,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners ---
     window.addEventListener('scroll', handleScroll);
     if (scrollToTopButton) scrollToTopButton.addEventListener('click', scrollToTop);
-    if (versionSelectionContainer) versionSelectionContainer.addEventListener('click', handleVersionClick);
+    if (versionSelectionContainer) versionSelectionContainer.addEventListener('click', handleVersionClick); // Calls prepareVideoPlayback
     if (toggleLightsButton) toggleLightsButton.addEventListener('click', toggleLights);
+    // Click listener for the lights-off overlay itself to turn lights back on
+    const lightsOverlay = document.getElementById('lights-overlay');
+    if (lightsOverlay) lightsOverlay.addEventListener('click', () => {
+         if (document.body.classList.contains('lights-off')) {
+             toggleLights();
+         }
+    });
 
     // Play video when poster overlay or play button is clicked (play WITHOUT skipping intro)
     // Phát video khi nhấp vào lớp phủ poster hoặc nút phát (phát MÀ KHÔNG bỏ qua giới thiệu)
     if (videoPosterOverlay) videoPosterOverlay.addEventListener('click', () => {
          console.log("Poster/Overlay clicked. Attempting playback from start...");
-         // Check if a valid version is selected
-         // Kiểm tra xem phiên bản hợp lệ đã được chọn chưa
          if (currentVideoUrl) {
              startVideoPlayback(currentVideoUrl, false); // Pass false for shouldSkipIntro
          } else {
@@ -858,10 +1011,9 @@ document.addEventListener('DOMContentLoaded', () => {
              showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Vui lòng chọn phiên bản video để phát.`, false, true);
          }
     });
-    // Event listener for the play button inside the overlay (redundant if overlay covers it, but safe)
-    // Trình lắng nghe sự kiện cho nút phát bên trong lớp phủ (thừa nếu lớp phủ che nó, nhưng an toàn)
+    // Ensure play button click doesn't propagate to overlay if they overlap
     if (videoPlayButton) videoPlayButton.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevent triggering overlay listener
+        event.stopPropagation(); // Prevent triggering overlay click too
         console.log("Play button clicked. Attempting playback from start...");
          if (currentVideoUrl) {
              startVideoPlayback(currentVideoUrl, false); // Pass false for shouldSkipIntro
@@ -875,15 +1027,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (skipIntroButton) {
         skipIntroButton.addEventListener('click', () => {
             console.log("Nút Bỏ qua Intro đã được nhấp.");
-            // Check if there's a valid URL and version selected
-            // Kiểm tra xem có URL và phiên bản hợp lệ được chọn không
             if (currentVideoUrl && currentActiveVersion) {
-                const isYouTube = !!getYouTubeVideoId(currentVideoUrl);
+                const isYouTube = !!getYouTubeVideoId(currentVideoUrl); // Check if it's a valid YT ID
                 if (isYouTube) {
                     startVideoPlayback(currentVideoUrl, true); // Pass true for shouldSkipIntro
                 } else {
-                    console.warn("Bỏ qua giới thiệu chỉ hoạt động với video YouTube.");
-                     showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Bỏ qua giới thiệu chỉ khả dụng cho video YouTube.`, false, true);
+                    console.warn("Bỏ qua giới thiệu chỉ hoạt động với video YouTube hợp lệ.");
+                     showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Bỏ qua giới thiệu chỉ khả dụng cho video YouTube hợp lệ.`, false, true);
                 }
             } else {
                 console.warn("Không thể bỏ qua giới thiệu: Không có URL hoặc phiên bản video đang hoạt động.");

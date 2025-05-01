@@ -11,9 +11,9 @@
     "rating": 8.4,
     "duration": "181 phút",
     "videoUrls": {
-      "vietsub": "https://www.youtube.com/watch?v=lj3_o7Nk2Z4",
+      "vietsub": "https://www.youtube.com/watch?v=alsBFF1lr2s",
       "dubbed": null,
-      "voiceover": "https://drive.google.com/file/d/1mU7h6wFAg43U9GPMIn6q4OlBjXUCKADM/view?usp=drive_link"
+      "voiceover": "https://www.youtube.com/watch?v=g8BvALyMv5w"
     },
     "isTrending": false,
     "isNew": false,
@@ -56,7 +56,7 @@
     "rating": 8.7,
     "duration": "169 phút",
     "videoUrls": {
-      "vietsub": "https://drive.google.com/file/d/1yIx5x5eoBfbo88sWcJyCQicfoQFJkGhF/view?usp=drive_link",
+      "vietsub": "https://www.youtube.com/watch?v=o96p-MnYl18",
       "dubbed": null,
       "voiceover": null
     },
@@ -76,7 +76,7 @@
     "rating": 7.3,
     "duration": "135 phút",
     "videoUrls": {
-      "vietsub": "https://drive.google.com/file/d/1_cpSZGNGBxAV78mNogDHPJ9BdRvMOvzk/view?usp=drive_link",
+      "vietsub": "https://www.youtube.com/watch?v=ghIpFFDezxk",
       "dubbed": null,
       "voiceover": null
     },
@@ -86,23 +86,24 @@
   },
   {
     "id": 5,
-    "title": "Avatar: Dòng Chảy Của Nước",
-    "description": "Jake Sully và Neytiri đã tạo dựng một gia đình và cố gắng giữ gìn sự bình yên cho Pandora. Nhưng khi một mối đe dọa mới xuất hiện từ thế giới con người, họ phải rời khỏi quê hương và khám phá những vùng đất chưa từng thấy.",
-    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/6/60/Avatar_The_Way_of_Water_poster.jpg",
-    "releaseYear": 2022,
-    "genre": ["Hành động", "Khoa học viễn tưởng", "Phiêu lưu"],
-    "director": "James Cameron",
-    "cast": ["Sam Worthington", "Zoe Saldana", "Sigourney Weaver", "Stephen Lang", "Kate Winslet"],
-    "rating": 7.8,
-    "duration": "192 phút",
+    "title": "Tenet",
+    "description": "Một điệp viên bí mật được giao nhiệm vụ du hành xuyên thời gian để ngăn chặn Thế chiến III. Anh phải làm chủ nghệ thuật 'nghịch đảo thời gian' để đối đầu với một mối đe dọa bí ẩn.",
+    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/1/14/Tenet_movie_poster.jpg",
+    "releaseYear": 2020,
+    "genre": ["Hành động", "Khoa học viễn tưởng", "Giật gân"],
+    "director": "Christopher Nolan",
+    "cast": ["John David Washington", "Robert Pattinson", "Elizabeth Debicki", "Kenneth Branagh", "Michael Caine"],
+    "rating": 7.3,
+    "duration": "150 phút",
     "videoUrls": {
-      "vietsub": null,
+      "vietsub": "https://www.youtube.com/watch?v=hgGtxHZhq8w",
       "dubbed": null,
       "voiceover": null
     },
     "isTrending": false,
     "isNew": false,
-    "heroImage": null
+    "heroImage": "https://rare-gallery.com/uploads/posts/343163-Tenet-2020-Movie-Poster-John-David-Washington.jpg",
+    "skipIntroSeconds": 20
   },
   {
     "id": 6,

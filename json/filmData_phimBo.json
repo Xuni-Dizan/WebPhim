@@ -21,7 +21,7 @@
         "seasonNumber": 1,
         "numberOfEpisodes": 32,
         "episodes": [
-          {"episodeNumber": 1, "title": "Tập 1", "thumbnailUrl": null, "videoUrls": {"vietsub": "https://www.youtube.com/watch?v=ghIpFFDezxk", "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 1, "title": "Tập 1", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
           {"episodeNumber": 2, "title": "Tập 2", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
           {"episodeNumber": 3, "title": "Tập 3", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
           {"episodeNumber": 4, "title": "Tập 4", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},

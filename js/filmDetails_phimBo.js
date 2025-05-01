@@ -1,4 +1,6 @@
-// filmDetails_phimBo.js - Handles Series Details Page Logic (Updated for YouTube API & Skip Intro Button)
+// filmDetails_phimBo.js - Handles Series Details Page Logic
+// Enhanced with YouTube API, Skip Intro Option, Show Poster First & Remember Version Preference
+// v1.2: Improved YouTube API error message for code 5 and added more detailed logging.
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---
@@ -73,8 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSeriesData = null;
     let currentSelectedSeasonIndex = 0;
     let currentSelectedEpisodeIndex = 0;
-    let currentActiveVersion = null;
-    let currentVideoUrl = null; // Stores the URL of the currently selected episode and version
+    let currentActiveVersion = null; // Key of the active video version (e.g., 'vietsub')
+    let currentVideoUrl = null; // URL of the video *ready* to be played
     let observer;
     let youtubePlayer = null; // Stores the YT.Player instance
     let ytApiReady = false; // Flag to track if YT API is loaded
@@ -100,25 +102,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    /**
+     * Extracts the YouTube video ID from various URL formats.
+     * Trích xuất ID video YouTube từ các định dạng URL khác nhau.
+     * @param {string} url - The URL to parse. URL cần phân tích.
+     * @returns {string|null} The 11-character YouTube video ID or null if not found/invalid. ID video YouTube 11 ký tự hoặc null nếu không tìm thấy/không hợp lệ.
+     */
     const getYouTubeVideoId = (url) => {
-         if (!url || typeof url !== 'string') return null;
+         if (!url || typeof url !== 'string') {
+             console.log("getYouTubeVideoId (Series): URL không hợp lệ hoặc không phải chuỗi:", url);
+             return null;
+         }
          let videoId = null;
          try {
              const patterns = [
-                 /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([\w-]{11})(?:\S+)?/,
-                 /(?:https?:\/\/)?googleusercontent\.com\/youtube\.com\/([\w-]+)(?:\?.*)?$/,
+                 /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=|embed\/|v\/|)([\w-]{11})(?:\S+)?/, // Standard YouTube URLs
+                 /(?:https?:\/\/)?googleusercontent\.com\/youtube\.com\/([\w-]+)(?:\?.*)?$/, // Google User Content URLs
              ];
              for (const pattern of patterns) {
                  const match = url.match(pattern);
+                 // Ensure the extracted ID is exactly 11 characters long and contains valid characters
+                 // Đảm bảo ID được trích xuất dài đúng 11 ký tự và chứa các ký tự hợp lệ
                  if (match && match[1] && /^[\w-]{11}$/.test(match[1])) {
                      videoId = match[1];
-                     if (url.includes('https://youtu.be/C3S2vietsub9') || url.includes('https://youtu.be/C3S3vietsub0')) { // Example URLs
-                         break;
-                     }
+                     console.log(`getYouTubeVideoId (Series): Đã tìm thấy ID hợp lệ '${videoId}' từ URL: ${url}`);
+                     break; // Found a valid ID
                  }
              }
-         } catch (e) { console.error("Lỗi phân tích URL YouTube:", e, url); }
-         return videoId;
+             if (!videoId) {
+                 console.log(`getYouTubeVideoId (Series): Không tìm thấy ID YouTube hợp lệ trong URL: ${url}`);
+             }
+         } catch (e) { console.error("Lỗi phân tích URL YouTube (phim bộ):", e, url); }
+         return videoId; // Returns null if no valid 11-char ID is found
     };
 
     const getGoogleDriveEmbedUrl = (url) => {
@@ -128,13 +143,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const match = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/);
             if (match && match[1]) {
                 embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
+                console.log(`getGoogleDriveEmbedUrl (Series): Đã tạo URL nhúng: ${embedUrl}`);
+            } else {
+                 console.log(`getGoogleDriveEmbedUrl (Series): Không tìm thấy ID Google Drive trong URL: ${url}`);
             }
-        } catch (e) { console.error("Lỗi phân tích URL Google Drive:", e, url); }
+        } catch (e) { console.error("Lỗi phân tích URL Google Drive (phim bộ):", e, url); }
         if (embedUrl) console.warn("Nhúng Google Drive có thể yêu cầu quyền chia sẻ cụ thể.");
         return embedUrl;
     };
 
+    /**
+     * Sets the poster image and ensures the player is in the 'poster' state.
+     * Đặt ảnh poster và đảm bảo trình phát ở trạng thái 'poster'.
+     * @param {object|null} episode - The current episode object, or null. Đối tượng tập hiện tại, hoặc null.
+     */
     const setPlayerPoster = (episode = null) => {
+        // Ưu tiên thumbnail của tập, sau đó đến ảnh hero của series, cuối cùng là poster series
         const episodeThumbnail = episode?.thumbnailUrl;
         const seriesHeroImage = currentSeriesData?.heroImage;
         const seriesPosterUrl = currentSeriesData?.posterUrl;
@@ -143,11 +167,29 @@ document.addEventListener('DOMContentLoaded', () => {
         if (videoPosterImage) {
             videoPosterImage.src = posterSrc;
             videoPosterImage.alt = `Poster xem ${currentSeriesData?.title || ''} - ${episode?.title || 'Tập hiện tại'}`;
+            console.log("setPlayerPoster (Series): Đã đặt ảnh poster trình phát:", posterSrc);
         }
          // Ensure poster overlay is visible when setting poster
          // Đảm bảo lớp phủ poster hiển thị khi đặt poster
         if (videoPlayerContainer) {
             videoPlayerContainer.classList.remove('playing');
+            console.log("setPlayerPoster (Series): Đã xóa lớp 'playing' khỏi video container.");
+        }
+        // Destroy any existing player if resetting to poster
+        // Hủy mọi trình phát hiện có nếu đặt lại về poster
+        if (youtubePlayer) {
+             try {
+                 youtubePlayer.destroy();
+                 console.log("setPlayerPoster (Series): Đã hủy trình phát YouTube hiện có.");
+             } catch (e) {
+                 console.error("setPlayerPoster (Series): Lỗi khi hủy trình phát YouTube:", e);
+             }
+             youtubePlayer = null;
+        }
+        if (videoIframePlaceholder) {
+             videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; // Ensure div exists but is empty
+             videoIframePlaceholder.classList.remove('active'); // Hide placeholder area
+             console.log("setPlayerPoster (Series): Đã đặt lại placeholder iframe.");
         }
     };
 
@@ -164,11 +206,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         if (document.getElementById('youtube-api-script')) {
+            console.log("Script YouTube API đang được tải (phim bộ).");
             return;
         }
         const tag = document.createElement('script');
         tag.id = 'youtube-api-script';
-        tag.src = "https://youtu.be/C3S2vietsub9"; // Same API URL
+        tag.src = "https://www.youtube.com/iframe_api"; // Use official API URL
         document.body.appendChild(tag);
         console.log("Đang tải script YouTube API (phim bộ)...");
     }
@@ -177,19 +220,32 @@ document.addEventListener('DOMContentLoaded', () => {
      * Global callback function for the YouTube API. Called when the API is ready.
      * Hàm callback toàn cục cho API YouTube. Được gọi khi API sẵn sàng.
      */
-     // Check if the function is already defined by filmDetails.js to avoid conflicts
-     // Kiểm tra xem hàm đã được định nghĩa bởi filmDetails.js chưa để tránh xung đột
-     if (typeof window.onYouTubeIframeAPIReady !== 'function') {
+     // Use a flag to ensure this is defined only once across both detail scripts
+     // Sử dụng cờ để đảm bảo điều này chỉ được định nghĩa một lần trên cả hai script chi tiết
+     if (typeof window.ytApiGlobalCallbackDefined === 'undefined') {
          window.onYouTubeIframeAPIReady = function() {
              ytApiReady = true;
-             console.log("YouTube API đã sẵn sàng (từ phim bộ).");
+             console.log("YouTube API đã sẵn sàng (onYouTubeIframeAPIReady được gọi - định nghĩa bởi phim bộ).");
+             // Attempt to play if a video was waiting for the API
+             // Thử phát nếu có video đang chờ API
+             if (window.pendingYouTubeLoad) {
+                 console.log("Phát video đang chờ sau khi API sẵn sàng.");
+                 const { videoId, startSeconds } = window.pendingYouTubeLoad;
+                 // Need to determine which load function to call based on context if needed
+                 // Cần xác định hàm tải nào để gọi dựa trên ngữ cảnh nếu cần
+                 // For now, assume it's for the current page context
+                 // Hiện tại, giả sử nó dành cho ngữ cảnh trang hiện tại
+                 if (typeof loadYouTubePlayer === 'function') {
+                     loadYouTubePlayer(videoId, startSeconds);
+                 }
+                 delete window.pendingYouTubeLoad;
+             }
          };
+         window.ytApiGlobalCallbackDefined = true;
      } else {
-         // If already defined, just set the flag for this script instance
-         // Nếu đã được định nghĩa, chỉ cần đặt cờ cho phiên bản script này
-         // The global function will handle setting the flag for both scripts
-         // Hàm toàn cục sẽ xử lý việc đặt cờ cho cả hai script
-         if (window.YT && window.YT.Player) { // Check if API object exists too
+         // If the callback was defined by the other script, just check readiness
+         // Nếu callback được định nghĩa bởi script khác, chỉ cần kiểm tra trạng thái sẵn sàng
+         if (window.YT && window.YT.Player) {
              ytApiReady = true;
          }
      }
@@ -201,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {object} event - The event object from the API. Đối tượng sự kiện từ API.
      */
     function onPlayerReady(event) {
-        console.log("Trình phát YouTube đã sẵn sàng (phim bộ).");
+        console.log("Trình phát YouTube đã sẵn sàng (onPlayerReady - phim bộ).");
         event.target.playVideo(); // Start playing
     }
 
@@ -219,27 +275,28 @@ document.addEventListener('DOMContentLoaded', () => {
             if (videoPlayerContainer) {
                 videoPlayerContainer.classList.remove('playing'); // Show poster overlay
             }
-             // Destroy the player to prevent related videos and clean up
-             // Hủy trình phát để ngăn video liên quan và dọn dẹp
             if (youtubePlayer) {
                 try {
                     youtubePlayer.destroy(); // Destroy the player instance
+                    console.log("Đã hủy trình phát YouTube sau khi kết thúc (phim bộ).");
                 } catch (e) {
-                    console.error("Lỗi khi hủy trình phát YouTube (phim bộ):", e);
+                    console.error("Lỗi khi hủy trình phát YouTube sau khi kết thúc (phim bộ):", e);
                 }
                 youtubePlayer = null; // Clear the reference
             }
-            // Clear the div where the player was
-            // Xóa div chứa trình phát
             const playerDiv = document.getElementById(youtubePlayerDivId);
             if (playerDiv) {
                 playerDiv.innerHTML = ''; // Remove the iframe content
+            }
+            if (videoIframePlaceholder) {
+                 videoIframePlaceholder.classList.remove('active'); // Hide placeholder area
             }
         } else if (event.data == YT.PlayerState.PLAYING) {
              // Ensure poster is hidden when playing starts
              // Đảm bảo poster bị ẩn khi bắt đầu phát
              if (videoPlayerContainer && !videoPlayerContainer.classList.contains('playing')) {
                  videoPlayerContainer.classList.add('playing');
+                 console.log("Đã thêm lớp 'playing' vào video container (phim bộ).");
              }
         }
     }
@@ -251,11 +308,29 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {number} [startSeconds=0] - Time in seconds to start the video. Thời gian tính bằng giây để bắt đầu video.
      */
     function loadYouTubePlayer(videoId, startSeconds = 0) {
+        // *** NEW: Validate videoId format before proceeding ***
+        // *** MỚI: Xác thực định dạng videoId trước khi tiếp tục ***
+        if (!videoId || typeof videoId !== 'string' || !/^[\w-]{11}$/.test(videoId)) {
+            console.error(`loadYouTubePlayer (Series): ID video YouTube không hợp lệ: "${videoId}". Phải là chuỗi 11 ký tự.`);
+            showVideoMessage(`<i class="fas fa-exclamation-circle mr-2"></i> ID video YouTube không hợp lệ được cung cấp. Video này không thể phát.`, true);
+            if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing'); // Show poster
+            if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active'); // Hide iframe area
+            // Destroy any potentially broken player instance
+            // Hủy mọi phiên bản trình phát có thể bị hỏng
+            if (youtubePlayer) {
+                try { youtubePlayer.destroy(); } catch(e){}
+                youtubePlayer = null;
+            }
+            return; // Stop execution for this invalid ID
+        }
+
         if (!ytApiReady) {
-            console.warn("API YouTube chưa sẵn sàng (phim bộ), đang thử tải lại...");
+            console.warn("loadYouTubePlayer (Series): API YouTube chưa sẵn sàng, đang thử tải lại và đặt video vào hàng chờ...");
             loadYouTubeApiScript();
             showVideoMessage("Đang chuẩn bị trình phát YouTube...", false, true);
-            setTimeout(() => loadYouTubePlayer(videoId, startSeconds), 1000);
+            // Store the request to be executed when API is ready
+            // Lưu yêu cầu để thực thi khi API sẵn sàng
+            window.pendingYouTubeLoad = { videoId, startSeconds };
             return;
         }
 
@@ -266,26 +341,27 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                  youtubePlayer.destroy();
                  youtubePlayer = null;
-                 console.log("Đã hủy trình phát YouTube cũ (phim bộ).");
+                 console.log("loadYouTubePlayer (Series): Đã hủy trình phát YouTube cũ.");
             } catch (e) {
-                 console.error("Lỗi khi hủy trình phát YouTube cũ (phim bộ):", e);
+                 console.error("loadYouTubePlayer (Series): Lỗi khi hủy trình phát YouTube cũ:", e);
             }
         }
-         if (!document.getElementById(youtubePlayerDivId)) {
-             console.error(`Không tìm thấy div trình phát YouTube với ID: ${youtubePlayerDivId} (phim bộ)`);
+         const playerDivTarget = document.getElementById(youtubePlayerDivId);
+         if (!playerDivTarget) {
+             console.error(`loadYouTubePlayer (Series): Không tìm thấy div trình phát YouTube với ID: ${youtubePlayerDivId}`);
              if (videoIframePlaceholder) {
                  videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`;
-                 console.log(`Đã tạo lại div #${youtubePlayerDivId} (phim bộ).`);
+                 console.log(`loadYouTubePlayer (Series): Đã tạo lại div #${youtubePlayerDivId}.`);
              } else {
                  showVideoMessage("Lỗi: Không thể tạo vùng chứa trình phát.", true);
                  return;
              }
          } else {
-             document.getElementById(youtubePlayerDivId).innerHTML = '';
+             playerDivTarget.innerHTML = ''; // Clear any previous content
          }
 
 
-        console.log(`Đang tạo trình phát YouTube mới (phim bộ) cho video ID: ${videoId}, bắt đầu từ: ${startSeconds}s`);
+        console.log(`loadYouTubePlayer (Series): Đang tạo trình phát YouTube mới cho video ID: ${videoId}, bắt đầu từ: ${startSeconds}s`);
         try {
             youtubePlayer = new YT.Player(youtubePlayerDivId, {
                 height: '100%',
@@ -297,29 +373,44 @@ document.addEventListener('DOMContentLoaded', () => {
                     'rel': 0,
                     'modestbranding': 1,
                     'iv_load_policy': 3,
-                    'hl': 'vi',
-                    'cc_load_policy': 1,
+                    'hl': 'vi', // Set language to Vietnamese
+                    'cc_load_policy': 1, // Attempt to show captions
                     'start': startSeconds
                 },
                 events: {
                     'onReady': onPlayerReady,
                     'onStateChange': onPlayerStateChange,
                     'onError': (event) => {
-                         console.error('Lỗi trình phát YouTube (phim bộ):', event.data);
-                         showVideoMessage(`Lỗi trình phát YouTube: ${event.data}`, true);
+                         console.error('Lỗi trình phát YouTube (onError - Series):', event.data);
+                          // Provide more specific error messages based on event.data
+                         // Cung cấp thông báo lỗi cụ thể hơn dựa trên event.data
+                         let errorMsg = `Lỗi trình phát YouTube: ${event.data}`;
+                         switch(event.data) {
+                             case 2: errorMsg = "Yêu cầu chứa giá trị tham số không hợp lệ (ID video có thể sai)."; break;
+                             case 5: errorMsg = "Lỗi liên quan đến trình phát HTML5. Video có thể bị giới hạn phát nhúng, riêng tư, đã bị xóa hoặc có vấn đề về tương thích trình duyệt."; break; // ** IMPROVED MESSAGE **
+                             case 100: errorMsg = "Không tìm thấy video yêu cầu (có thể đã bị xóa hoặc ID sai)."; break;
+                             case 101:
+                             case 150: errorMsg = "Chủ sở hữu video không cho phép phát video này trên các trang web khác."; break;
+                             default: errorMsg = `Đã xảy ra lỗi không xác định khi tải video (${event.data}).`;
+                         }
+                         showVideoMessage(`<i class="fas fa-exclamation-circle mr-2"></i> ${errorMsg}`, true);
                          if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
-                         if (youtubePlayer) youtubePlayer.destroy();
-                         youtubePlayer = null;
+                         if (youtubePlayer) {
+                             try { youtubePlayer.destroy(); } catch(e) {}
+                             youtubePlayer = null;
+                         }
                          const playerDiv = document.getElementById(youtubePlayerDivId);
                          if(playerDiv) playerDiv.innerHTML = '';
+                         if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
                     }
                 }
             });
             if (videoPlayerContainer) videoPlayerContainer.classList.add('playing');
         } catch (error) {
-             console.error("Lỗi khi tạo trình phát YouTube (phim bộ):", error);
-             showVideoMessage("Không thể khởi tạo trình phát YouTube.", true);
+             console.error("Lỗi khi tạo trình phát YouTube (try/catch - Series):", error);
+             showVideoMessage("Không thể khởi tạo trình phát YouTube do lỗi.", true);
              if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
+             if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
         }
     }
 
@@ -327,40 +418,44 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Starts video playback using the appropriate method (YouTube API or iframe).
      * Bắt đầu phát video bằng phương pháp thích hợp (API YouTube hoặc iframe).
+     * Called only on explicit user action (play/skip buttons).
+     * Chỉ được gọi khi có hành động rõ ràng của người dùng (nút phát/bỏ qua).
      * @param {string|null} urlToPlay - The URL of the video to play. URL của video cần phát.
      * @param {boolean} [shouldSkipIntro=false] - Whether to add the 'start' parameter for skipping intro (YouTube only). Có thêm tham số 'start' để bỏ qua giới thiệu hay không (chỉ YouTube).
      */
     const startVideoPlayback = (urlToPlay, shouldSkipIntro = false) => {
+        console.log(`startVideoPlayback (Series): Yêu cầu phát: ${urlToPlay}, Bỏ qua Intro: ${shouldSkipIntro}`);
         // Destroy any existing YouTube player first
         // Hủy mọi trình phát YouTube hiện có trước
         if (youtubePlayer) {
             try {
                 youtubePlayer.destroy();
-            } catch(e) { console.error("Lỗi khi hủy trình phát YT cũ (phim bộ):", e); }
+                console.log("startVideoPlayback (Series): Đã hủy trình phát YT hiện có trước khi bắt đầu phát mới.");
+            } catch(e) { console.error("startVideoPlayback (Series): Lỗi khi hủy trình phát YT cũ:", e); }
             youtubePlayer = null;
         }
          // Clear the placeholder content and ensure target div exists
          // Xóa nội dung placeholder và đảm bảo div mục tiêu tồn tại
          if (videoIframePlaceholder) {
             videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`;
-            videoIframePlaceholder.classList.remove('active');
+            videoIframePlaceholder.classList.remove('active'); // Hide placeholder initially
          } else {
-             console.error("Video iframe placeholder not found (phim bộ).");
+             console.error("startVideoPlayback (Series): Video iframe placeholder not found.");
              return;
          }
 
         if (!urlToPlay) {
-            console.error("Không có URL video hợp lệ để phát (phim bộ).");
+            console.error("startVideoPlayback (Series): Không có URL video hợp lệ để phát.");
             showVideoMessage(`<i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>Không có URL video hợp lệ để phát.`, true);
-            if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
+            if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing'); // Show poster
             return;
         }
 
-        // currentVideoUrl is updated elsewhere based on selection, no need to set it here again
-        // currentVideoUrl được cập nhật ở nơi khác dựa trên lựa chọn, không cần đặt lại ở đây
-        hideVideoMessage();
+        // currentVideoUrl should already be set by prepareVideoPlayback
+        // currentVideoUrl nên đã được đặt bởi prepareVideoPlayback
+        hideVideoMessage(); // Clear any previous messages
 
-        const youtubeId = getYouTubeVideoId(urlToPlay);
+        const youtubeId = getYouTubeVideoId(urlToPlay); // This now returns null for invalid IDs
         const googleDriveEmbedUrl = getGoogleDriveEmbedUrl(urlToPlay);
         const skipSeconds = currentSeriesData?.skipIntroSeconds || 0; // Use series skip time
         const effectiveStartSeconds = shouldSkipIntro ? skipSeconds : 0;
@@ -376,20 +471,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         if (youtubeId) {
-            console.log(`Chuẩn bị phát YouTube (phim bộ): ${youtubeId}, Bỏ qua: ${shouldSkipIntro}, Giây bắt đầu: ${effectiveStartSeconds}`);
-            if (videoIframePlaceholder) videoIframePlaceholder.classList.add('active');
-            loadYouTubePlayer(youtubeId, effectiveStartSeconds); // Use API
+            console.log(`startVideoPlayback (Series): Chuẩn bị phát YouTube: ${youtubeId}, Bỏ qua: ${shouldSkipIntro}, Giây bắt đầu: ${effectiveStartSeconds}`);
+            if (videoIframePlaceholder) videoIframePlaceholder.classList.add('active'); // Show placeholder area
+            // loadYouTubePlayer will handle the invalid ID check
+            // loadYouTubePlayer sẽ xử lý kiểm tra ID không hợp lệ
+            loadYouTubePlayer(youtubeId, effectiveStartSeconds);
         } else if (googleDriveEmbedUrl) {
-            console.log("Chuẩn bị phát Google Drive (phim bộ):", googleDriveEmbedUrl);
+            console.log("startVideoPlayback (Series): Chuẩn bị phát Google Drive:", googleDriveEmbedUrl);
             if (videoIframePlaceholder) {
                  videoIframePlaceholder.innerHTML = `<iframe src="${googleDriveEmbedUrl}" frameborder="0" allow="autoplay; fullscreen" title="Trình phát video Google Drive cho ${playerTitleText}"></iframe>`;
-                 videoIframePlaceholder.classList.add('active');
-                 if (videoPlayerContainer) videoPlayerContainer.classList.add('playing');
+                 videoIframePlaceholder.classList.add('active'); // Show placeholder area
+                 if (videoPlayerContainer) videoPlayerContainer.classList.add('playing'); // Hide poster
             }
         } else {
-            console.error("Định dạng URL không được hỗ trợ (phim bộ):", urlToPlay);
+            // Handle unsupported URL format or URLs that didn't yield a valid YouTube ID
+            // Xử lý định dạng URL không được hỗ trợ hoặc URL không trả về ID YouTube hợp lệ
+            console.error("startVideoPlayback (Series): Định dạng URL không được hỗ trợ hoặc ID YouTube không hợp lệ:", urlToPlay);
             showVideoMessage(`<i class="fas fa-exclamation-circle mr-2" aria-hidden="true"></i>Định dạng video không được hỗ trợ hoặc URL không hợp lệ.`, true);
-            if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
+            if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing'); // Show poster on error
              if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
         }
          // Update player title
@@ -416,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const episode = season?.episodes?.[currentSelectedEpisodeIndex];
         const activeUrl = episode?.videoUrls?.[currentActiveVersion];
 
-        const isYouTube = !!getYouTubeVideoId(activeUrl); // Check if the active URL is YouTube
+        const isYouTube = !!getYouTubeVideoId(activeUrl); // Check if the active URL has a VALID YouTube ID
 
         if (isYouTube && skipSeconds > 0) {
             skipIntroButton.dataset.skipSeconds = skipSeconds; // Store seconds in data attribute
@@ -424,7 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Nút Bỏ qua Intro hiển thị cho video YouTube (phim bộ, bỏ qua ${skipSeconds}s).`);
         } else {
             skipIntroButton.classList.add('hidden');
-            console.log(`Nút Bỏ qua Intro bị ẩn (Không phải YouTube hoặc skipSeconds=0 - phim bộ).`);
+            console.log(`Nút Bỏ qua Intro bị ẩn (Không phải YouTube hợp lệ hoặc skipSeconds=0 - phim bộ).`);
         }
     };
 
@@ -450,16 +549,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update the ready-to-play URL based on the active version
         // Cập nhật URL sẵn sàng phát dựa trên phiên bản đang hoạt động
         currentVideoUrl = availableUrls[currentActiveVersion] || null;
+        console.log(`updateVersionButtonStates (Series): Phiên bản hoạt động: ${currentActiveVersion}, URL sẵn sàng: ${currentVideoUrl}`);
 
 
         // Hiển thị thông báo nếu không có URL nào cho tập này
         if (!hasAnyUrl) {
             showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Rất tiếc, không có phiên bản video nào khả dụng cho tập này.`, false, true);
-            if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
-            if (videoIframePlaceholder) videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; // Reset placeholder
-            if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
-            setPlayerPoster(currentSeriesData?.seasons?.[currentSelectedSeasonIndex]?.episodes?.[currentSelectedEpisodeIndex]); // Reset poster
-            // currentVideoUrl is already null
+             setPlayerPoster(currentSeriesData?.seasons?.[currentSelectedSeasonIndex]?.episodes?.[currentSelectedEpisodeIndex]); // Reset poster
         } else if (currentActiveVersion === null && activeVersionKey && !availableUrls[activeVersionKey]) {
              showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Phiên bản "${activeVersionKey}" không có sẵn cho tập này.`, false, true);
         } else {
@@ -470,9 +566,98 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSkipIntroButtonVisibility();
     };
 
+    // --- START: localStorage Functions ---
     /**
-     * Handles clicks on the version selection buttons.
-     * Xử lý các lần nhấp vào nút chọn phiên bản.
+     * Saves the preferred version for a series to localStorage.
+     * Lưu phiên bản ưu tiên cho một phim bộ vào localStorage.
+     * @param {number} seriesId - The ID of the series. ID của phim bộ.
+     * @param {string} versionKey - The selected version key. Khóa phiên bản đã chọn.
+     */
+    const saveVersionPreference = (seriesId, versionKey) => {
+        if (!seriesId || !versionKey) return;
+        try {
+            // Use a distinct prefix for series preferences
+            // Sử dụng tiền tố riêng cho lựa chọn phim bộ
+            localStorage.setItem(`seriesPref_${seriesId}_version`, versionKey);
+            console.log(`Đã lưu lựa chọn phiên bản '${versionKey}' cho phim bộ ID ${seriesId}`);
+        } catch (e) {
+            console.error("Lỗi khi lưu lựa chọn vào localStorage (phim bộ):", e);
+        }
+    };
+
+    /**
+     * Loads the preferred version for a series from localStorage.
+     * Tải phiên bản ưu tiên cho một phim bộ từ localStorage.
+     * @param {number} seriesId - The ID of the series. ID của phim bộ.
+     * @returns {string|null} The preferred version key or null. Khóa phiên bản ưu tiên hoặc null.
+     */
+    const loadVersionPreference = (seriesId) => {
+        if (!seriesId) return null;
+        try {
+            const preferredVersion = localStorage.getItem(`seriesPref_${seriesId}_version`);
+            if (preferredVersion) {
+                console.log(`Đã tải lựa chọn phiên bản '${preferredVersion}' cho phim bộ ID ${seriesId}`);
+            }
+            return preferredVersion;
+        } catch (e) {
+            console.error("Lỗi khi tải lựa chọn từ localStorage (phim bộ):", e);
+            return null;
+        }
+    };
+    // --- END: localStorage Functions ---
+
+    // --- START: New function to prepare video without playing ---
+    /**
+     * Prepares the video player for playback without starting it.
+     * Chuẩn bị trình phát video để phát lại mà không cần bắt đầu.
+     * Updates UI states, sets the poster, and saves preference.
+     * Cập nhật trạng thái giao diện người dùng, đặt poster và lưu lựa chọn.
+     * @param {string} versionKey - The version key to prepare. Khóa phiên bản cần chuẩn bị.
+     */
+    const prepareVideoPlayback = (versionKey) => {
+        if (!currentSeriesData) return;
+        const season = currentSeriesData.seasons?.[currentSelectedSeasonIndex];
+        const episode = season?.episodes?.[currentSelectedEpisodeIndex];
+        if (!episode) {
+            console.error("prepareVideoPlayback (Series): Không thể chuẩn bị phát: không tìm thấy dữ liệu tập hiện tại.");
+            return;
+        }
+
+        const availableUrls = episode.videoUrls || {};
+        const url = availableUrls[versionKey];
+
+        if (url) {
+            console.log(`prepareVideoPlayback (Series): Đang chuẩn bị phiên bản: ${versionKey} cho Tập ${episode.episodeNumber}, URL: ${url}`);
+            // Update button states (this also sets currentActiveVersion and currentVideoUrl)
+            // Cập nhật trạng thái nút (điều này cũng đặt currentActiveVersion và currentVideoUrl)
+            updateVersionButtonStates(availableUrls, versionKey);
+            // Set the poster (resets player if it was playing)
+            // Đặt poster (đặt lại trình phát nếu nó đang phát)
+            setPlayerPoster(episode);
+            // Save the preference for the series
+            // Lưu lựa chọn cho phim bộ
+            saveVersionPreference(currentSeriesData.id, versionKey);
+             // Update player title initially
+             // Cập nhật tiêu đề trình phát ban đầu
+            let playerTitleText = currentSeriesData?.title || 'Không có tiêu đề';
+            const seasonNumber = season?.seasonNumber;
+            playerTitleText += ` - Mùa ${seasonNumber || '?'} Tập ${episode.episodeNumber}`;
+            if (seriesTitlePlayer) seriesTitlePlayer.textContent = `Xem: ${playerTitleText}`;
+
+        } else {
+            console.warn(`prepareVideoPlayback (Series): Không tìm thấy URL cho phiên bản: ${versionKey} khi chuẩn bị.`);
+            // Update buttons to show this version is not active/available
+            // Cập nhật các nút để hiển thị phiên bản này không hoạt động/khả dụng
+            updateVersionButtonStates(availableUrls, null); // Pass null to deactivate all if the target is invalid
+            showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Phiên bản "${versionKey}" không có sẵn cho tập này.`, false, true);
+        }
+    };
+    // --- END: New function ---
+
+
+    /**
+     * Handles clicks on the version selection buttons. Now prepares instead of playing.
+     * Xử lý các lần nhấp vào nút chọn phiên bản. Bây giờ chuẩn bị thay vì phát.
      * @param {Event} event - The click event. Sự kiện nhấp chuột.
      */
     const handleVersionClick = (event) => {
@@ -480,19 +665,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!button || button.disabled || !currentSeriesData) return;
 
         const versionKey = button.dataset.version;
-        const season = currentSeriesData.seasons?.[currentSelectedSeasonIndex];
-        const episode = season?.episodes?.[currentSelectedEpisodeIndex];
-        const availableUrls = episode?.videoUrls || {};
-        const url = availableUrls[versionKey];
+        if (!versionKey) return;
 
-        if (url) {
-            // Cập nhật trạng thái nút (cũng cập nhật currentVideoUrl) và bắt đầu phát (KHÔNG bỏ qua intro)
-            updateVersionButtonStates(availableUrls, versionKey);
-            startVideoPlayback(url, false); // Pass false for shouldSkipIntro
-        } else {
-            console.warn(`Không tìm thấy URL cho phiên bản: ${versionKey} của tập ${episode?.episodeNumber}`);
-            showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Phiên bản "${versionKey}" không có sẵn cho tập này.`, false, true);
-        }
+        prepareVideoPlayback(versionKey); // Prepare the selected version
     };
 
     /**
@@ -510,6 +685,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pageTitleElement) pageTitleElement.textContent = errorTitle;
         // Update other meta tags for error state if needed
         // Cập nhật các thẻ meta khác cho trạng thái lỗi nếu cần
+        if (ogTitleTag) ogTitleTag.content = errorTitle;
+        if (twitterTitleTag) twitterTitleTag.content = errorTitle;
+        if (metaDescriptionTag) metaDescriptionTag.content = message;
+        if (ogDescriptionTag) ogDescriptionTag.content = message;
+        if (twitterDescriptionTag) twitterDescriptionTag.content = message;
+        if (ogImageTag) ogImageTag.content = 'https://placehold.co/1200x630/141414/ffffff?text=Error';
+        if (twitterImageTag) twitterImageTag.content = 'https://placehold.co/1200x630/141414/ffffff?text=Error';
+        if (ogUrlTag) ogUrlTag.content = window.location.href;
+        if (twitterUrlTag) twitterUrlTag.content = window.location.href;
     };
 
     /**
@@ -527,7 +711,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const strData = (typeof data === 'string' && data.trim()) ? data : 'N/A';
         if (strData === 'N/A') return 'N/A';
-        return strData.split(separator).slice(0, limit).join(separator);
+        // Ensure string splitting handles the limit correctly
+        return strData.split(separator).map(s => s.trim()).filter(Boolean).slice(0, limit).join(separator);
     };
 
     /**
@@ -626,11 +811,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let description = `Xem phim bộ ${seriesTitleText} ${seriesYearText} online. `;
         if (series.description) {
-            description += series.description.substring(0, 120) + '...';
+            // Take the first sentence or first 120 chars
+            const firstSentence = series.description.split('.')[0];
+            description += (firstSentence.length < 120 ? firstSentence + '.' : series.description.substring(0, 120) + '...');
         } else {
             description += `Thông tin chi tiết, các mùa, tập, diễn viên, đạo diễn, và các phiên bản Vietsub, Thuyết Minh.`;
         }
-        description = description.substring(0, 160);
+        description = description.substring(0, 160); // Max length for meta description
 
         const genresText = formatArrayData(series.genre, ', ');
         const keywords = `xem phim bộ ${seriesTitleText}, ${seriesTitleText} online, ${seriesTitleText} vietsub, ${seriesTitleText} thuyết minh, ${genresText}, phim bộ ${series.releaseYear || ''}, ${series.director || ''}, ${formatArrayData(series.cast, ', ', 3)}`;
@@ -771,7 +958,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (season) {
             populateEpisodeSelector(season.episodes); // Keep for potential future use
             displayEpisodeButtons(season.episodes); // Use the new function
-            loadEpisodeDataAndUpdateUI(currentSelectedEpisodeIndex); // Load data without playing
+            loadEpisodeDataAndUpdateUI(currentSelectedEpisodeIndex); // Prepare the first episode
         } else {
             // Handle error case where season data is missing
             // Xử lý trường hợp lỗi khi thiếu dữ liệu mùa
@@ -782,9 +969,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             // Reset player state
             // Đặt lại trạng thái trình phát
-            if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
-            if (videoIframePlaceholder) videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; // Reset placeholder
-            if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
             setPlayerPoster(); // Reset to default series poster
             updateVersionButtonStates({}, null); // Clear version buttons
             currentVideoUrl = null;
@@ -813,64 +997,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isNaN(selectedIndex) || selectedIndex === currentSelectedEpisodeIndex) return; // Ignore if invalid or same episode
 
-        currentSelectedEpisodeIndex = selectedIndex; // Update the current index
-
-        const season = currentSeriesData?.seasons?.[currentSelectedSeasonIndex];
-        const episode = season?.episodes?.[currentSelectedEpisodeIndex];
-
-        // Update UI (highlight the new button)
-        // Cập nhật giao diện người dùng (làm nổi bật nút mới)
-        if (episodeSelect) episodeSelect.value = selectedIndex.toString(); // Update dropdown if used
-        displayEpisodeButtons(season?.episodes); // Re-render buttons to apply 'active' class
-
-        if (!episode) {
-             console.error(`Không tìm thấy tập tại index ${selectedIndex}`);
-             displayError("Không thể tải thông tin tập phim.");
-             // Reset player
-             // Đặt lại trình phát
-             if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
-             if (videoIframePlaceholder) videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; // Reset placeholder
-             if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
-             setPlayerPoster();
-             updateVersionButtonStates({}, null);
-             currentVideoUrl = null;
-             updateSkipIntroButtonVisibility();
-             return;
-        }
-
-        // Find the default URL and start playback WITHOUT skipping intro
-        // Tìm URL mặc định và bắt đầu phát MÀ KHÔNG bỏ qua giới thiệu
-        let defaultVersionKey = null;
-        let defaultUrl = null;
-        let availableUrls = episode.videoUrls || {};
-        const versionPriority = ['vietsub', 'dubbed', 'voiceover'];
-        for (const key of versionPriority) {
-            if (availableUrls[key]) {
-                defaultVersionKey = key;
-                defaultUrl = availableUrls[key];
-                break;
-            }
-        }
-        if (!defaultVersionKey) {
-            for (const key in availableUrls) {
-                if (availableUrls[key]) {
-                    defaultVersionKey = key;
-                    defaultUrl = availableUrls[key];
-                    break;
-                }
-            }
-        }
-
-        updateVersionButtonStates(availableUrls, defaultVersionKey); // Update version buttons & currentVideoUrl
-        setPlayerPoster(episode); // Update poster (might use episode thumbnail)
-        startVideoPlayback(defaultUrl, false); // Start playing the video WITHOUT skipping
-
-        console.log(`Đã chọn và bắt đầu phát Mùa ${season?.seasonNumber || '?'} - Tập ${episode.episodeNumber}`);
+        // Load the data for the selected episode and update UI (poster, buttons, etc.)
+        // Tải dữ liệu cho tập đã chọn và cập nhật giao diện người dùng (poster, nút, v.v.)
+        loadEpisodeDataAndUpdateUI(selectedIndex);
+        // Do NOT start playback here. User needs to click play/skip.
+        // KHÔNG bắt đầu phát ở đây. Người dùng cần nhấp vào nút phát/bỏ qua.
     };
 
     /**
      * Loads the data for a specific episode and updates the UI (poster, version buttons, title) without starting playback.
      * Tải dữ liệu cho một tập cụ thể và cập nhật giao diện người dùng (poster, nút phiên bản, tiêu đề) mà không bắt đầu phát.
+     * It prepares the player by setting the correct poster and determining the default/preferred version.
+     * Nó chuẩn bị trình phát bằng cách đặt poster chính xác và xác định phiên bản mặc định/ưu tiên.
      * @param {number} episodeIndex - The index of the episode to load. Chỉ số của tập cần tải.
      */
     const loadEpisodeDataAndUpdateUI = (episodeIndex) => {
@@ -878,12 +1016,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const episode = season?.episodes?.[episodeIndex];
 
         if (!episode) {
-            console.error(`Không tìm thấy tập tại index ${episodeIndex} của mùa ${currentSelectedSeasonIndex} khi load UI.`);
+            console.error(`loadEpisodeDataAndUpdateUI: Không tìm thấy tập tại index ${episodeIndex} của mùa ${currentSelectedSeasonIndex}.`);
             // Reset player state if episode not found
             // Đặt lại trạng thái trình phát nếu không tìm thấy tập
-            if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
-            if (videoIframePlaceholder) videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; // Reset placeholder
-            if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
             setPlayerPoster(); // Reset to series poster
             updateVersionButtonStates({}, null); // Clear version buttons
             currentVideoUrl = null;
@@ -895,53 +1030,59 @@ document.addEventListener('DOMContentLoaded', () => {
         // Cập nhật chỉ số tập hiện được chọn
         currentSelectedEpisodeIndex = episodeIndex;
 
-        // Update UI elements
-        // Cập nhật các phần tử giao diện người dùng
+        // Update UI elements for episode selection
+        // Cập nhật các phần tử giao diện người dùng cho việc chọn tập
         if (episodeSelect) episodeSelect.value = episodeIndex.toString(); // Update dropdown if used
         displayEpisodeButtons(season.episodes); // Use new function to highlight button
 
-        // Determine the default URL and version for this episode
-        // Xác định URL và phiên bản mặc định cho tập này
-        let defaultVersionKey = null;
-        let defaultUrl = null;
-        let availableUrls = episode.videoUrls || {};
-        const versionPriority = ['vietsub', 'dubbed', 'voiceover'];
-        for (const key of versionPriority) {
-            if (availableUrls[key]) {
-                defaultVersionKey = key;
-                defaultUrl = availableUrls[key];
-                break;
-            }
+        // --- Determine the version to prepare (preference or default) ---
+        let versionToPrepare = loadVersionPreference(currentSeriesData.id); // Load preference for the series
+        const availableUrls = episode.videoUrls || {};
+
+        // Validate the loaded preference for *this specific episode*
+        // Xác thực lựa chọn đã tải cho *tập cụ thể này*
+        if (!versionToPrepare || !availableUrls[versionToPrepare]) {
+             console.log(`loadEpisodeDataAndUpdateUI: Lựa chọn đã lưu '${versionToPrepare}' không hợp lệ/khả dụng cho tập ${episode.episodeNumber}, đang tìm mặc định...`);
+             versionToPrepare = null; // Reset if invalid for this episode
+             // Find default if no valid preference for this episode
+             // Tìm mặc định nếu không có lựa chọn hợp lệ cho tập này
+             const versionPriority = ['vietsub', 'dubbed', 'voiceover'];
+             for (const key of versionPriority) {
+                 if (availableUrls[key]) {
+                     versionToPrepare = key;
+                     console.log(`loadEpisodeDataAndUpdateUI: Tìm thấy phiên bản mặc định ưu tiên cho tập: ${versionToPrepare}`);
+                     break;
+                 }
+             }
+             // Fallback to the first available if none of the preferred exist
+             // Dự phòng về cái đầu tiên có sẵn nếu không có cái nào trong số ưu tiên tồn tại
+             if (!versionToPrepare) {
+                 for (const key in availableUrls) {
+                     if (availableUrls[key]) {
+                         versionToPrepare = key;
+                         console.log(`loadEpisodeDataAndUpdateUI: Tìm thấy phiên bản mặc định dự phòng cho tập: ${versionToPrepare}`);
+                         break;
+                     }
+                 }
+             }
         }
-        // Fallback if preferred versions aren't available
-        // Dự phòng nếu các phiên bản ưu tiên không có sẵn
-        if (!defaultVersionKey) {
-            for (const key in availableUrls) {
-                if (availableUrls[key]) {
-                    defaultVersionKey = key;
-                    defaultUrl = availableUrls[key];
-                    break;
-                }
-            }
+        // --- End Determine version ---
+
+        // Prepare the determined version (updates buttons, sets poster, saves pref, sets currentVideoUrl)
+        // Chuẩn bị phiên bản đã xác định (cập nhật nút, đặt poster, lưu lựa chọn, đặt currentVideoUrl)
+        if (versionToPrepare) {
+             prepareVideoPlayback(versionToPrepare);
+        } else {
+             // Handle case where episode has NO available versions
+             // Xử lý trường hợp tập KHÔNG có phiên bản nào khả dụng
+             console.warn(`loadEpisodeDataAndUpdateUI: Không có phiên bản video nào cho tập ${episode.episodeNumber}`);
+             setPlayerPoster(episode); // Show episode poster if available, otherwise series poster
+             updateVersionButtonStates({}, null); // Disable all version buttons
+             currentVideoUrl = null;
+             updateSkipIntroButtonVisibility();
         }
 
-        // currentVideoUrl is set inside updateVersionButtonStates
-        // currentVideoUrl được đặt bên trong updateVersionButtonStates
-        setPlayerPoster(episode); // Update poster (might use episode thumbnail)
-        updateVersionButtonStates(availableUrls, defaultVersionKey); // Update version buttons (this also updates skip button visibility)
-        if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing'); // Ensure poster state
-        if (videoIframePlaceholder) videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; // Reset placeholder
-        if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active'); // Keep placeholder hidden initially
-
-        // Update player title to reflect the loaded episode
-        // Cập nhật tiêu đề trình phát để phản ánh tập đã tải
-        let playerTitleText = currentSeriesData?.title || 'Không có tiêu đề';
-        const seasonNumber = season?.seasonNumber;
-        playerTitleText += ` - Mùa ${seasonNumber || '?'} Tập ${episode.episodeNumber}`;
-        if (seriesTitlePlayer) seriesTitlePlayer.textContent = `Xem: ${playerTitleText}`;
-
-
-        console.log(`Đã tải dữ liệu UI cho Mùa ${season?.seasonNumber || '?'} - Tập ${episode.episodeNumber}. URL sẵn sàng: ${currentVideoUrl}`);
+        console.log(`loadEpisodeDataAndUpdateUI: Đã tải dữ liệu UI cho Mùa ${season?.seasonNumber || '?'} - Tập ${episode.episodeNumber}. Phiên bản chuẩn bị: ${currentActiveVersion || 'None'}. URL sẵn sàng: ${currentVideoUrl}`);
     };
 
 
@@ -979,6 +1120,7 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.classList.toggle('fa-lightbulb', !isLightsOff);
             icon.classList.toggle('fa-solid', !isLightsOff);
             icon.classList.toggle('fa-moon', isLightsOff);
+            icon.classList.toggle('fa-regular', isLightsOff); // Use regular moon icon
         }
         console.log("Đèn đã được:", isLightsOff ? "Tắt" : "Bật");
     };
@@ -995,14 +1137,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         const options = { root: null, rootMargin: '0px', threshold: 0.1 };
-        observer = new IntersectionObserver((entries, observer) => {
+        observer = new IntersectionObserver((entries, observerInstance) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     const delayIndex = parseInt(entry.target.dataset.index || '0', 10);
                     const delay = delayIndex * 100;
                     entry.target.style.animationDelay = `${delay}ms`;
                     entry.target.classList.add('is-visible');
-                    // observer.unobserve(entry.target); // Optional
+                    observerInstance.unobserve(entry.target); // Unobserve after animating
                 }
             });
         }, options);
@@ -1017,11 +1159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const observeElements = (elements) => {
         if (!observer) return;
         elements.forEach((el) => {
-            if (el.dataset.index === undefined && el.classList.contains('animate-on-scroll')) {
-                 // Assign index if needed
-                 // Gán chỉ số nếu cần
-            }
-            if (el.classList.contains('animate-on-scroll')) {
+            if (el.classList.contains('animate-on-scroll') && !el.classList.contains('is-visible')) {
                  observer.observe(el);
             }
         });
@@ -1056,8 +1194,8 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     ])
     .then(([movies, series]) => {
-        allMoviesData = movies; // Lưu dữ liệu phim lẻ
-        allSeriesData = series; // Lưu dữ liệu phim bộ
+        allMoviesData = movies || []; // Lưu dữ liệu phim lẻ
+        allSeriesData = series || []; // Lưu dữ liệu phim bộ
 
         // Tìm phim bộ hiện tại bằng ID
         currentSeriesData = allSeriesData.find(s => s.id === numericSeriesId);
@@ -1083,7 +1221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(seriesEpisodesCount) seriesEpisodesCount.textContent = currentSeriesData.totalEpisodes || 'N/A';
 
 
-            // Điền dữ liệu vào bộ chọn mùa (sẽ tự động tải UI tập đầu tiên)
+            // Điền dữ liệu vào bộ chọn mùa (sẽ tự động tải và chuẩn bị UI tập đầu tiên)
             populateSeasonSelector(currentSeriesData.seasons);
 
             // Tải nội dung liên quan
@@ -1094,6 +1232,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (seriesDetailsSkeleton) seriesDetailsSkeleton.classList.add('hidden');
                 if (errorMessageContainer) errorMessageContainer.classList.add('hidden');
                 if (seriesDetailsContent) seriesDetailsContent.classList.remove('hidden');
+                console.log("Đã hiển thị nội dung chi tiết phim bộ.");
             }, 150); // Độ trễ nhỏ
 
             // Khởi tạo observer cho hiệu ứng cuộn
@@ -1114,17 +1253,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners ---
     window.addEventListener('scroll', handleScroll); // Cuộn trang
     if (scrollToTopButton) scrollToTopButton.addEventListener('click', scrollToTop); // Nút cuộn lên đầu
-    if (versionSelectionContainer) versionSelectionContainer.addEventListener('click', handleVersionClick); // Nút chọn phiên bản
+    if (versionSelectionContainer) versionSelectionContainer.addEventListener('click', handleVersionClick); // Calls prepareVideoPlayback
     if (toggleLightsButton) toggleLightsButton.addEventListener('click', toggleLights); // Nút tắt/bật đèn
-    if (seasonSelect) seasonSelect.addEventListener('change', handleSeasonChange); // Thay đổi mùa
-    // Trình lắng nghe cho nút tập được thêm động trong displayEpisodeButtons
+    if (seasonSelect) seasonSelect.addEventListener('change', handleSeasonChange); // Calls loadEpisodeDataAndUpdateUI
+    // Trình lắng nghe cho nút tập được thêm động trong displayEpisodeButtons -> calls loadEpisodeDataAndUpdateUI
+    // Click listener for the lights-off overlay itself to turn lights back on
+    const lightsOverlay = document.getElementById('lights-overlay');
+    if (lightsOverlay) lightsOverlay.addEventListener('click', () => {
+         if (document.body.classList.contains('lights-off')) {
+             toggleLights();
+         }
+    });
 
     // Play video when poster overlay or play button is clicked (play WITHOUT skipping intro)
     // Phát video khi nhấp vào lớp phủ poster hoặc nút phát (phát MÀ KHÔNG bỏ qua giới thiệu)
     if (videoPosterOverlay) videoPosterOverlay.addEventListener('click', () => {
         console.log("Poster/Overlay clicked (series). Attempting playback from start...");
-        // Check if a valid version is selected for the current episode
-        // Kiểm tra xem phiên bản hợp lệ đã được chọn cho tập hiện tại chưa
         if (currentVideoUrl) {
             startVideoPlayback(currentVideoUrl, false); // Pass false for shouldSkipIntro
         } else {
@@ -1132,8 +1276,9 @@ document.addEventListener('DOMContentLoaded', () => {
              showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Vui lòng chọn tập và phiên bản video để phát.`, false, true);
         }
     });
+    // Ensure play button click doesn't propagate to overlay if they overlap
     if (videoPlayButton) videoPlayButton.addEventListener('click', (event) => {
-        event.stopPropagation(); // Ngăn chặn kích hoạt listener của overlay
+        event.stopPropagation(); // Prevent triggering overlay click too
         console.log("Play button clicked (series). Attempting playback from start...");
         if (currentVideoUrl) {
             startVideoPlayback(currentVideoUrl, false); // Pass false for shouldSkipIntro
@@ -1147,15 +1292,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (skipIntroButton) {
         skipIntroButton.addEventListener('click', () => {
             console.log("Nút Bỏ qua Intro đã được nhấp (phim bộ).");
-            // Check if there's a valid URL and version selected for the current episode
-            // Kiểm tra xem có URL và phiên bản hợp lệ được chọn cho tập hiện tại không
             if (currentVideoUrl && currentActiveVersion) {
-                const isYouTube = !!getYouTubeVideoId(currentVideoUrl);
+                const isYouTube = !!getYouTubeVideoId(currentVideoUrl); // Check if it's a valid YT ID
                 if (isYouTube) {
                     startVideoPlayback(currentVideoUrl, true); // Pass true for shouldSkipIntro
                 } else {
-                    console.warn("Bỏ qua giới thiệu chỉ hoạt động với video YouTube (phim bộ).");
-                     showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Bỏ qua giới thiệu chỉ khả dụng cho video YouTube.`, false, true);
+                    console.warn("Bỏ qua giới thiệu chỉ hoạt động với video YouTube hợp lệ (phim bộ).");
+                     showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Bỏ qua giới thiệu chỉ khả dụng cho video YouTube hợp lệ.`, false, true);
                 }
             } else {
                 console.warn("Không thể bỏ qua giới thiệu (phim bộ): Không có URL hoặc phiên bản video đang hoạt động cho tập hiện tại.");
@@ -1165,4 +1308,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 }); // End DOMContentLoaded
-

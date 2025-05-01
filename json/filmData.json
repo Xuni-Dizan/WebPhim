@@ -18,7 +18,8 @@
     "isTrending": false,
     "isNew": false,
     "heroImage": "https://image.tmdb.org/t/p/original/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg",
-    "skipIntroSeconds": 120 
+    "skipIntroSeconds": 120,
+    "format": ["Live Action", "Feature"]
   },
   {
     "id": 2,
@@ -42,7 +43,8 @@
     "isTrending": false,
     "isNew": false,
     "heroImage": "https://kritikanstvo.ru/movies/h/howtotrainyourdragon2/posters/howtotrainyourdragon2_178975.jpg",
-    "skipIntroSeconds": 65 
+    "skipIntroSeconds": 65,
+    "format": ["Feature"]
   },
   {
     "id": 3,
@@ -62,7 +64,8 @@
     },
     "isTrending": false,
     "isNew": false,
-    "heroImage": "https://cdn.bhdw.net/im/interstellar-movie-wallpaper-11787_w635.webp"
+    "heroImage": "https://cdn.bhdw.net/im/interstellar-movie-wallpaper-11787_w635.webp",
+    "format": ["Live Action", "Feature"]
   },
   {
     "id": 4,
@@ -82,7 +85,8 @@
     },
     "isTrending": false,
     "isNew": false,
-    "heroImage": "https://terrigen-cdn-dev.marvel.com/content/prod/1x/blackpanther_lob_mas_hlf_01_0.jpg"
+    "heroImage": "https://terrigen-cdn-dev.marvel.com/content/prod/1x/blackpanther_lob_mas_hlf_01_0.jpg",
+    "format": ["Live Action", "Feature"]
   },
   {
     "id": 5,
@@ -103,27 +107,29 @@
     "isTrending": false,
     "isNew": false,
     "heroImage": "https://rare-gallery.com/uploads/posts/343163-Tenet-2020-Movie-Poster-John-David-Washington.jpg",
-    "skipIntroSeconds": 20
+    "skipIntroSeconds": 20,
+    "format": ["Live Action", "Feature"]
   },
   {
     "id": 6,
-    "title": "Người Nhện: Vũ Trụ Mới",
-    "description": "Miles Morales trở lại trong một cuộc phiêu lưu mới, nơi anh gặp gỡ những Người Nhện khác từ các vũ trụ khác nhau.",
-    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/3/3f/Spider-Man_No_Way_Home_poster.jpg",
+    "title": "Oppenheimer",
+    "description": "Bộ phim tiểu sử giật gân về J. Robert Oppenheimer, nhà vật lý lý thuyết người Mỹ, người đóng vai trò quan trọng trong Dự án Manhattan phát triển vũ khí hạt nhân đầu tiên trong Thế chiến II.",
+    "posterUrl": "https://i.redd.it/utipuatnkaea1.jpg",
     "releaseYear": 2023,
-    "genre": ["Hành động", "Khoa học viễn tưởng", "Phiêu lưu"],
-    "director": "Jon Watts",
-    "cast": ["Tom Holland", "Zendaya", "Benedict Cumberbatch", "Jacob Batalon", "Alfred Molina"],
-    "rating": 8.0,
-    "duration": "140 phút",
+    "genre": ["Tiểu sử", "Chính kịch", "Lịch sử"],
+    "director": "Christopher Nolan",
+    "cast": ["Cillian Murphy", "Emily Blunt", "Matt Damon", "Robert Downey Jr.", "Florence Pugh"],
+    "rating": 8.3,
+    "duration": "180 phút",
     "videoUrls": {
-      "vietsub": null,
+      "vietsub": "https://www.youtube.com/watch?v=N86KuGbSiY4",
       "dubbed": null,
       "voiceover": null
     },
     "isTrending": false,
     "isNew": false,
-    "heroImage": null
+    "heroImage": "https://wallpaperaccess.com/full/9631283.jpg",
+    "format": ["Live Action", "Feature"]
   },
   {
     "id": 7,
@@ -143,7 +149,8 @@
     },
     "isTrending": false,
     "isNew": false,
-    "heroImage": null
+    "heroImage": null,
+    "format": ["Live Action", "Feature"]
   },
   {
     "id": 8,
@@ -163,7 +170,8 @@
     },
     "isTrending": false,
     "isNew": false,
-    "heroImage": null
+    "heroImage": null,
+    "format": ["Live Action", "Feature"]
   },
   {
     "id": 9,
@@ -183,6 +191,7 @@
     },
     "isTrending": false,
     "isNew": false,
-    "heroImage": null
+    "heroImage": null,
+    "format": ["Live Action", "Feature"]
   }
 ]

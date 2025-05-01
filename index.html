@@ -28,16 +28,16 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        'sans': ['Inter', 'sans-serif'], // Use Inter font
+                        'sans': ['Inter', 'sans-serif'], // Sử dụng font Inter
                     },
                     colors: {
-                        'primary': '#e50914', // Netflix Red
-                        'secondary': '#141414', // Dark background
-                        'light-gray': '#222222', // Lighter gray for elements
-                        'dark-gray': '#181818', // Even darker gray for dropdowns etc.
-                        'text-muted': '#8c8c8c', // Muted text color
-                        'border-color': '#333333', // Subtle border color
-                        'highlight': '#facc15', // Yellow for highlighting search terms
+                        'primary': '#e50914', // Màu đỏ Netflix
+                        'secondary': '#141414', // Nền tối
+                        'light-gray': '#222222', // Xám nhạt cho các element
+                        'dark-gray': '#181818', // Xám đậm hơn cho dropdown...
+                        'text-muted': '#8c8c8c', // Màu chữ mờ
+                        'border-color': '#333333', // Màu viền tinh tế
+                        'highlight': '#facc15', // Màu vàng để highlight từ khóa tìm kiếm
                     }
                 }
             }
@@ -50,7 +50,8 @@
 
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Inline styles for Skeleton, Highlight, Filter Tags, Slider (can be moved to style.css) */
+        /* Inline styles for Skeleton, Highlight, Filter Tags, Slider (có thể chuyển vào style.css) */
+        /* Skeleton Loading Styles */
         .skeleton {
             background-color: var(--skeleton-base-color, #333);
             border-radius: 4px;
@@ -102,7 +103,7 @@
         .filter-tag:hover { background-color: #444; }
         .filter-tag .remove-tag {
             margin-left: 6px;
-            font-size: 1rem; /* Material icon size */
+            font-size: 1rem; /* Kích thước Material icon */
             color: var(--text-muted-color, #8c8c8c);
             transition: color 0.2s;
             line-height: 1;
@@ -112,38 +113,62 @@
         /* Slider container style */
         .slider-container { margin-top: 1rem; }
         .slider-label { display: block; font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-muted-color, #8c8c8c); }
-        /* noUiSlider styles are in style.css */
+        /* noUiSlider styles nằm trong style.css */
 
-        /* Tab transition styles (using classes from style.css) */
+        /* Tab transition styles (sử dụng class từ style.css) */
         #movie-grid {
-            /* Transitions managed by classes in style.css */
+            /* Transitions được quản lý bởi class trong style.css */
         }
 
-        /* --- START: Improved Logo Styling --- */
+        /* --- START: Cải thiện kiểu dáng Logo --- */
         .header-logo-link {
-            display: inline-block; /* Ensures link takes size of image */
-            transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth transition for hover effect */
-            flex-shrink: 0; /* Prevent shrinking in flex container */
+            display: inline-block; /* Đảm bảo link chiếm kích thước của ảnh */
+            transition: transform 0.3s ease, opacity 0.3s ease; /* Hiệu ứng chuyển động mượt mà khi hover */
+            flex-shrink: 0; /* Ngăn không bị co lại trong flex container */
         }
         .header-logo-link:hover {
-            transform: scale(1.05); /* Slightly enlarge on hover */
-            opacity: 0.9; /* Slightly fade on hover */
+            transform: scale(1.05); /* Phóng to nhẹ khi hover */
+            opacity: 0.9; /* Mờ nhẹ khi hover */
         }
         .header-logo {
-             height: 32px; /* Original height (h-8 equivalent) */
-             /* Increased max-height for larger screens */
-             max-height: 40px; /* Example: Limit max height */
-             width: auto; /* Maintain aspect ratio */
-             object-fit: contain; /* Ensure logo fits without distortion */
-             vertical-align: middle; /* Align better with text/icons if needed */
+             height: 32px; /* Chiều cao gốc (tương đương h-8) */
+             /* Tăng max-height cho màn hình lớn hơn */
+             max-height: 40px; /* Ví dụ: Giới hạn chiều cao tối đa */
+             width: auto; /* Duy trì tỷ lệ khung hình */
+             object-fit: contain; /* Đảm bảo logo vừa vặn không bị méo */
+             vertical-align: middle; /* Căn chỉnh tốt hơn với text/icons nếu cần */
         }
-        /* Optional: Adjust height for smaller screens if needed */
+        /* Tùy chọn: Điều chỉnh chiều cao cho màn hình nhỏ hơn nếu cần */
         @media (max-width: 640px) {
             .header-logo {
-                height: 28px; /* Slightly smaller on mobile */
+                height: 28px; /* Nhỏ hơn một chút trên mobile */
             }
         }
-        /* --- END: Improved Logo Styling --- */
+        /* --- END: Cải thiện kiểu dáng Logo --- */
+
+        /* --- Filter Section Transition --- */
+        #filter-controls {
+            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, padding 0.5s ease-in-out, margin 0.5s ease-in-out, border-width 0.5s ease-in-out;
+            overflow: hidden;
+            max-height: 0; /* Bắt đầu ẩn */
+            opacity: 0;
+            visibility: hidden;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-bottom: 0;
+            border-width: 0; /* Ẩn viền khi thu gọn */
+        }
+        #filter-controls:not(.hidden) {
+            max-height: 1000px; /* Chiều cao đủ lớn khi hiển thị */
+            opacity: 1;
+            visibility: visible;
+            padding-top: 1rem; /* Khôi phục padding */
+            padding-bottom: 1rem;
+            margin-bottom: 1rem; /* Khôi phục margin */
+            border-width: 1px; /* Khôi phục viền */
+        }
+        /* --- End Filter Section Transition --- */
+
     </style>
 </head>
 <body class="bg-secondary text-white font-sans">
@@ -152,13 +177,14 @@
         <div class="container mx-auto flex justify-between items-center max-w-screen-xl">
             <a href="index.html" class="header-logo-link" aria-label="Trang chủ LOGO PHIM">
                 <img src="access/img/logo.png" alt="Logo Trang Web Phim" class="header-logo">
-                </a>
+            </a>
 
             <nav class="hidden md:flex flex-grow justify-center space-x-5 lg:space-x-7 items-center" aria-label="Điều hướng chính">
                 <a href="index.html" class="text-gray-300 hover:text-white transition duration-300 font-medium" aria-current="page">Trang Chủ</a>
                 <a href="#filter-controls" id="nav-category" class="text-gray-300 hover:text-white transition duration-300 font-medium">Thể Loại</a>
                 <a href="#" id="nav-latest" class="text-gray-300 hover:text-white transition duration-300 font-medium">Mới Nhất</a>
-                </nav>
+                <a href="pages/hoat_hinh_2D_3D.html" id="nav-2d3d" class="text-gray-300 hover:text-white transition duration-300 font-medium">Phim 2D/3D</a>
+            </nav>
 
             <div class="hidden md:flex items-center space-x-4 flex-shrink-0">
                 <div class="relative">
@@ -169,7 +195,7 @@
                     </span>
                     <div id="search-suggestions-desktop" role="listbox" class="search-suggestions search-suggestions-desktop absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm">
                         <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
-                    </div>
+                        </div>
                 </div>
                 <button class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Tài khoản người dùng">
                     <i class="fas fa-user text-lg"></i>
@@ -194,7 +220,7 @@
             </span>
             <div id="search-suggestions-mobile" role="listbox" class="search-suggestions search-suggestions-mobile absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm di động">
                  <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
-            </div>
+                 </div>
         </div>
     </header>
 
@@ -207,11 +233,12 @@
             <a href="index.html" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium" aria-current="page">Trang Chủ</a>
             <a href="#filter-controls" id="mobile-nav-category" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium">Thể Loại</a>
             <a href="#" id="mobile-nav-latest" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium">Mới Nhất</a>
+            <a href="pages/hoat_hinh_2D_3D.html" id="mobile-nav-2d3d" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium">Phim 2D/3D</a>
             <hr class="border-gray-600 my-3">
              <a href="#" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium flex items-center gap-2">
                  <i class="fas fa-user w-4 text-center"></i> Tài Khoản
              </a>
-             </nav>
+        </nav>
     </div>
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-screen-xl">
@@ -243,10 +270,9 @@
                 </div>
         </section>
 
-        <section id="filter-controls" aria-labelledby="filter-heading" class="mb-4 p-4 bg-light-gray rounded-lg shadow-md">
-             <div class="flex flex-wrap gap-4 items-start">
+        <section id="filter-controls" aria-labelledby="filter-heading" class="mb-4 p-4 bg-light-gray rounded-lg shadow-md hidden"> <div class="flex flex-wrap gap-4 items-start">
                  <h2 id="filter-heading" class="text-lg sm:text-xl font-semibold text-gray-100 w-full sm:w-auto flex-shrink-0 mb-2 sm:mb-0">Bộ Lọc</h2>
-                 <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+                 <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
                      <div id="genre-filter-container" class="relative">
                          <label for="genre-filter-button" class="block text-sm font-medium text-gray-300 mb-1">Thể loại</label>
                          <button id="genre-filter-button" type="button" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 text-left flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="genre-dropdown">
@@ -269,12 +295,23 @@
                          </select>
                      </div>
 
-                     <div id="year-slider-container" class="slider-container lg:col-span-1">
+                     <div>
+                         <label for="format-filter" class="block text-sm font-medium text-gray-300 mb-1">Định dạng</label>
+                         <select id="format-filter" name="format" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 appearance-none" aria-label="Chọn định dạng phim">
+                             <option selected value="all">Tất cả định dạng</option>
+                             <option value="2D">2D</option>
+                             <option value="3D">3D</option>
+                             <option value="Animation">Hoạt Hình</option>
+                             <option value="Live Action">Người Đóng</option>
+                             </select>
+                     </div>
+
+                     <div id="year-slider-container" class="slider-container lg:col-span-1 xl:col-span-1">
                         <label class="slider-label">Năm phát hành: <span id="year-slider-values">Tất cả</span></label>
                         <div id="year-slider" class="noui-slider-target"></div>
                      </div>
 
-                     <div id="rating-slider-container" class="slider-container lg:col-span-1">
+                     <div id="rating-slider-container" class="slider-container lg:col-span-1 xl:col-span-1">
                          <label class="slider-label">Điểm đánh giá: <span id="rating-slider-values">Tất cả</span></label>
                          <div id="rating-slider" class="noui-slider-target"></div>
                      </div>
@@ -287,8 +324,8 @@
              </div>
          </section>
 
-        <div id="filter-tags-container" class="mb-4 flex flex-wrap gap-2">
-            </div>
+         <div id="filter-tags-container" class="mb-4 flex flex-wrap gap-2">
+             </div>
 
         <section id="movie-grid-section" role="tabpanel" aria-labelledby="tab-movies">
             <h2 id="movie-grid-title" class="text-xl sm:text-2xl font-semibold mb-6 text-gray-100">Phim Lẻ</h2>
@@ -334,7 +371,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
 
     <script>
-        // Inline script for header/search interactions (can be moved to a separate file)
+        // Inline script for header/search interactions (có thể chuyển vào file riêng)
         document.addEventListener('DOMContentLoaded', function() {
             // --- Elements ---
             const header = document.getElementById('main-header');
@@ -352,8 +389,9 @@
             const navLatestLink = document.getElementById('nav-latest');
             const mobileNavCategoryLink = document.getElementById('mobile-nav-category');
             const mobileNavLatestLink = document.getElementById('mobile-nav-latest');
-            const genreDropdown = document.getElementById('genre-dropdown'); // Needed for closing logic
-            const genreButton = document.getElementById('genre-filter-button'); // Needed for closing logic
+            const genreDropdown = document.getElementById('genre-dropdown'); // Cần cho logic đóng và toggle
+            const genreButton = document.getElementById('genre-filter-button'); // Cần cho logic đóng và toggle
+            const filterControls = document.getElementById('filter-controls'); // Phần bộ lọc
 
             let debounceTimer;
 
@@ -370,7 +408,7 @@
             // --- Highlight Search Term ---
             const highlightTerm = (text, term) => {
                 if (!term) return text;
-                const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape regex special chars
+                const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape các ký tự đặc biệt regex
                 const regex = new RegExp(`(${escapedTerm})`, 'gi');
                 return text.replace(regex, `<span class="search-highlight">$1</span>`);
             };
@@ -408,9 +446,18 @@
                 }
 
                 if (placeholder) placeholder.textContent = 'Đang tìm...';
-                suggestionsContainer.innerHTML = ''; // Clear previous
+                suggestionsContainer.innerHTML = ''; // Xóa gợi ý cũ
 
-                // Access globally stored data from script.js
+                // --- NEW: Check if data is loaded before accessing ---
+                if (!window.dataLoaded) {
+                    console.warn("Search suggestions: Data not loaded yet.");
+                    suggestionsContainer.innerHTML = `<div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Dữ liệu đang tải...</div>`;
+                    suggestionsContainer.style.display = 'block';
+                    inputElement.setAttribute('aria-expanded', 'true');
+                    return;
+                }
+
+                // Truy cập dữ liệu toàn cục từ script.js
                 const moviesData = window.allMovies || [];
                 const seriesData = window.allSeries || [];
 
@@ -418,8 +465,8 @@
                 const matchedSeries = seriesData.filter(series => series.title && series.title.toLowerCase().includes(searchTerm)).map(item => ({ item, type: 'series' }));
 
                 const allMatches = [...matchedMovies, ...matchedSeries]
-                    .sort((a, b) => (a.item.title || '').localeCompare(b.item.title || '')) // Sort alphabetically
-                    .slice(0, 7); // Limit results
+                    .sort((a, b) => (a.item.title || '').localeCompare(b.item.title || '')) // Sắp xếp theo alphabet
+                    .slice(0, 7); // Giới hạn kết quả
 
                 if (allMatches.length > 0) {
                     suggestionsContainer.innerHTML = allMatches.map(({ item, type }) => createSuggestionItem(item, type, searchTerm)).join('');
@@ -443,7 +490,7 @@
                     if(searchInputMobile) searchInputMobile.setAttribute('aria-expanded', 'false');
                 }
             };
-            window.hideAllSearchSuggestions = hideAllSearchSuggestions; // Expose globally if needed elsewhere
+            window.hideAllSearchSuggestions = hideAllSearchSuggestions; // Expose toàn cục nếu cần ở nơi khác
 
             // --- Mobile Menu ---
             const openMobileMenu = () => {
@@ -451,14 +498,14 @@
                 mobileMenuPanel?.classList.add('translate-x-0');
                 mobileMenuOverlay?.classList.remove('hidden');
                 mobileMenuButton?.setAttribute('aria-expanded', 'true');
-                document.body.style.overflow = 'hidden'; // Prevent body scroll
+                document.body.style.overflow = 'hidden'; // Ngăn cuộn body
             };
             const closeMobileMenu = () => {
                 mobileMenuPanel?.classList.remove('translate-x-0');
                 mobileMenuPanel?.classList.add('translate-x-full');
                 mobileMenuOverlay?.classList.add('hidden');
                 mobileMenuButton?.setAttribute('aria-expanded', 'false');
-                document.body.style.overflow = ''; // Restore body scroll
+                document.body.style.overflow = ''; // Khôi phục cuộn body
             };
             mobileMenuButton?.addEventListener('click', openMobileMenu);
             closeMobileMenuButton?.addEventListener('click', closeMobileMenu);
@@ -468,8 +515,8 @@
             searchIconMobile?.addEventListener('click', () => {
                 const isHidden = mobileSearchContainer?.classList.toggle('hidden');
                 searchIconMobile.setAttribute('aria-expanded', String(!isHidden));
-                if (!isHidden) searchInputMobile?.focus(); // Focus input when shown
-                else hideAllSearchSuggestions(); // Hide suggestions when search is hidden
+                if (!isHidden) searchInputMobile?.focus(); // Focus input khi hiển thị
+                else hideAllSearchSuggestions(); // Ẩn gợi ý khi search bị ẩn
             });
 
             // --- Search Input Handling (Debounced) ---
@@ -482,41 +529,67 @@
             searchInputDesktop?.addEventListener('input', handleSearchInput);
             searchInputMobile?.addEventListener('input', handleSearchInput);
 
-            // --- Click Outside Search & Genre Dropdown ---
+            // --- START: Genre Dropdown Toggle ---
+            genreButton?.addEventListener('click', (event) => {
+                event.stopPropagation(); // Ngăn sự kiện click lan ra document
+                if (genreDropdown) {
+                    const isHidden = genreDropdown.classList.toggle('hidden');
+                    genreButton.setAttribute('aria-expanded', String(!isHidden));
+                    console.log("Genre dropdown toggled:", !isHidden);
+                } else {
+                    console.error("Genre dropdown element not found.");
+                }
+            });
+            // --- END: Genre Dropdown Toggle ---
+
+            // --- Click Outside Search, Genre Dropdown, and Filter Controls ---
             document.addEventListener('click', (event) => {
                 const target = event.target;
-                // Check if click is inside desktop search area
+                // Kiểm tra click có nằm trong vùng search desktop không
                 const isInsideDesktopSearch = searchInputDesktop?.contains(target) || searchSuggestionsDesktop?.contains(target);
-                // Check if click is inside mobile search area or its trigger icon
+                // Kiểm tra click có nằm trong vùng search mobile hoặc icon kích hoạt không
                 const isInsideMobileSearch = searchInputMobile?.contains(target) || searchSuggestionsMobile?.contains(target) || searchIconMobile?.contains(target);
-                // Check if click is inside genre filter dropdown or its button
-                const isInsideGenreFilter = genreDropdown?.contains(target) || genreButton?.contains(target);
+                // Kiểm tra click có nằm trong dropdown thể loại hoặc nút của nó không
+                const isInsideGenreFilter = genreDropdown?.contains(target) || genreButton?.contains(target); // Include button check
+                // Kiểm tra click có nằm trong chính phần filter controls không
+                const isInsideFilterControls = filterControls?.contains(target);
+                 // Kiểm tra click có phải là link nav thể loại không
+                const isCategoryNavLink = navCategoryLink?.contains(target) || mobileNavCategoryLink?.contains(target);
 
-                // Hide search suggestions if clicked outside search areas
+
+                // Ẩn gợi ý search nếu click ra ngoài vùng search
                 if (!isInsideDesktopSearch && !isInsideMobileSearch) {
                     hideAllSearchSuggestions();
                 }
-                // Hide genre dropdown if clicked outside its area
+                // Ẩn dropdown thể loại nếu click ra ngoài vùng của nó VÀ NÚT CỦA NÓ
                 if (!isInsideGenreFilter && genreDropdown && !genreDropdown.classList.contains('hidden')) {
+                    console.log("Click outside genre filter detected. Hiding dropdown.");
                     genreDropdown.classList.add('hidden');
                      genreButton?.setAttribute('aria-expanded', 'false');
+                }
+
+                // Logic ẩn Filter Controls khi click bên ngoài (đã thêm ở bản cập nhật trước)
+                if (filterControls && !filterControls.classList.contains('hidden') &&
+                    !isInsideFilterControls && !isCategoryNavLink) {
+                    console.log("Click detected outside filter controls and category link. Hiding filters.");
+                    filterControls.classList.add('hidden');
                 }
             });
 
             // --- Search Submit (Enter Key) ---
             const handleSearchSubmit = (event) => {
                 if (event.key === 'Enter') {
-                    event.preventDefault(); // Prevent form submission if inside a form
+                    event.preventDefault(); // Ngăn submit form nếu nằm trong form
                     const searchTerm = event.target.value.trim();
-                    console.log(`Perform search for: ${searchTerm}`);
-                    // Call the global filtering function from script.js
+                    console.log(`Thực hiện tìm kiếm cho: ${searchTerm}`);
+                    // Gọi hàm lọc toàn cục từ script.js
                     if (typeof window.filterAndSortContent === 'function') {
-                        window.filterAndSortContent(); // This function now reads the input value itself
+                        window.filterAndSortContent(); // Hàm này giờ tự đọc giá trị input
                     } else {
                         console.warn("Function 'filterAndSortContent' not found globally.");
                     }
                     hideAllSearchSuggestions();
-                    event.target.blur(); // Remove focus from input
+                    event.target.blur(); // Bỏ focus khỏi input
                 }
             };
             searchInputDesktop?.addEventListener('keydown', handleSearchSubmit);
@@ -528,17 +601,17 @@
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
                 if (header) {
                     if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
-                        // Scrolling Down - Hide header
+                        // Cuộn xuống - Ẩn header
                         header.classList.add('header-hidden');
                         header.classList.remove('header-shadow');
                     } else {
-                        // Scrolling Up or at Top - Show header
+                        // Cuộn lên hoặc ở trên cùng - Hiện header
                         header.classList.remove('header-hidden');
-                        // Add shadow only if scrolled down a bit OR if header is not hidden (at top)
+                        // Thêm shadow chỉ khi đã cuộn xuống một chút HOẶC header không bị ẩn (ở trên cùng)
                         header.classList.toggle('header-shadow', scrollTop > 50 || !header.classList.contains('header-hidden'));
                     }
                 }
-                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // Cho Mobile hoặc cuộn âm
             }, false);
 
             // --- Footer Year ---
@@ -550,41 +623,60 @@
                 event.preventDefault();
                 const sortFilterElement = document.getElementById('sort-filter');
                 if (sortFilterElement) {
-                    sortFilterElement.value = 'newest'; // Set sort dropdown to 'newest'
-                    // Trigger the filter update from script.js
+                    sortFilterElement.value = 'newest'; // Đặt dropdown sắp xếp thành 'newest'
+                    // Kích hoạt cập nhật bộ lọc từ script.js
                     if (typeof window.handleFilterChange === 'function') {
-                         window.handleFilterChange(); // Assuming handleFilterChange reads the sort value
+                         window.handleFilterChange(); // Giả sử handleFilterChange đọc giá trị sort
+                         console.log("Triggered filter change for 'newest'.");
                     } else if (typeof window.filterAndSortContent === 'function') {
-                        // Fallback if handleFilterChange isn't exposed
-                        window.currentFilters.sort = 'newest'; // Manually update state
+                        // Dự phòng nếu handleFilterChange không được expose trực tiếp
+                        console.warn("Function 'handleFilterChange' not found globally, using fallback.");
+                        window.currentFilters.sort = 'newest'; // Cập nhật state thủ công
                         window.filterAndSortContent();
                         window.updateUrlParams();
                         window.updateFilterTags();
                     } else {
-                        console.warn("Filter update function not found.");
+                        console.error("Filter update function not found.");
                     }
-                    // Scroll to the filter section smoothly
-                    const filterSection = document.getElementById('filter-controls');
-                    filterSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Cuộn đến phần grid một cách mượt mà sau khi áp dụng bộ lọc
+                    const gridSection = document.getElementById('movie-grid-section');
+                    // Đảm bảo grid hiển thị trước khi cuộn
+                    setTimeout(() => {
+                        gridSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100); // Delay nhỏ để cho phép áp dụng bộ lọc
+
+                    // **QUAN TRỌNG**: Không ẩn filter controls tại đây.
+
+                } else {
+                    console.error("Sort filter element not found.");
                 }
-                // Close mobile menu if open
+                // Đóng mobile menu nếu đang mở
                 if (mobileMenuPanel && !mobileMenuPanel.classList.contains('translate-x-full')) closeMobileMenu();
             };
 
             const handleCategoryClick = (event) => {
-                 const filterSection = document.getElementById('filter-controls');
-                 if (filterSection) {
-                     event.preventDefault(); // Prevent default jump
-                     filterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                     // Optionally focus the genre button after scrolling
-                     // setTimeout(() => genreButton?.focus(), 300); // Delay focus until scroll likely finishes
+                 event.preventDefault(); // Ngăn nhảy trang mặc định
+                 if (filterControls) {
+                     // Toggle hiển thị của filter controls
+                     const isHidden = filterControls.classList.toggle('hidden');
+                     console.log("Filter controls visibility toggled:", !isHidden);
+                     // Cuộn đến phần filter chỉ khi nó đang được hiển thị
+                     if (!isHidden) {
+                         // Sử dụng setTimeout để đảm bảo element hiển thị trước khi cuộn
+                         setTimeout(() => {
+                             filterControls.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                         }, 50); // Delay nhỏ
+                     }
+                 } else {
+                     console.error("Filter controls element not found.");
                  }
-                // Close mobile menu if open
+                // Đóng mobile menu nếu đang mở
                 if (mobileMenuPanel && !mobileMenuPanel.classList.contains('translate-x-full')) {
                     closeMobileMenu();
                 }
             };
 
+            // Gán sự kiện cho các link điều hướng
             navLatestLink?.addEventListener('click', handleLatestClick);
             mobileNavLatestLink?.addEventListener('click', handleLatestClick);
             navCategoryLink?.addEventListener('click', handleCategoryClick);
@@ -595,4 +687,4 @@
     </script>
     <script src="js/script.js" defer></script>
 </body>
-</html
+</html>

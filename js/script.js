@@ -1,5 +1,5 @@
-// script.js - Updated for Advanced Filters, Tags, URL Params, Sliders, Tab Transitions, Responsiveness, Error Handling, Filter Toggle, and Format Filter
-// v1.6: Added more detailed error logging for fetch failures.
+// script.js - Updated for Advanced Filters, Tags, URL Params, Sliders, Tab Transitions, Responsiveness, Error Handling, Filter Toggle, Format Filter, and **Hero Slideshow**
+// v1.7: Implemented Hero Slideshow based on isHot and hotnumber.
 
 // --- Make data arrays globally accessible for inline script (header search) ---
 window.allMovies = [];
@@ -54,6 +54,12 @@ document.addEventListener('DOMContentLoaded', function() {
     let observer; // Intersection Observer for animations
     let filterDebounceTimer; // Timer for debouncing slider updates
     const TAB_TRANSITION_DURATION = 300; // Milliseconds, should match CSS transition
+
+    // --- NEW: Hero Slideshow State ---
+    let hotItems = []; // Array to store items with isHot: true, sorted by hotnumber
+    let currentHeroIndex = 0; // Index of the currently displayed hero item
+    let heroIntervalId = null; // ID for the setInterval timer
+    const HERO_SLIDESHOW_INTERVAL = 5000; // Interval in milliseconds (e.g., 5 seconds)
 
     // --- Helper Functions ---
 
@@ -206,56 +212,87 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Updates the Hero section with a featured movie.
-     * Cập nhật phần Hero với một phim nổi bật.
+     * Updates the Hero section UI with data from a specific item.
+     * Cập nhật giao diện người dùng phần Hero với dữ liệu từ một mục cụ thể.
+     * @param {object} item - The movie or series object to display. Đối tượng phim lẻ hoặc phim bộ để hiển thị.
      */
-    const updateHeroSection = () => {
-        if (!heroSection) return; // Exit if hero section doesn't exist
-        // --- NEW: Check if data is loaded ---
-        if (!window.dataLoaded || !window.allMovies || window.allMovies.length === 0) {
-            console.warn("Cannot update hero section: Movie data not loaded or empty.");
-            // Optionally show a loading state or default placeholder
-            heroSection.style.backgroundImage = `url('https://placehold.co/1920x1080/000000/333333?text=Loading...')`;
-            if (heroTitle) heroTitle.textContent = "Đang tải...";
-            if (heroDescription) heroDescription.textContent = "";
-            if (heroPlayButton) heroPlayButton.disabled = true;
-            if (heroDetailButton) heroDetailButton.disabled = true;
-            return;
-        }
-
-        // Prioritize movies with heroImage, then trending, then first movie
-        // Ưu tiên phim có heroImage, sau đó là phim trending, cuối cùng là phim đầu tiên
-        const heroMovie = window.allMovies.find(m => m.heroImage)
-                        || window.allMovies.find(m => m.isTrending)
-                        || window.allMovies[0];
-
-        if (!heroMovie) {
-            heroSection.style.backgroundImage = `url('https://placehold.co/1920x1080/000000/333333?text=No+Hero+Image')`;
+    const updateHeroUI = (item) => {
+        if (!heroSection || !item) {
+            console.warn("Hero section or item data is missing for UI update.");
+            // Optionally set a default state if no item is provided
+            // Tùy chọn đặt trạng thái mặc định nếu không có mục nào được cung cấp
+            heroSection.style.backgroundImage = `url('https://placehold.co/1920x1080/000000/333333?text=No+Featured+Item')`;
             if (heroTitle) heroTitle.textContent = "Không có phim nổi bật";
             if (heroDescription) heroDescription.textContent = "";
             if (heroPlayButton) heroPlayButton.disabled = true;
             if (heroDetailButton) heroDetailButton.disabled = true;
-            console.warn("Hero section could not be updated (no suitable movie found).");
             return;
         }
 
-        const backgroundImageUrl = heroMovie.heroImage || heroMovie.posterUrl || 'https://placehold.co/1920x1080/000000/333333?text=Image+Error';
+        const backgroundImageUrl = item.heroImage || item.posterUrl || 'https://placehold.co/1920x1080/000000/333333?text=Image+Error';
+        // --- Add fade transition for background image ---
+        heroSection.style.transition = 'background-image 0.5s ease-in-out';
         heroSection.style.backgroundImage = `url('${backgroundImageUrl}')`;
-        heroSection.setAttribute('aria-label', `Phim nổi bật: ${heroMovie.title || 'Đang tải'}`);
+        heroSection.setAttribute('aria-label', `Phim nổi bật: ${item.title || 'Đang tải'}`);
 
-        if (heroTitle) heroTitle.textContent = heroMovie.title || 'Đang tải...';
-        if (heroDescription) heroDescription.textContent = heroMovie.description || 'Đang tải mô tả...';
+        // --- Add fade transition for text content ---
+        [heroTitle, heroDescription].forEach(el => {
+            if (el) {
+                el.style.transition = 'opacity 0.3s ease-in-out';
+                el.style.opacity = 0; // Fade out
+            }
+        });
 
-        const detailPageUrl = `pages/filmDetail.html?id=${heroMovie.id}&type=movies`;
-        if (heroPlayButton) {
-            heroPlayButton.disabled = false;
-            heroPlayButton.onclick = () => { window.location.href = detailPageUrl + '#player-section'; };
-            heroPlayButton.setAttribute('aria-label', `Xem ngay phim ${heroMovie.title || ''}`);
+        setTimeout(() => {
+            if (heroTitle) {
+                heroTitle.textContent = item.title || 'Đang tải...';
+                heroTitle.style.opacity = 1; // Fade in
+            }
+            if (heroDescription) {
+                heroDescription.textContent = item.description ? (item.description.length > 150 ? item.description.substring(0, 150) + '...' : item.description) : 'Đang tải mô tả...';
+                heroDescription.style.opacity = 1; // Fade in
+            }
+
+            // Determine the correct detail page URL based on itemType
+            // Xác định URL trang chi tiết chính xác dựa trên itemType
+            const detailPageUrl = item.itemType === 'series'
+                ? `pages/filmDetails_phimBo.html?id=${item.id}&type=series`
+                : `pages/filmDetail.html?id=${item.id}&type=movies`;
+
+            if (heroPlayButton) {
+                heroPlayButton.disabled = false;
+                // Update onclick to point to the correct detail page player section
+                // Cập nhật onclick để trỏ đến phần trình phát của trang chi tiết chính xác
+                heroPlayButton.onclick = () => { window.location.href = detailPageUrl + '#player-section'; };
+                heroPlayButton.setAttribute('aria-label', `Xem ngay ${item.itemType === 'movies' ? 'phim' : 'phim bộ'} ${item.title || ''}`);
+            }
+            if (heroDetailButton) {
+                heroDetailButton.disabled = false;
+                // Update onclick to point to the correct detail page
+                // Cập nhật onclick để trỏ đến trang chi tiết chính xác
+                heroDetailButton.onclick = () => { window.location.href = detailPageUrl; };
+                heroDetailButton.setAttribute('aria-label', `Xem chi tiết ${item.itemType === 'movies' ? 'phim' : 'phim bộ'} ${item.title || ''}`);
+            }
+        }, 300); // Delay matches text fade-out duration
+    };
+
+    /**
+     * Starts the automatic hero slideshow.
+     * Bắt đầu trình chiếu Hero tự động.
+     */
+    const startHeroSlideshow = () => {
+        if (heroIntervalId) {
+            clearInterval(heroIntervalId); // Clear existing interval if any
         }
-        if (heroDetailButton) {
-            heroDetailButton.disabled = false;
-            heroDetailButton.onclick = () => { window.location.href = detailPageUrl; };
-            heroDetailButton.setAttribute('aria-label', `Xem chi tiết phim ${heroMovie.title || ''}`);
+        if (hotItems.length > 1) { // Only start if there's more than one hot item
+            heroIntervalId = setInterval(() => {
+                currentHeroIndex = (currentHeroIndex + 1) % hotItems.length; // Move to the next item, loop back
+                updateHeroUI(hotItems[currentHeroIndex]);
+                console.log(`Hero slideshow: Displaying item index ${currentHeroIndex}`);
+            }, HERO_SLIDESHOW_INTERVAL);
+            console.log(`Hero slideshow started with ${hotItems.length} items.`);
+        } else {
+            console.log("Hero slideshow not started (less than 2 hot items).");
         }
     };
 
@@ -1159,6 +1196,19 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Movies data loaded:", window.allMovies.length);
             console.log("Series data loaded:", window.allSeries.length);
 
+            // --- NEW: Prepare Hero Slideshow Data ---
+            const allItems = [
+                ...window.allMovies.map(item => ({ ...item, itemType: 'movies' })),
+                ...window.allSeries.map(item => ({ ...item, itemType: 'series' }))
+            ];
+            hotItems = allItems
+                .filter(item => item.isHot === true && typeof item.hotnumber === 'number')
+                .sort((a, b) => a.hotnumber - b.hotnumber); // Sort by hotnumber ascending
+
+            console.log("Hot items found and sorted:", hotItems.length, hotItems.map(i => `${i.title} (${i.hotnumber})`));
+            // --- END: Prepare Hero Slideshow Data ---
+
+
             // --- Calculate dynamic values needed for filters ---
             // --- Tính toán các giá trị động cần thiết cho bộ lọc ---
              const calculateMinMaxYears = (data) => {
@@ -1172,6 +1222,8 @@ document.addEventListener('DOMContentLoaded', function() {
                   const currentYear = new Date().getFullYear();
                   const finalMin = (min === Infinity) ? currentYear - 20 : min;
                   const finalMax = (max === -Infinity) ? currentYear : max;
+                  // Ensure min is not greater than max
+                  // Đảm bảo min không lớn hơn max
                   return [Math.min(finalMin, finalMax), finalMax];
              };
              minMaxYears.movies = calculateMinMaxYears(window.allMovies);
@@ -1205,7 +1257,17 @@ document.addEventListener('DOMContentLoaded', function() {
              }
             currentContentType = 'movies'; // Set initial state
 
-            updateHeroSection(); // Now safe to call as data is loaded
+            // --- NEW: Update Hero Section with the first hot item ---
+            if (hotItems.length > 0) {
+                currentHeroIndex = 0;
+                updateHeroUI(hotItems[currentHeroIndex]); // Display the first hot item initially
+                startHeroSlideshow(); // Start the slideshow
+            } else {
+                // Fallback if no hot items: display the first movie (or handle as needed)
+                console.warn("No 'hot' items found. Displaying default hero content.");
+                updateHeroUI(window.allMovies[0]); // Display first movie as fallback
+            }
+            // --- END: Update Hero Section ---
 
             // Read URL params to set initial filter state *after* data is loaded
             // Đọc tham số URL để đặt trạng thái bộ lọc ban đầu *sau* khi dữ liệu được tải
@@ -1243,8 +1305,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 noMoviesFound.textContent = userErrorMessage;
             }
+            // Update Hero section for error state
+            // Cập nhật phần Hero cho trạng thái lỗi
+            if (heroSection) heroSection.style.backgroundImage = `url('https://placehold.co/1920x1080/000000/333333?text=Error+Loading+Data')`;
             if (heroTitle) heroTitle.textContent = "Lỗi Tải Dữ Liệu";
             if (heroDescription) heroDescription.textContent = "Không thể kết nối hoặc xử lý dữ liệu.";
+            if (heroPlayButton) heroPlayButton.disabled = true;
+            if (heroDetailButton) heroDetailButton.disabled = true;
+
             // Disable controls
             // Vô hiệu hóa các điều khiển
             if(genreFilterContainer) genreFilterContainer.classList.add('hidden');

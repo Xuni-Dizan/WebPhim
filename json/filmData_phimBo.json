@@ -14,6 +14,8 @@
     "status": "Chưa chiếu",
     "isTrending": true,
     "isNew": true,
+    "isHot": true, 
+    "hotnumber": 1, 
     "heroImage": "https://daknong.1cdn.vn/2025/02/11/phim-kho-do-danh(1).jpg",
     "skipIntroSeconds": null,
     "format": ["Live Action", "Series"],
@@ -24,7 +26,7 @@
         "episodes": [
           {"episodeNumber": 1, "title": "Tập 1", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1V8U8Vlue6JLUdoxSXc8IAoFWHDUI_cEu/view?usp=drive_link"}},
           {"episodeNumber": 2, "title": "Tập 2", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
-          {"episodeNumber": 3, "title": "Tập 3", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 3, "title": "Tập 3", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1D291D8bT3hA1THoG4MrQvouX9fHVNc6S/view?usp=drive_link"}},
           {"episodeNumber": 4, "title": "Tập 4", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
           {"episodeNumber": 5, "title": "Tập 5", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
           {"episodeNumber": 6, "title": "Tập 6", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
@@ -73,6 +75,7 @@
       "status": "Hoàn thành",
       "isTrending": false,
       "isNew": false,
+      "isHot": false, 
       "heroImage": null,
       "format": ["Live Action", "Series"],
       "seasons": [
@@ -102,6 +105,7 @@
       "status": "Đang chiếu",
       "isTrending": true,
       "isNew": true,
+      "isHot": false,
       "heroImage": "https://placehold.co/1920x1080/111111/c0392b?text=Phim+Bộ+3+Nổi+Bật",
       "format": ["Live Action", "Series"],
       "seasons": [

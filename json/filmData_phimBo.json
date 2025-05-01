@@ -15,13 +15,13 @@
     "isTrending": true,
     "isNew": true,
     "heroImage": "https://daknong.1cdn.vn/2025/02/11/phim-kho-do-danh(1).jpg",
-    "skipIntroSeconds": 120,
+    "skipIntroSeconds": null,
     "seasons": [
       {
         "seasonNumber": 1,
         "numberOfEpisodes": 32,
         "episodes": [
-          {"episodeNumber": 1, "title": "Tập 1", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 1, "title": "Tập 1", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://www.youtube.com/watch?v=j2Dcc6a_3AI"}},
           {"episodeNumber": 2, "title": "Tập 2", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
           {"episodeNumber": 3, "title": "Tập 3", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
           {"episodeNumber": 4, "title": "Tập 4", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},

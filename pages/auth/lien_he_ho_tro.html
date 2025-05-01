@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liên Hệ Hỗ Trợ - Flick Take</title>
+    <meta name="description" content="Liên hệ với đội ngũ hỗ trợ của Flick Take để được giải đáp thắc mắc và hỗ trợ kỹ thuật.">
+    <meta name="keywords" content="liên hệ, hỗ trợ, flick take, trợ giúp, support, contact">
+
+    <link rel="icon" href="../../favicon.ico" sizes="any">
+    <link rel="icon" href="../../access/img/FlickTale.jpg" type="image/jpeg">
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../css/style.css"> <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#e50914', // Netflix Red
+                        'primary-hover': '#f40612', // Brighter Red
+                        'secondary': '#141414', // Main Dark Background
+                        'light-gray': '#222222', // Lighter gray elements on dark bg
+                        'dark-gray': '#181818', // Even darker gray
+                        'text-color': '#e0e0e0', // Main text color (light)
+                        'text-muted': '#8c8c8c', // Muted text color
+                        'border-color': '#333333', // Subtle border color
+                        'input-bg': '#1f1f1f', // Slightly lighter input background
+                        'input-border': '#444444',
+                        'input-focus-border': '#e50914', // Primary color for focus ring
+                        'white': '#ffffff',
+                        'black': '#000000',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom styles for Contact Support page (Dark Theme - Refined) */
+        html { scroll-behavior: smooth; }
+
+        body {
+            @apply bg-secondary text-text-color;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Header Styling */
+        header {
+            @apply fixed top-0 w-full bg-secondary/90 backdrop-blur-md shadow-md z-50 transition-colors duration-300;
+            border-bottom: 1px solid theme('colors.border-color');
+        }
+        .header-logo { height: 32px; max-height: 40px; width: auto; object-fit: contain; vertical-align: middle; }
+        @media (max-width: 640px) { .header-logo { height: 28px; } }
+        header .header-logo-link { @apply text-white; }
+        header a, header button { @apply text-text-muted; }
+        header a:hover, header button:hover { @apply text-white; }
+
+        /* Main Content Area */
+        main { padding-top: 6rem; padding-bottom: 5rem; } /* Increased padding */
+
+        /* Page Title */
+        .page-title h1 {
+            @apply text-4xl lg:text-5xl font-extrabold text-white mb-3 tracking-tight; /* Bolder and tighter */
+        }
+        .page-title p {
+             @apply text-lg lg:text-xl text-text-muted max-w-3xl mx-auto; /* Limit width */
+        }
+
+
+        /* Card Styling */
+        .support-card {
+            @apply bg-light-gray border border-border-color rounded-xl shadow-lg p-6 md:p-8 transition-all duration-300 hover:shadow-2xl hover:border-gray-600; /* Enhanced hover */
+        }
+        .support-card h3 {
+            @apply text-xl font-semibold mb-5 text-white flex items-center gap-3 pb-3 border-b border-border-color; /* Added border bottom */
+        }
+        .support-card h3 i {
+            @apply text-primary text-lg; /* Slightly smaller icon */
+        }
+        .support-card p, .support-card ul {
+            @apply text-text-muted text-base leading-relaxed; /* Increased base size */
+        }
+        .support-card a {
+            @apply text-primary hover:text-primary-hover transition-colors font-medium inline-flex items-center gap-1; /* Added alignment */
+        }
+         .support-card a i {
+             @apply text-xs transition-transform duration-200 group-hover:translate-x-1; /* Arrow animation on hover */
+         }
+        .support-card ul { @apply list-none list-inside space-y-2 mt-3 pl-0; } /* Removed disc, adjusted spacing */
+        .support-card li { @apply flex items-start gap-2; }
+        .support-card li strong { @apply text-text-color font-medium w-16 flex-shrink-0; } /* Fixed width for labels */
+
+
+        /* Form Styling */
+        label {
+            @apply block text-sm font-medium text-text-muted mb-1.5; /* Increased bottom margin */
+        }
+        input[type="text"],
+        input[type="email"],
+        textarea {
+            @apply block w-full bg-input-bg border border-input-border rounded-lg shadow-sm py-2.5 px-4 text-text-color placeholder-text-muted text-base; /* Increased padding and size */
+            @apply focus:outline-none focus:ring-2 focus:ring-input-focus-border focus:border-transparent; /* Ring focus */
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        textarea {
+            min-height: 130px; /* Slightly taller */
+        }
+        /* Button Styling */
+        .submit-button {
+            @apply w-full sm:w-auto inline-flex justify-center items-center px-8 py-3 border border-transparent text-base font-semibold rounded-lg shadow-md text-white bg-primary hover:bg-primary-hover; /* Larger padding, bolder */
+            @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-secondary focus:ring-primary;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+         .submit-button:hover {
+            transform: translateY(-2px); /* Add lift effect */
+         }
+        .submit-button i {
+            @apply mr-2 -ml-1;
+        }
+        /* Form status message */
+        #form-status {
+            min-height: 1.25rem; /* Reserve space */
+        }
+
+        /* Footer */
+        footer {
+            @apply bg-dark-gray text-text-muted;
+            border-top: 1px solid theme('colors.border-color');
+        }
+        footer a:hover { color: theme('colors.white'); }
+        footer h3 { @apply text-white; }
+
+        /* Scroll-to-top button */
+        #scroll-to-top {
+            @apply hidden fixed bottom-8 right-8 p-3 rounded-full z-50 bg-light-gray text-text-muted border border-border-color shadow-lg; /* Adjusted position */
+            transition: background-color 0.2s ease, color 0.2s ease, opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+            opacity: 0; visibility: hidden; transform: translateY(10px) scale(0.95); /* Start slightly smaller */
+            width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+        }
+        #scroll-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+        #scroll-to-top:hover { @apply bg-primary text-white border-primary; transform: scale(1.05); } /* Highlight on hover */
+        #scroll-to-top i { @apply text-xl; }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="main-header">
+        <div class="max-w-6xl mx-auto flex items-center justify-between p-4">
+            <a href="../../index.html" class="header-logo-link" aria-label="Về trang chủ Flick Take">
+                <img src="../../access/img/logo.png" alt="Logo Flick Take" class="header-logo">
+            </a>
+            <div>
+                 <a href="../../index.html" class="transition duration-300 mr-2 sm:mr-4 inline-flex items-center p-2 rounded hover:bg-light-gray" aria-label="Quay lại trang chủ">
+                    <i class="fas fa-arrow-left mr-0 sm:mr-1" aria-hidden="true"></i>
+                    <span class="hidden sm:inline">Trang Chủ</span>
+                </a>
+                 <button class="transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Tài khoản người dùng">
+                    <i class="fas fa-user text-lg sm:text-xl" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-36 pb-12">
+        <div class="max-w-4xl mx-auto text-center px-4">
+          <h1 class="text-5xl font-extrabold mb-4">Chúng Tôi Luôn Sẵn Sàng Giúp Đỡ</h1>
+          <p class="text-lg text-gray-400">Chọn phương thức liên hệ phù hợp hoặc gửi yêu cầu qua biểu mẫu bên dưới.</p>
+        </div>
+  
+        <div class="mt-12 grid grid-cols-1 lg:grid-cols-3 gap-8 px-4 max-w-6xl mx-auto">
+          <!-- Form Card -->
+          <div class="lg:col-span-2 bg-glass rounded-2xl shadow-xl p-8">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3"><i class="fas fa-paper-plane text-red-500"></i> Gửi Yêu Cầu Hỗ Trợ</h2>
+            <form class="space-y-5">
+              <div>
+                <label for="name" class="block text-sm font-medium text-gray-300">Họ và Tên</label>
+                <input type="text" id="name" required placeholder="Nhập họ tên" class="input-glass w-full rounded-lg border border-gray-600 py-3 px-4 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-transparent transition" />
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+                <input type="email" id="email" required placeholder="Nhập email liên hệ" class="input-glass w-full rounded-lg border border-gray-600 py-3 px-4 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-transparent transition" />
+              </div>
+              <div>
+                <label for="subject" class="block text-sm font-medium text-gray-300">Chủ đề</label>
+                <input type="text" id="subject" required placeholder="Vấn đề bạn cần hỗ trợ" class="input-glass w-full rounded-lg border border-gray-600 py-3 px-4 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-transparent transition" />
+              </div>
+              <div>
+                <label for="message" class="block text-sm font-medium text-gray-300">Nội dung</label>
+                <textarea id="message" rows="6" required placeholder="Mô tả chi tiết..." class="input-glass w-full rounded-lg border border-gray-600 py-3 px-4 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-red-500 focus:border-transparent transition"></textarea>
+              </div>
+              <div class="text-right">
+                <button type="submit" class="btn-glow bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg px-6 py-3 shadow-md transition transform hover:-translate-y-1">Gửi Yêu Cầu <i class="fas fa-paper-plane ml-2"></i></button>
+              </div>
+            </form>
+          </div>
+  
+          <!-- Info Cards -->
+          <div class="space-y-6">
+            <div class="bg-glass rounded-2xl shadow-lg p-6 hover:shadow-2xl transition">
+              <h3 class="text-xl font-semibold mb-3 flex items-center gap-2"><i class="fas fa-question-circle text-yellow-400"></i> FAQ</h3>
+              <p class="text-gray-300">Câu trả lời nhanh cho thắc mắc phổ biến.</p>
+              <a href="#" class="inline-flex items-center mt-4 text-red-500 hover:text-red-600 transition">Xem FAQ <i class="fas fa-arrow-right ml-1"></i></a>
+            </div>
+            <div class="bg-glass rounded-2xl shadow-lg p-6 hover:shadow-2xl transition">
+              <h3 class="text-xl font-semibold mb-3 flex items-center gap-2"><i class="fas fa-headset text-green-400"></i> Hotline & Email</h3>
+              <p class="text-gray-300"><strong>Email:</strong> <a href="mailto:support@flicktake.com" class="text-red-500 hover:text-red-600">support@flicktake.com</a></p>
+              <p class="text-gray-300 mt-2"><strong>Hotline:</strong> <a href="tel:19001234" class="text-red-500 hover:text-red-600">1900-1234</a></p>
+            </div>
+            <div class="bg-glass rounded-2xl shadow-lg p-6 hover:shadow-2xl transition">
+              <h3 class="text-xl font-semibold mb-3 flex items-center gap-2"><i class="fas fa-share-alt text-blue-400"></i> Mạng Xã Hội</h3>
+              <div class="flex space-x-4 mt-3">
+                <a href="#" class="text-gray-300 hover:text-white text-2xl transition"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-gray-300 hover:text-white text-2xl transition"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-gray-300 hover:text-white text-2xl transition"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-gray-300 hover:text-white text-2xl transition"><i class="fab fa-youtube"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+    <footer class="py-12 px-4 sm:px-6 lg:px-8 mt-20" role="contentinfo"> <div class="container mx-auto max-w-screen-xl grid grid-cols-1 md:grid-cols-3 gap-8">
+             <div class="space-y-4">
+                <a href="../../index.html" class="inline-block mb-2" aria-label="Trang chủ Flick Take">
+                     <img src="../../access/img/logo.png" alt="Logo Flick Take" class="h-10 hover:opacity-80 transition-opacity duration-300">
+                </a>
+                <p class="text-sm pr-4">
+                    Khám phá thế giới điện ảnh với hàng ngàn phim lẻ và phim bộ hấp dẫn. Cập nhật liên tục, chất lượng cao.
+                </p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Liên Kết Nhanh</h3>
+                <nav class="space-y-2" aria-label="Liên kết phụ">
+                    <a href="../about.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Về Chúng Tôi</a>
+                    <a href="dieu_khoan_su_dung.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
+                    <a href="chinh_sach_bao_mat.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Chính Sách Bảo Mật</a>
+                    <a href="lien_he_ho_tro.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Liên Hệ Hỗ Trợ</a>
+                    <a href="../hoat_hinh_2D_3D.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Phim 2D/3D</a>
+                </nav>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Theo Dõi Chúng Tôi</h3>
+                <div class="flex space-x-4 mb-4" aria-label="Liên kết mạng xã hội">
+                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                </div>
+                 <h3 class="text-lg font-semibold mb-2 mt-6">Thông Tin Liên Hệ</h3>
+                 <p class="text-sm">Email: support@flicktake.com</p>
+                 <p class="text-sm">Hotline: 1900-1234</p>
+            </div>
+        </div>
+        <div class="mt-10 pt-8 border-t border-gray-700 text-center">
+            <p class="text-sm">© <span id="footer-year">2025</span> Flick Take. Mọi quyền được bảo lưu.</p>
+            <p class="text-xs mt-2 opacity-70">
+                Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn và học tập.
+            </p>
+        </div>
+    </footer>
+
+    <button id="scroll-to-top" aria-label="Cuộn lên đầu trang">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Footer Year
+            const footerYear = document.getElementById('footer-year');
+            if (footerYear) {
+                footerYear.textContent = new Date().getFullYear();
+            }
+
+            // Scroll-to-top Button Logic
+            const scrollToTopBtn = document.getElementById('scroll-to-top');
+            const handleScroll = () => {
+                if (!scrollToTopBtn) return;
+                const isVisible = window.scrollY > 300;
+                scrollToTopBtn.classList.toggle('visible', isVisible);
+                scrollToTopBtn.classList.toggle('hidden', !isVisible);
+            };
+            const scrollToTopFunc = () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            window.addEventListener('scroll', handleScroll);
+            if (scrollToTopBtn) {
+                scrollToTopBtn.addEventListener('click', scrollToTopFunc);
+            }
+            handleScroll(); // Initial check
+
+            // Basic Contact Form Handling (Display Message Only)
+            const contactForm = document.getElementById('contact-form');
+            const formStatus = document.getElementById('form-status');
+            if(contactForm && formStatus) {
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault(); // Prevent actual submission for demo
+                    formStatus.textContent = 'Đang gửi yêu cầu...'; // Simulate sending
+                    formStatus.className = 'mt-4 text-sm text-center text-yellow-400'; // Use appropriate color
+
+                    // Simulate success/failure after a delay
+                    setTimeout(() => {
+                        const isSuccess = Math.random() > 0.2; // Simulate 80% success rate
+                        if(isSuccess) {
+                            formStatus.textContent = 'Yêu cầu của bạn đã được gửi thành công! Chúng tôi sẽ phản hồi sớm.';
+                            formStatus.className = 'mt-4 text-sm text-center text-green-400'; // Success color
+                            contactForm.reset(); // Clear the form
+                        } else {
+                             formStatus.textContent = 'Đã xảy ra lỗi khi gửi yêu cầu. Vui lòng thử lại hoặc liên hệ qua email/hotline.';
+                             formStatus.className = 'mt-4 text-sm text-center text-red-400'; // Error color
+                        }
+                        // Clear message after a few seconds
+                        setTimeout(() => { formStatus.textContent = ''; }, 5000);
+                    }, 1500); // 1.5 second delay
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

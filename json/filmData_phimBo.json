@@ -22,8 +22,8 @@
         "seasonNumber": 1,
         "numberOfEpisodes": 32,
         "episodes": [
-          {"episodeNumber": 1, "title": "Tập 1", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://www.youtube.com/watch?v=j2Dcc6a_3AI"}},
-          {"episodeNumber": 2, "title": "Tập 2", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://www.youtube.com/watch?v=obE7eiWCZFc"}},
+          {"episodeNumber": 1, "title": "Tập 1", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1V8U8Vlue6JLUdoxSXc8IAoFWHDUI_cEu/view?usp=drive_link"}},
+          {"episodeNumber": 2, "title": "Tập 2", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
           {"episodeNumber": 3, "title": "Tập 3", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
           {"episodeNumber": 4, "title": "Tập 4", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
           {"episodeNumber": 5, "title": "Tập 5", "thumbnailUrl": null, "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},

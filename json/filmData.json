@@ -11,9 +11,9 @@
     "rating": 8.4,
     "duration": "181 phút",
     "videoUrls": {
-      "vietsub": "https://www.youtube.com/watch?v=alsBFF1lr2s",
+      "vietsub": "https://drive.google.com/file/d/1COzQ8KDa3idPJGHz1poF4mdpewjLy_md/view?usp=drive_link",
       "dubbed": null,
-      "voiceover": "https://www.youtube.com/watch?v=g8BvALyMv5w"
+      "voiceover": "https://drive.google.com/file/d/1mU7h6wFAg43U9GPMIn6q4OlBjXUCKADM/view?usp=drive_link"
     },
     "isTrending": false,
     "isNew": false,
@@ -33,12 +33,9 @@
     "rating": 7.8,
     "duration": "102 phút",
     "videoUrls": {
-      "vietsub":
-        "https://drive.google.com/file/d/1---5A93dn-Wb-40-vuk3FjOYH2OHIXcW/view?usp=drive_link",
+      "vietsub": null,
       "dubbed": null,
-      "voiceover": [
-        "https://drive.google.com/file/d/2bCdEfGhIjKlMnOpQrStUvWxYzAbCdEfG/preview"
-      ]
+      "voiceover": null
     },
     "isTrending": false,
     "isNew": false,
@@ -58,7 +55,7 @@
     "rating": 8.7,
     "duration": "169 phút",
     "videoUrls": {
-      "vietsub": "https://www.youtube.com/watch?v=o96p-MnYl18",
+      "vietsub": "https://drive.google.com/file/d/1yIx5x5eoBfbo88sWcJyCQicfoQFJkGhF/view?usp=drive_link",
       "dubbed": null,
       "voiceover": null
     },
@@ -79,7 +76,7 @@
     "rating": 7.3,
     "duration": "135 phút",
     "videoUrls": {
-      "vietsub": "https://www.youtube.com/watch?v=ghIpFFDezxk",
+      "vietsub": "https://drive.google.com/file/d/1_cpSZGNGBxAV78mNogDHPJ9BdRvMOvzk/view?usp=drive_link",
       "dubbed": null,
       "voiceover": null
     },
@@ -100,7 +97,7 @@
     "rating": 7.3,
     "duration": "150 phút",
     "videoUrls": {
-      "vietsub": "https://www.youtube.com/watch?v=hgGtxHZhq8w",
+      "vietsub": "https://drive.google.com/file/d/1QBj2G3I9x1sOH3AEdH7buelY_oGA6Jmd/view?usp=drive_link",
       "dubbed": null,
       "voiceover": null
     },
@@ -122,7 +119,7 @@
     "rating": 8.3,
     "duration": "180 phút",
     "videoUrls": {
-      "vietsub": "https://www.youtube.com/watch?v=N86KuGbSiY4",
+      "vietsub": null,
       "dubbed": null,
       "voiceover": null
     },
@@ -133,23 +130,23 @@
   },
   {
     "id": 7,
-    "title": "Kẻ Hủy Diệt",
-    "description": "Một người máy từ tương lai được gửi về quá khứ để tiêu diệt Sarah Connor, mẹ của John Connor, người lãnh đạo cuộc kháng chiến chống lại các cỗ máy.",
-    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/5/57/The_Terminator_poster.jpg",
-    "releaseYear": 1984,
-    "genre": ["Hành động", "Khoa học viễn tưởng"],
-    "director": "James Cameron",
-    "cast": ["Arnold Schwarzenegger", "Linda Hamilton", "Michael Biehn"],
-    "rating": 8.0,
-    "duration": "107 phút",
+    "title": "Captain America: Thế Giới Mới",
+    "description": "Sam Wilson đảm nhận vai trò Captain America và đối mặt với một mối đe dọa toàn cầu mới liên quan đến việc sử dụng Vibranium, đồng thời hợp tác với Tướng Thaddeus Ross.",
+    "posterUrl": "https://images.hdqwalls.com/download/captain-america-brave-new-world-at-the-white-house-fall-dq-3840x2160.jpg",
+    "releaseYear": 2025,
+    "genre": ["Hành động", "Khoa học viễn tưởng", "Phiêu lưu", "Giật gân"],
+    "director": "Julius Onah",
+    "cast": ["Anthony Mackie", "Harrison Ford", "Liv Tyler", "Tim Blake Nelson", "Shira Haas", "Danny Ramirez", "Carl Lumbly"],
+    "rating": null,
+    "duration": null,
     "videoUrls": {
       "vietsub": null,
       "dubbed": null,
-      "voiceover": null
+      "voiceover": "https://drive.google.com/file/d/1WX_i9TckB6Qeknr2jxSW7Mo-L9MigE3l/view?usp=drive_link"
     },
     "isTrending": false,
-    "isNew": false,
-    "heroImage": null,
+    "isNew": true,
+    "heroImage": "https://images.hdqwalls.com/download/captain-america-brave-new-world-official-poster-vx-3840x2160.jpg",
     "format": ["Live Action", "Feature"]
   },
   {

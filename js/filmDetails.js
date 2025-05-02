@@ -1,6 +1,6 @@
 // filmDetails.js - Handles MOVIE Details Page Logic ONLY
 // Enhanced with YouTube API, Skip Intro Option, Show Poster First & Remember Version Preference
-// v1.2: Improved YouTube API error message for code 5 and added more detailed logging.
+// v1.3: Added comments regarding Google Drive performance limitations.
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements (Movie Specific) ---
@@ -123,19 +123,31 @@ document.addEventListener('DOMContentLoaded', () => {
         return videoId; // Returns null if no valid 11-char ID is found
     };
 
+    /**
+     * Gets the Google Drive embed URL from a standard share link.
+     * Lấy URL nhúng Google Drive từ liên kết chia sẻ chuẩn.
+     * @param {string} url - The Google Drive share URL. URL chia sẻ Google Drive.
+     * @returns {string|null} The embeddable URL or null if invalid. URL có thể nhúng hoặc null nếu không hợp lệ.
+     */
     const getGoogleDriveEmbedUrl = (url) => {
         if (!url || typeof url !== 'string') return null;
         let embedUrl = null;
         try {
+            // Regex to capture the file ID from various Drive URL formats
+            // Regex để lấy ID tệp từ các định dạng URL Drive khác nhau
             const match = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]+)/);
             if (match && match[1]) {
+                // Construct the /preview URL which is suitable for embedding
+                // Xây dựng URL /preview phù hợp để nhúng
                 embedUrl = `https://drive.google.com/file/d/${match[1]}/preview`;
                 console.log(`getGoogleDriveEmbedUrl: Đã tạo URL nhúng: ${embedUrl}`);
             } else {
                  console.log(`getGoogleDriveEmbedUrl: Không tìm thấy ID Google Drive trong URL: ${url}`);
             }
         } catch (e) { console.error("Lỗi phân tích URL Google Drive:", e, url); }
-        if (embedUrl) console.warn("Nhúng Google Drive có thể yêu cầu quyền chia sẻ cụ thể.");
+        // Add a warning about potential sharing permissions issues
+        // Thêm cảnh báo về các vấn đề quyền chia sẻ tiềm ẩn
+        if (embedUrl) console.warn("Nhúng Google Drive có thể yêu cầu quyền chia sẻ cụ thể để hoạt động đúng.");
         return embedUrl;
     };
 
@@ -436,10 +448,17 @@ document.addEventListener('DOMContentLoaded', () => {
             loadYouTubePlayer(youtubeId, effectiveStartSeconds);
         } else if (googleDriveEmbedUrl) {
             console.log("startVideoPlayback: Chuẩn bị phát Google Drive:", googleDriveEmbedUrl);
+            // NOTE: Google Drive performance (smoothness, buffering) is controlled by Google, not easily improved via client-side JS.
+            // LƯU Ý: Hiệu suất Google Drive (độ mượt, bộ đệm) do Google kiểm soát, không dễ cải thiện bằng JS phía client.
+            // The best we can do is ensure the embed URL is correct and load it promptly on user action.
+            // Điều tốt nhất chúng ta có thể làm là đảm bảo URL nhúng chính xác và tải nó kịp thời khi người dùng hành động.
             if (videoIframePlaceholder) {
+                 // Create and append the iframe for Google Drive
+                 // Tạo và nối iframe cho Google Drive
                  videoIframePlaceholder.innerHTML = `<iframe src="${googleDriveEmbedUrl}" frameborder="0" allow="autoplay; fullscreen" title="Trình phát video Google Drive cho phim ${currentMovieData?.title || ''}"></iframe>`;
                  videoIframePlaceholder.classList.add('active'); // Show placeholder area
                  if (videoPlayerContainer) videoPlayerContainer.classList.add('playing'); // Hide poster
+                 showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Đang tải video từ Google Drive... Chất lượng phát phụ thuộc vào Google và mạng của bạn.`, false, true);
             }
         } else {
             // Handle unsupported URL format or URLs that didn't yield a valid YouTube ID

@@ -126,7 +126,7 @@
     "rating": 8.3,
     "duration": "180 phút",
     "videoUrls": {
-      "vietsub": null,
+      "vietsub": "https://drive.google.com/file/d/1qEXAuzMlu-ZuWY6NWiAkfoOpwoTpKTSB/view?usp=drive_link",
       "dubbed": null,
       "voiceover": null
     },
@@ -162,24 +162,24 @@
   },
   {
     "id": 8,
-    "title": "Cướp Biển Vùng Caribbean: Lời Nguyền Tàu Ngọc Trai Đen",
-    "description": "Jack Sparrow, một tên cướp biển lừng danh, phải hợp tác với Will Turner để cứu Elizabeth Swann khỏi tay những hồn ma của tàu Ngọc Trai Đen.",
-    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/2/23/Pirates_of_the_Caribbean_The_Curse_of_the_Black_Pearl_poster.jpg",
-    "releaseYear": 2003,
-    "genre": ["Hành động", "Phiêu lưu", "Hài"],
-    "director": "Gore Verbinski",
-    "cast": ["Johnny Depp", "Orlando Bloom", "Keira Knightley", "Geoffrey Rush"],
-    "rating": 8.0,
-    "duration": "143 phút",
+    "title": "Harry Potter và Hòn Đá Phù Thủy",
+    "description": "Một cậu bé mồ côi đăng ký vào một trường đào tạo phù thủy, nơi cậu tìm hiểu sự thật về bản thân, gia đình mình và cái ác khủng khiếp đang ám ảnh thế giới phép thuật.",
+    "posterUrl": "https://image.tmdb.org/t/p/original/wuMc08IPKEatf9rnMNXvIDxqP4W.jpg",
+    "releaseYear": 2001,
+    "genre": ["Giả tưởng", "Phiêu lưu", "Gia đình"],
+    "director": "Chris Columbus",
+    "cast": ["Daniel Radcliffe", "Rupert Grint", "Emma Watson", "Richard Harris", "Maggie Smith", "Robbie Coltrane", "Alan Rickman"],
+    "rating": 7.6,
+    "duration": "152 phút",
     "videoUrls": {
       "vietsub": null,
       "dubbed": null,
-      "voiceover": null
+      "voiceover": "https://drive.google.com/file/d/1Q77NHfgeKGaFWlCEJdhBHOGQb6F8xaJ8/view?usp=drive_link"
     },
     "isTrending": false,
     "isNew": false,
     "isHot": false,
-    "heroImage": null,
+    "heroImage": "https://static2.vieon.vn/vieplay-image/carousel_web_v4/2022/04/13/yaqz9j47_1920x1080-hondaphuthuy.jpg",
     "format": ["Live Action", "Feature"]
   },
   {

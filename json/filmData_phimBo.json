@@ -60,36 +60,37 @@
       }
     ]
   },
-    {
-      "id": 102,
-      "title": "Bí Ẩn Thị Trấn Đêm",
-      "description": "Những sự kiện kỳ bí liên tiếp xảy ra tại một thị trấn nhỏ sau khi màn đêm buông xuống. Bí ẩn này càng được hé lộ qua từng tập phim.",
-      "posterUrl": "https://placehold.co/400x600/2c3e50/ffffff?text=Phim+Bộ+2",
-      "releaseYear": 2023,
-      "genre": ["Kinh dị", "Bí ẩn", "Tâm lý"],
-      "director": "Đạo Diễn Beta",
-      "cast": ["Diễn Viên V", "Diễn Viên W", "Diễn Viên X"],
-      "rating": 8.2,
-      "numberOfSeasons": 1,
-      "totalEpisodes": 8,
-      "status": "Hoàn thành",
-      "isTrending": false,
-      "isNew": false,
-      "isHot": false, 
-      "heroImage": null,
-      "format": ["Live Action", "Series"],
-      "seasons": [
-        {
-          "seasonNumber": 1,
-          "numberOfEpisodes": 8,
-          "episodes": [
-            {"episodeNumber": 1, "title": "Tập 1: Dấu Chân Trong Sương", "thumbnailUrl": "https://placehold.co/320x180/444444/ffffff?text=B2S1","videoUrls": {"vietsub": "https://youtu.be/B2S1vietsub", "dubbed": null, "voiceover": null}},
-            {"episodeNumber": 2, "title": "Tập 2: Tiếng Rì Rầm", "thumbnailUrl": "https://placehold.co/320x180/444444/ffffff?text=B2S2","videoUrls": {"vietsub": "https://youtu.be/B2S2vietsub", "dubbed": null, "voiceover": null}},
-            {"episodeNumber": 3, "title": "Tập 3: Bí Mật Bên Hồ", "thumbnailUrl": "https://placehold.co/320x180/444444/ffffff?text=B2S3","videoUrls": {"vietsub": "https://youtu.be/B2S3vietsub", "dubbed": null, "voiceover": null}}
-          ]
-        }
-      ]
-    },
+  {
+    "id": 102,
+    "title": "Hoài Thủy Trúc Đình",
+    "description": "Câu chuyện tình yêu định mệnh giữa Đông Phương Hoài Trúc (Lưu Thi Thi) và Vương Quyền Hoằng Nghiệp (Trương Vân Long), người đứng đầu hai gia tộc lớn, trong bối cảnh nhân – yêu xung đột. Họ cùng nhau nỗ lực ổn định tình hình và khôi phục liên minh.",
+    "posterUrl": "https://static.nutscdn.com/vimg/300-0/4e520866d404c1eb9d13c0ca8a6f2198.jpg",
+    "releaseYear": 2025,
+    "genre": ["Cổ trang", "Lãng mạn", "Kỳ ảo", "Võ hiệp"],
+    "director": "Đỗ Lâm",
+    "cast": ["Lưu Thi Thi", "Trương Vân Long", "Ngô Tuyên Nghi", "Trạch Tiêu Văn", "Thẩm Nguyệt", "Đinh Vũ Hề", "Chương Nhược Nam", "Mạnh Tử Nghĩa", "Hầu Minh Hạo"],
+    "rating": 9.6,
+    "numberOfSeasons": 1,
+    "totalEpisodes": 36,
+    "status": "Đang chiếu",
+    "isTrending": true,
+    "isNew": true,
+    "isHot": true,
+    "heroImage": "https://ss-images.saostar.vn/2025/4/3/pc/1743647808246/k54ot1j00n1-vwb0541e5k2-8036s6bfr73.jpg",
+    "format": ["Live Action", "Series"],
+    "seasons": [
+      {
+        "seasonNumber": 1,
+        "numberOfEpisodes": 36,
+        "episodes": [
+          {"episodeNumber": 1, "title": "Tập 1", "thumbnailUrl": null,"videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 2, "title": "Tập 2", "thumbnailUrl": null,"videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+          {"episodeNumber": 3, "title": "Tập 3", "thumbnailUrl": null,"videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}}
+        ]
+      }
+    ]
+  }
+  ,
     {
       "id": 103,
       "title": "Chiến Dịch Siêu Gián Điệp",

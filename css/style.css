@@ -1,10 +1,10 @@
-/* style.css - Refreshed Look v3.4 - Enhanced Responsiveness */
+/* style.css - Refreshed Look v3.5 - Added Anime Page Styles & Synchronization */
 
 /* Import Font */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 /* Material Icons Outlined (already linked in HTML) */
 
-/* CSS Variables */
+/* CSS Variables - Define base theme variables here */
 :root {
     --primary-color: #e50914; /* Netflix Red */
     --primary-hover-color: #f40612; /* Brighter Red */
@@ -29,6 +29,12 @@
     --slider-handle-border: var(--primary-color);
     --overlay-bg-color: rgba(0, 0, 0, 0.6); /* Card overlay background */
     --overlay-text-shadow: 0 1px 3px rgba(0,0,0,0.8); /* Text shadow for overlay */
+
+    /* Anime Theme Variables (Can be overridden inline or via Tailwind config) */
+    --anime-accent: #6a0dad; /* Vibrant Purple Accent for Anime page */
+    --anime-accent-hover: #8a2be2; /* Brighter Purple on hover */
+    --gold-accent: #ffd700; /* Gold for highlights/ratings */
+
 
     /* Animation Variables */
     --animation-duration: 0.6s;
@@ -94,17 +100,44 @@ header button.p-2, header a.p-2 {
     align-items: center;
     justify-content: center;
 }
+/* Navigation Link Styling */
+header nav a {
+    color: var(--text-muted-color);
+    transition: color 0.3s ease, border-color 0.3s ease; /* Added border-color transition */
+    padding-bottom: 2px; /* Space for border */
+    border-bottom: 2px solid transparent; /* Default transparent border */
+    font-medium: 500; /* Consistent font weight */
+}
+header nav a:hover {
+    color: var(--text-color);
+}
+/* General active link style (e.g., for index page) */
+header nav a.active-link-primary {
+    color: var(--primary-color);
+    font-weight: 600;
+    border-bottom-color: var(--primary-color);
+}
+/* Specific active link style for Anime page (using anime accent color) */
+header nav a.active-link-anime {
+    color: var(--anime-accent);
+    font-weight: 600;
+    border-bottom-color: var(--anime-accent);
+}
 
 
 /* Mobile Menu Overlay & Panel */
-#mobile-menu-overlay {
+#mobile-menu-overlay, #mobile-menu-overlay-anime, #mobile-menu-overlay-2d3d { /* Target all overlays */
     /* Styles managed by Tailwind classes */
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
 }
-#mobile-menu-panel {
+#mobile-menu-panel, #mobile-menu-panel-anime, #mobile-menu-panel-2d3d { /* Target all panels */
     /* Styles managed by Tailwind classes */
+    background-color: var(--light-gray-color);
+    z-index: 50;
     overflow-y: auto; /* Ensure scrollable if content exceeds height */
 }
-#close-mobile-menu-button {
+#close-mobile-menu-button, #close-mobile-menu-button-anime, #close-mobile-menu-button-2d3d { /* Target all close buttons */
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -117,10 +150,13 @@ header button.p-2, header a.p-2 {
     justify-content: center;
     padding: 0.5rem;
 }
-#close-mobile-menu-button:hover { color: var(--text-color); transform: rotate(90deg); }
+#close-mobile-menu-button:hover, #close-mobile-menu-button-anime:hover, #close-mobile-menu-button-2d3d:hover {
+    color: var(--text-color);
+    transform: rotate(90deg);
+}
 
-/* Hero Section */
-#hero-section {
+/* Hero Section (General Styles) */
+#hero-section, .anime-hero, .hero-2d3d {
     /* Background image set inline */
     background-size: cover;
     background-position: center center;
@@ -131,20 +167,30 @@ header button.p-2, header a.p-2 {
     color: white;
     /* Responsive height is handled by Tailwind */
 }
-#hero-section .hero-overlay {
+#hero-section .hero-overlay, .anime-hero::before, .hero-2d3d::before { /* Target all hero overlays/pseudo-elements */
+    content: ''; /* Ensure pseudo-elements work */
     position: absolute;
     inset: 0;
     /* Gradient adjusted for better visibility on different screens */
     background: linear-gradient(to top, var(--secondary-color) 10%, transparent 70%);
     z-index: 1;
 }
-/* Desktop gradient */
+/* Desktop gradient for index hero */
 @media (min-width: 768px) {
     #hero-section .hero-overlay {
         background: linear-gradient(to top, var(--secondary-color) 5%, transparent 60%), linear-gradient(to right, var(--secondary-color) 15%, transparent 80%);
     }
+    /* Specific gradient for anime hero (already defined inline, but could be moved here) */
+    .anime-hero::before {
+         background: linear-gradient(to top, rgba(16, 16, 16, 0.95) 15%, rgba(16, 16, 16, 0.7) 40%, transparent 80%);
+    }
+    /* Specific gradient for 2d3d hero (already defined inline, but could be moved here) */
+     .hero-2d3d::before {
+         background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0.4) 40%, transparent 80%),
+                     linear-gradient(to right, rgba(0,0,0,0.8) 15%, rgba(0,0,0,0.3) 50%, transparent 80%);
+     }
 }
-#hero-section .hero-content {
+#hero-section .hero-content, .hero-content-anime, .hero-2d3d .hero-content { /* Target all hero content areas */
     position: relative;
     z-index: 2;
     /* Padding and max-width handled by Tailwind */
@@ -153,40 +199,54 @@ header button.p-2, header a.p-2 {
 .text-shadow-lg { text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
 .text-shadow-md { text-shadow: 1px 1px 3px rgba(0,0,0,0.7); }
 
-/* Buttons Styling */
-button.bg-primary, button#hero-play-button {
+/* Buttons Styling (General) */
+.button-primary { /* Generic primary button */
     background-color: var(--primary-color);
+    color: white;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Add padding, font-weight etc. via Tailwind */
 }
-button.bg-primary:hover, button#hero-play-button:hover {
+.button-primary:hover {
     background-color: var(--primary-hover-color);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-button.bg-gray-600, button#hero-detail-button {
+.button-secondary { /* Generic secondary button */
     background-color: rgba(110, 110, 110, 0.7);
+    color: white;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Add padding, font-weight etc. via Tailwind */
 }
-button.bg-gray-600:hover, button#hero-detail-button:hover {
+.button-secondary:hover {
     background-color: rgba(130, 130, 130, 0.8);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
+/* Specific Hero Buttons (if needed, otherwise use generic + Tailwind) */
+#hero-play-button { /* Inherits from .button-primary */ }
+#hero-detail-button { /* Inherits from .button-secondary */ }
+.hero-button { /* Anime specific button - styles defined inline in anime.html */ }
+
 
 /* Input and Select Styling */
-input[type="text"], select {
+input[type="text"], input[type="email"], textarea, select {
     background-color: var(--light-gray-color);
     border: 1px solid var(--border-color);
     color: var(--text-color);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
     /* Padding, border-radius handled by Tailwind */
 }
-input[type="text"]:focus, select:focus {
+input[type="text"]:focus, input[type="email"]:focus, textarea:focus, select:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.3);
     outline: none;
+}
+/* Specific focus for anime page inputs */
+input#search-input-desktop-anime:focus, input#search-input-mobile-anime:focus {
+    border-color: var(--anime-accent);
+    box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.3);
 }
 /* Custom arrow for select */
 select.appearance-none {
@@ -204,10 +264,10 @@ select option {
     color: var(--text-color);
 }
 
-/* --- Movie Card Styling --- */
-.movie-card, .related-movie-card {
+/* --- General Card Styling --- */
+.movie-card, .related-movie-card, .anime-card {
     background-color: var(--light-gray-color);
-    border-radius: 8px;
+    border-radius: 8px; /* Consistent rounding */
     overflow: hidden;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
@@ -215,16 +275,13 @@ select option {
     position: relative;
     display: block;
 }
-
-.movie-card:hover, .related-movie-card:hover {
+.movie-card:hover, .related-movie-card:hover, .anime-card:hover {
     transform: scale(1.05) translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     border-color: var(--border-color);
     z-index: 10; /* Ensure hovered card is on top */
 }
-
-.movie-card img,
-.related-movie-card img {
+.movie-card img, .related-movie-card img, .anime-card img {
     display: block;
     width: 100%;
     height: auto;
@@ -233,26 +290,96 @@ select option {
     background-color: var(--skeleton-base-color); /* Placeholder background */
 }
 
-/* --- Hover Overlay Styles --- */
-/* Overlay container is created by Tailwind classes on the card's <a> tag */
-.movie-card .group-hover\:opacity-100 { /* Target the overlay div */
+/* --- Anime Card Specific Styles (Refined) --- */
+.anime-card {
+    border-radius: 12px; /* More rounded for anime */
+}
+.anime-card:hover {
+    border-color: var(--anime-accent); /* Anime accent on hover */
+}
+.anime-card .anime-card-overlay { /* Play button overlay */
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity var(--overlay-transition-duration) ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.anime-card:hover .anime-card-overlay { opacity: 1; }
+.anime-card .anime-card-play-icon {
+    color: white;
+    font-size: 3rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    padding: 0.5rem;
+    transform: scale(0.8);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.anime-card:hover .anime-card-play-icon { transform: scale(1); opacity: 1; }
+.anime-card .anime-card-info { padding: 0.75rem; }
+.anime-card .anime-card-title {
+    font-weight: 600;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.anime-card .anime-card-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.anime-card .anime-card-rating {
+    display: inline-flex;
+    align-items: center;
+    color: var(--gold-accent);
+    font-weight: 600;
+}
+.anime-card .anime-card-rating i { margin-right: 0.25rem; font-size: 0.8em; }
+.anime-card .anime-card-episodes {
+    background-color: var(--anime-accent);
+    color: white;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem; /* Slightly smaller badge text */
+}
+
+
+/* --- Hover Overlay Styles (General) --- */
+.group:hover .group-hover\:opacity-100 { /* Target the overlay div */
     background-color: var(--overlay-bg-color);
     transition: opacity var(--overlay-transition-duration) ease-in-out;
     /* Other overlay styles (padding, text alignment) handled by Tailwind */
 }
-.movie-card .group-hover\:opacity-100 .fa-play { /* Target the play icon */
+.group:hover .group-hover\:opacity-100 .fa-play { /* Target the play icon */
     text-shadow: var(--overlay-text-shadow);
 }
 
 /* --- Skeleton Loading Styles --- */
+/* Base skeleton styles are defined above */
 .movie-card-skeleton { background-color: var(--light-gray-color); border-radius: 8px; overflow: hidden; padding: 0; border: 1px solid var(--border-color); }
-.skeleton { background-color: var(--skeleton-base-color); border-radius: 4px; position: relative; overflow: hidden; margin: 0; }
-.skeleton::before { content: ''; position: absolute; top: 0; left: -150%; height: 100%; width: 150%; background: linear-gradient(to right, transparent 0%, var(--skeleton-shine-color) 50%, transparent 100%); animation: shimmer var(--shimmer-duration) infinite linear; }
 .skeleton-image { display: block; width: 100%; height: 0; padding-bottom: 150%; /* 3:2 Aspect Ratio */ margin-bottom: 0; border-radius: 0; }
 .movie-card-skeleton .p-3 { padding: 0.75rem; }
 .skeleton-title { height: 18px; width: 75%; margin-bottom: 8px; border-radius: 3px; }
 .skeleton-text { height: 12px; width: 50%; border-radius: 3px; }
 @keyframes shimmer { 0% { left: -150%; } 100% { left: 150%; } }
+/* Anime Skeleton Card (inherits general skeleton styles) */
+.skeleton-card { /* Used in anime.html */
+    background-color: var(--light-gray-color);
+    border-radius: 12px; /* Match anime card rounding */
+    overflow: hidden;
+}
+.skeleton-card .skeleton-image { padding-bottom: 150%; }
+.skeleton-card .skeleton-title { height: 16px; width: 80%; margin: 8px 12px 4px 12px; border-radius: 4px; background-color: #444; }
+.skeleton-card .skeleton-text { height: 12px; width: 50%; margin: 0 12px 8px 12px; border-radius: 4px; background-color: #444; }
+
 
 /* Filter Controls Section */
 #filter-controls {
@@ -501,7 +628,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     margin-bottom: 1rem; /* mb-4 */
     box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
 }
-.video-container iframe, .video-container object, .video-container embed {
+.video-container iframe, .video-container object, .video-container embed, #youtube-player { /* Added YT player div */
     position: absolute;
     top: 0;
     left: 0;
@@ -509,6 +636,45 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
     height: 100%;
     border: 0;
 }
+/* Video Poster Overlay & Play Button */
+#video-poster-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background-color: rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    opacity: 1; z-index: 2;
+    cursor: pointer;
+}
+#video-poster-image {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover; border-radius: 8px; z-index: 1;
+    transition: opacity 0.3s ease; opacity: 1;
+}
+#video-play-button {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    /* Size adjusted with Tailwind */
+    font-size: 1.5rem; /* text-2xl */
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, border-color 0.3s ease;
+    z-index: 3;
+}
+#video-poster-overlay:hover #video-play-button {
+    background: rgba(229, 9, 20, 0.8);
+    border-color: rgba(255, 255, 255, 0.9);
+    transform: scale(1.1);
+}
+.video-container.playing #video-poster-overlay,
+.video-container.playing #video-poster-image {
+    opacity: 0; pointer-events: none;
+}
+#video-iframe-placeholder:not(.active) {
+    display: none;
+}
+
 .video-placeholder {
     position: absolute;
     top: 0;
@@ -591,7 +757,7 @@ body.lights-off #lights-overlay {
 body.lights-off .player-area { z-index: 999; /* Bring player above overlay */ }
 /* Fade out other elements */
 body.lights-off header,
-body.lights-off main > *:not(#player-section):not(#series-content-section),
+body.lights-off main > *:not(#player-section):not(#series-content-section), /* Target sections correctly */
 body.lights-off footer,
 body.lights-off #scroll-to-top {
     opacity: 0.1;
@@ -629,71 +795,13 @@ header, main > *:not(#player-section):not(#series-content-section), footer, #scr
 /* Select styles inherited */
 #episode-list-container {
     margin-top: 1rem; /* Increased margin */
-    /* Grid layout will be replaced by flex/grid for buttons */
-}
-
-/* --- COMMENTED OUT OLD EPISODE ITEM STYLES --- */
-/*
-.episode-item {
-    display: block;
-    width: 100%;
-    text-align: left;
-    background-color: var(--light-gray-color);
-    border-radius: 0.375rem;
-    overflow: hidden;
-    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, border-color 0.2s ease-out;
-    cursor: pointer;
-    border: 1px solid var(--border-color);
-    position: relative;
-}
-.episode-item--inactive:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    border-color: #555;
-}
-.episode-item--active {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 10px rgba(229, 9, 20, 0.2);
-}
-.episode-item .relative { position: relative; }
-.episode-item img {
-    display: block;
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    aspect-ratio: 16 / 9;
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-.episode-item:hover img { transform: scale(1.1); }
-.episode-item .absolute {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0);
-    transition: background-color 0.3s ease;
-}
-.episode-item:hover .absolute { background-color: rgba(0, 0, 0, 0.5); }
-.episode-item .fa-play, .episode-item .fa-volume-up {
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    color: white;
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
-    font-size: 1.5rem;
-}
-.episode-item--inactive:hover .fa-play { opacity: 1; transform: scale(1.1); }
-.episode-item--inactive .fa-play { opacity: 0; transform: scale(0.8); }
-.episode-item--active .fa-volume-up { opacity: 1; color: var(--primary-color); }
-*/
-/* --- END COMMENTED OUT OLD STYLES --- */
-
-/* --- NEW EPISODE BUTTON STYLES --- */
-#episode-list-container {
+    /* Layout handled by flex/grid for buttons */
     display: flex; /* Use flexbox for wrapping */
     flex-wrap: wrap; /* Allow buttons to wrap to the next line */
     gap: 0.5rem; /* Spacing between buttons (8px) */
 }
 
+/* --- NEW EPISODE BUTTON STYLES --- */
 .episode-button {
     display: inline-flex; /* Behave like inline elements but allow padding/margin */
     align-items: center;
@@ -712,13 +820,11 @@ header, main > *:not(#player-section):not(#series-content-section), footer, #scr
     text-align: center;
     flex-shrink: 0; /* Prevent shrinking in flex container */
 }
-
 .episode-button:hover {
     background-color: #333; /* Darker gray on hover */
     border-color: #555;
     transform: translateY(-1px);
 }
-
 .episode-button.active {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
@@ -727,7 +833,6 @@ header, main > *:not(#player-section):not(#series-content-section), footer, #scr
     box-shadow: 0 0 8px rgba(229, 9, 20, 0.4);
     transform: none; /* Reset transform for active state */
 }
-
 .episode-button:focus-visible { /* Accessibility focus */
     outline: 2px solid var(--primary-hover-color);
     outline-offset: 1px;
@@ -812,12 +917,23 @@ header, main > *:not(#player-section):not(#series-content-section), footer, #scr
 /* Animation Classes */
 .animate-on-scroll { opacity: 0; will-change: transform, opacity; }
 .animate-on-scroll.is-visible { animation: slideUpFadeIn var(--animation-duration) var(--animation-timing) forwards; }
+/* Apply fade-in animation to anime cards */
+.anime-card.animate-fade-in-up {
+    opacity: 0; /* Start hidden */
+    animation: fadeInUp 0.8s ease-out forwards; /* Use the keyframe defined in Tailwind config */
+}
+/* Apply fade-in to hero content */
+.hero-content-anime.animate-fade-in-up {
+    opacity: 0; /* Start hidden */
+    animation: fadeInUp 1s ease-out 0.3s forwards; /* Use the keyframe defined in Tailwind config */
+}
+
 
 /* Responsive Adjustments */
 @media (max-width: 640px) { /* sm breakpoint */
     html { font-size: 15px; } /* Slightly smaller base font */
     /* Adjust card/skeleton radius */
-    .movie-card, .related-movie-card, .movie-card-skeleton { border-radius: 6px; }
+    .movie-card, .related-movie-card, .movie-card-skeleton, .anime-card, .skeleton-card { border-radius: 6px; }
     /* Adjust scroll-to-top button size and position */
     #scroll-to-top { width: 44px; height: 44px; font-size: 1rem; bottom: 15px; right: 15px; }
     /* Ensure tabs are scrollable */
@@ -835,18 +951,18 @@ header, main > *:not(#player-section):not(#series-content-section), footer, #scr
     /* Adjust filter tag container margin */
     #filter-tags-container { margin-bottom: 1rem; }
     /* Adjust hero text sizes */
-    #hero-title { font-size: 1.75rem; /* Adjusted from text-2xl */ }
-    #hero-description { font-size: 0.875rem; /* Adjusted from text-sm */ }
+    #hero-title, .hero-content-anime h1, .hero-2d3d h1 { font-size: 1.75rem; /* Adjusted from text-2xl */ }
+    #hero-description, .hero-content-anime p, .hero-2d3d p { font-size: 0.875rem; /* Adjusted from text-sm */ }
     /* Adjust main grid title size */
-    #movie-grid-title { font-size: 1.125rem; /* Adjusted from text-xl */ }
+    #movie-grid-title, .section-title { font-size: 1.125rem; /* Adjusted from text-xl */ }
 }
 
 @media (max-width: 768px) { /* md breakpoint */
     /* Adjustments for medium screens if needed */
-    #hero-title { font-size: 2.25rem; /* Adjusted from text-3xl/4xl */ }
+    #hero-title, .hero-content-anime h1, .hero-2d3d h1 { font-size: 2.25rem; /* Adjusted from text-3xl/4xl */ }
 }
 
 @media (max-width: 1024px) { /* lg breakpoint */
     /* Adjustments for large screens if needed */
-     #hero-title { font-size: 2.75rem; /* Adjusted from text-4xl/5xl */ }
+     #hero-title, .hero-content-anime h1, .hero-2d3d h1 { font-size: 2.75rem; /* Adjusted from text-4xl/5xl */ }
 }

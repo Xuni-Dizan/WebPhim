@@ -1,0 +1,338 @@
+[
+    {
+      "id": 201,
+      "title": "Jujutsu Kaisen",
+      "description": "Một cậu học sinh trung học tham gia vào một tổ chức bí mật của các Pháp sư Jujutsu để tiêu diệt một lời nguyền mạnh mẽ tên là Ryomen Sukuna, mà cậu trở thành vật chủ.",
+      "posterUrl": "https://image.tmdb.org/t/p/w500/fRabUhNfkZMvXN1m9KHMQ0GkSJk.jpg",
+      "heroImage": "https://image.tmdb.org/t/p/original/uJvkL5HCASP3Fg8U0Re5z3EZ50A.jpg",
+      "releaseYear": 2020,
+      "genre": ["Hành động", "Kinh dị", "Siêu nhiên"],
+      "rating": 8.7,
+      "numberOfSeasons": 1,
+      "totalEpisodes": 24,
+      "status": "Hoàn thành",
+      "isTrending": true,
+      "isNew": false,
+      "itemType": "anime-series",
+      "skipIntroSeconds": 85,
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "numberOfEpisodes": 24,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "Ryomen Sukuna",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/o18GTAb3x9WdWnCmfgXgQP8NdpV.jpg",
+              "videoUrls": {
+                "vietsub": "https://www.youtube.com/watch?v=VIDEO_ID_1_VIETSUB",
+                "dubbed": null,
+                "voiceover": null
+              }
+            },
+            {
+              "episodeNumber": 2,
+              "title": "For Myself",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/5bXNOyC2NPAz1hT7gQlUq6StMX.jpg",
+              "videoUrls": {
+                "vietsub": "https://www.youtube.com/watch?v=VIDEO_ID_2_VIETSUB",
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 202,
+      "title": "Demon Slayer: Kimetsu no Yaiba",
+      "description": "Một cậu bé trở thành kiếm sĩ diệt quỷ sau khi gia đình cậu bị quỷ tàn sát và em gái cậu biến thành quỷ.",
+      "posterUrl": "https://image.tmdb.org/t/p/w500/xUfRZu2mi8H6SzQEJGPOL0BBh0.jpg",
+      "heroImage": "https://image.tmdb.org/t/p/original/nTvM4mhqNlHIvUkI1gVnW6XP7GG.jpg",
+      "releaseYear": 2019,
+      "genre": ["Hành động", "Phiêu lưu", "Giả tưởng đen tối"],
+      "rating": 8.8,
+      "numberOfSeasons": 3,
+      "totalEpisodes": 44,
+      "status": "Đang chiếu",
+      "isTrending": true,
+      "isNew": false,
+      "itemType": "anime-series",
+      "skipIntroSeconds": 90,
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "numberOfEpisodes": 26,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "Cruelty",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/58aGMX3NBmSmlYCTrK3hr7UZNQP.jpg",
+              "videoUrls": {
+                "vietsub": "https://drive.google.com/file/d/DRIVE_FILE_ID_S1E1_VIETSUB/view?usp=drive_link",
+                "dubbed": null,
+                "voiceover": null
+              }
+            },
+            {
+              "episodeNumber": 2,
+              "title": "Trainer Sakonji Urokodaki",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/f9jS711zMW0BMKotfAU9oLYN5J.jpg",
+              "videoUrls": {
+                "vietsub": "https://drive.google.com/file/d/DRIVE_FILE_ID_S1E2_VIETSUB/view?usp=drive_link",
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        },
+        {
+          "seasonNumber": 2,
+          "numberOfEpisodes": 18,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "Flame Hashira Kyojuro Rengoku",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/pXJy33ZGVy0hOKj9tG5qgPCNFia.jpg",
+              "videoUrls": {
+                "vietsub": "https://www.youtube.com/watch?v=VIDEO_ID_S2E1_VIETSUB",
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        },
+        {
+          "seasonNumber": 3,
+          "numberOfEpisodes": 11,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "Someone's Dream",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/Amq30gPaGG7uSqh1yOVTjAEWb3f.jpg",
+              "videoUrls": {
+                "vietsub": "https://www.youtube.com/watch?v=VIDEO_ID_S3E1_VIETSUB",
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 203,
+      "title": "Attack on Titan",
+      "description": "Trong một thế giới nơi nhân loại sống trong các thành phố được bao quanh bởi những bức tường khổng lồ bảo vệ họ khỏi những người khổng lồ ăn thịt người được gọi là Titan, một thanh niên thề sẽ tiêu diệt tất cả Titan sau khi chúng phá hủy quê hương và cướp đi mạng sống của mẹ cậu.",
+      "posterUrl": "https://image.tmdb.org/t/p/w500/hTP1DtLGFamjG9IMVtGWbzNHTxh.jpg",
+      "heroImage": "https://image.tmdb.org/t/p/original/8b8R8l88QJe9dn9OE8qaXCZmNb1.jpg",
+      "releaseYear": 2013,
+      "genre": ["Hành động", "Giả tưởng đen tối", "Hậu tận thế"],
+      "rating": 9.0,
+      "numberOfSeasons": 4,
+      "totalEpisodes": 87,
+      "status": "Hoàn thành",
+      "isTrending": false,
+      "isNew": false,
+      "itemType": "anime-series",
+      "skipIntroSeconds": 75,
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "numberOfEpisodes": 25,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "To You, in 2000 Years: The Fall of Shiganshina, Part 1",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/98GDpfPyN342j8n4i7M7pKNlC9w.jpg",
+              "videoUrls": {
+                "vietsub": null,
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        },
+        {
+          "seasonNumber": 2,
+          "numberOfEpisodes": 12,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "Beast Titan",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/xtaqTCbEklhFeSj01s8vmAUoXT.jpg",
+              "videoUrls": {
+                "vietsub": null,
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 204,
+      "title": "Your Name. (Kimi no Na wa.)",
+      "description": "Hai học sinh trung học xa lạ hoán đổi cơ thể một cách bí ẩn.",
+      "posterUrl": "https://image.tmdb.org/t/p/w500/q719jXXEzOoYaps6babgKnONONX.jpg",
+      "heroImage": "https://image.tmdb.org/t/p/original/dIWwZW7dJJtqC6CgWzYkNVKIUm8.jpg",
+      "releaseYear": 2016,
+      "genre": ["Lãng mạn", "Giả tưởng", "Chính kịch"],
+      "rating": 8.5,
+      "episodes": null,
+      "status": "Hoàn thành",
+      "isTrending": false,
+      "isNew": false,
+      "itemType": "anime-movie",
+      "skipIntroSeconds": null,
+      "videoUrls": {
+        "vietsub": "https://www.youtube.com/watch?v=VIDEO_ID_YN_VIETSUB",
+        "dubbed": null,
+        "voiceover": "https://drive.google.com/file/d/DRIVE_ID_YN_VOICEOVER/view?usp=drive_link"
+      }
+    },
+    {
+      "id": 205,
+      "title": "Spy x Family",
+      "description": "Một điệp viên phải 'xây dựng một gia đình' để thực hiện một nhiệm vụ, không nhận ra rằng cô gái anh nhận làm con gái và người phụ nữ anh đồng ý kết hôn giả lần lượt là một nhà ngoại cảm và một sát thủ.",
+      "posterUrl": "https://image.tmdb.org/t/p/w500/3r4LYFuXrg3G8fepysr4xSljvrw.jpg",
+      "heroImage": "https://image.tmdb.org/t/p/original/94Tz9ERASRp3SyL4Pan8J3j3D6b.jpg",
+      "releaseYear": 2022,
+      "genre": ["Hành động", "Hài", "Gián điệp"],
+      "rating": 8.6,
+      "numberOfSeasons": 2,
+      "totalEpisodes": 37,
+      "status": "Đang chiếu",
+      "isTrending": true,
+      "isNew": true,
+      "itemType": "anime-series",
+      "skipIntroSeconds": 60,
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "numberOfEpisodes": 25,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "Operation Strix",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/p5T4JjXF1tuykQhmnQ4wKZU04S7.jpg",
+              "videoUrls": {
+                "vietsub": null,
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        },
+        {
+          "seasonNumber": 2,
+          "numberOfEpisodes": 12,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "Follow Mama and Papa",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/jY1qfNtGlnNrn3kYza6jTjXzY5w.jpg",
+              "videoUrls": {
+                "vietsub": null,
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 206,
+      "title": "Chainsaw Man",
+      "description": "Theo chân Denji, một chàng trai trẻ nghèo khổ, người sau khi lập giao ước với một con quỷ giống chó tên là Pochita, hợp nhất với Denji, ban cho anh ta khả năng biến các bộ phận cơ thể của mình thành cưa máy.",
+      "posterUrl": "https://image.tmdb.org/t/p/w500/npdB6eFzizki0WaZ1OvKcJrWe97.jpg",
+      "heroImage": "https://image.tmdb.org/t/p/original/5YgEfTjFAd0JcPzepGv7nNGNrfJ.jpg",
+      "releaseYear": 2022,
+      "genre": ["Hành động", "Giả tưởng đen tối", "Hài đen"],
+      "rating": 8.5,
+      "numberOfSeasons": 1,
+      "totalEpisodes": 12,
+      "status": "Hoàn thành",
+      "isTrending": true,
+      "isNew": false,
+      "itemType": "anime-series",
+      "skipIntroSeconds": 70,
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "numberOfEpisodes": 12,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "Dog & Chainsaw",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/u1QWc2Ml0ude6s06Vi3b74aJ3hX.jpg",
+              "videoUrls": {
+                "vietsub": null,
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 207,
+      "title": "Oshi no Ko",
+      "description": "Một bác sĩ và bệnh nhân mới qua đời của anh được tái sinh thành cặp song sinh của một thần tượng nhạc pop nổi tiếng và điều hướng những Höhen và Tiefen của ngành giải trí Nhật Bản khi họ cùng nhau lớn lên trong suốt cuộc đời.",
+      "posterUrl": "https://image.tmdb.org/t/p/w500/wq6D3ZQO7g0sT4d7j922Vmh9KRE.jpg",
+      "heroImage": "https://image.tmdb.org/t/p/original/1nmxnXuCn7YrkM3Ec882kvg5M6m.jpg",
+      "releaseYear": 2023,
+      "genre": ["Chính kịch", "Siêu nhiên", "Tâm lý"],
+      "rating": 8.9,
+      "numberOfSeasons": 1,
+      "totalEpisodes": 11,
+      "status": "Hoàn thành",
+      "isTrending": false,
+      "isNew": true,
+      "itemType": "anime-series",
+      "skipIntroSeconds": 95,
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "numberOfEpisodes": 11,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "Mother and Children",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/94k0Q8FG9HSyUW49Hz3a1eTl7EB.jpg",
+              "videoUrls": {
+                "vietsub": null,
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 208,
+      "title": "Weathering with You (Tenki no Ko)",
+      "description": "Một cậu học sinh trung học chạy trốn đến Tokyo và kết bạn với một cô gái dường như có thể điều khiển thời tiết.",
+      "posterUrl": "https://image.tmdb.org/t/p/w500/1n0jQ5TWPAyC2oNl8GjN4S4dKGH.jpg",
+      "heroImage": "https://image.tmdb.org/t/p/original/4D9itlCId739bo4457sYjCeQ9i.jpg",
+      "releaseYear": 2019,
+      "genre": ["Lãng mạn", "Giả tưởng", "Chính kịch"],
+      "rating": 8.0,
+      "episodes": null,
+      "status": "Hoàn thành",
+      "isTrending": false,
+      "isNew": false,
+      "itemType": "anime-movie",
+      "skipIntroSeconds": null,
+      "videoUrls": {
+        "vietsub": null,
+        "dubbed": null,
+        "voiceover": null
+      }
+    }
+  ]

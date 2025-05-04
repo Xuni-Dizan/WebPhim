@@ -1,4 +1,5 @@
 // hoat_hinh_2D_3D.js - JavaScript for the 2D/3D Films Page
+// v1.1: Corrected detailPageUrl logic for potential anime items.
 
 // --- START: Basic Page Functionality ---
 // --- BẮT ĐẦU: Chức năng Cơ bản của Trang ---
@@ -154,18 +155,27 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {string} The HTML string for the suggestion item.
      */
     const createSuggestionItem = (item, type, searchTerm) => {
-        // Determine the correct detail page URL based on the type
-        const detailPageUrl = type === 'series'
-            ? `filmDetails_phimBo.html?id=${item.id}&type=series`
-            : `filmDetail.html?id=${item.id}&type=movies`;
-        const altText = `Poster nhỏ của ${type === 'movies' ? 'phim' : 'phim bộ'} ${item.title || 'không có tiêu đề'}`;
-        const typeLabel = type === 'series' ? ' (Bộ)' : ''; // Add label for series
+        // *** UPDATED LOGIC FOR ANIME LINKS IN SUGGESTIONS ***
+        let detailPageUrl = '#';
+        const itemType = item.itemType || type; // Use specific itemType if available
+
+        if (itemType === 'anime-series' || itemType === 'anime-movie') {
+            detailPageUrl = `animeDetails.html?id=${item.id}&type=${itemType}`;
+        } else if (itemType === 'series') {
+            detailPageUrl = `filmDetails_phimBo.html?id=${item.id}&type=series`;
+        } else { // movies
+            detailPageUrl = `filmDetail.html?id=${item.id}&type=movies`;
+        }
+        // *** END UPDATED LOGIC ***
+
+        const altText = `Poster nhỏ của ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${item.title || 'không có tiêu đề'}`;
+        const typeLabel = (itemType === 'series' || itemType === 'anime-series') ? ' (Bộ)' : (itemType === 'anime-movie' ? ' (Anime Movie)' : ''); // Add labels
         const posterSrc = item.posterUrl || 'https://placehold.co/40x60/111111/eeeeee?text=N/A'; // Fallback poster
         // Highlight the search term in the title
         const highlightedTitle = highlightTerm(item.title || 'Không có tiêu đề', searchTerm);
 
         return `
-            <a href="${detailPageUrl}" class="suggestion-item" data-item-id="${item.id}" data-item-type="${type}" role="option" aria-label="Xem chi tiết ${item.title || ''}${typeLabel}">
+            <a href="${detailPageUrl}" class="suggestion-item" data-item-id="${item.id}" data-item-type="${itemType}" role="option" aria-label="Xem chi tiết ${item.title || ''}${typeLabel}">
                 <img src="${posterSrc}" alt="${altText}" loading="lazy" class="w-10 h-15 object-cover rounded border border-border-color" onerror="this.onerror=null; this.src='https://placehold.co/40x60/111111/eeeeee?text=Err'; this.alt='Lỗi tải ảnh nhỏ ${item.title || ''}';">
                 <div class="suggestion-item-info">
                     <span class="suggestion-item-title">${highlightedTitle}${typeLabel}</span>
@@ -173,6 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </a>`;
     };
+
 
     /**
      * Displays search suggestions based on the input term.
@@ -234,15 +245,25 @@ document.addEventListener('DOMContentLoaded', () => {
      * Creates the HTML string for a movie or series card with badges.
      * Tạo chuỗi HTML cho thẻ phim hoặc phim bộ với các huy hiệu.
      * @param {object} item The movie or series data object.
-     * @param {string} type The type ('movies' or 'series').
+     * @param {string} type The type ('movies' or 'series'). **Note: Use item.itemType for correct linking.**
      * @returns {string} The HTML string for the card.
      */
-    const createItemCard = (item, type) => {
-        // Determine the correct detail page URL
-        const detailPageUrl = type === 'series'
-            ? `filmDetails_phimBo.html?id=${item.id}&type=series`
-            : `filmDetail.html?id=${item.id}&type=movies`;
-        const altText = `Poster ${type === 'movies' ? 'phim' : 'phim bộ'} ${item.title || 'không có tiêu đề'}, năm ${item.releaseYear || 'không rõ'}`;
+    const createItemCard = (item, type) => { // 'type' might be redundant if item.itemType exists
+        // *** UPDATED LOGIC FOR ANIME LINKS ***
+        let detailPageUrl = '#';
+        const itemType = item.itemType || type; // Prioritize item.itemType
+
+        if (itemType === 'anime-series' || itemType === 'anime-movie') {
+            // **Direct ALL anime types found on this page to animeDetails.html**
+            detailPageUrl = `animeDetails.html?id=${item.id}&type=${itemType}`;
+        } else if (itemType === 'series') {
+            detailPageUrl = `filmDetails_phimBo.html?id=${item.id}&type=series`;
+        } else { // movies
+            detailPageUrl = `filmDetail.html?id=${item.id}&type=movies`;
+        }
+        // *** END UPDATED LOGIC ***
+
+        const altText = `Poster ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${item.title || 'không có tiêu đề'}, năm ${item.releaseYear || 'không rõ'}`;
 
         let badgesHTML = '';
         const format = item.format || []; // Default to empty array if format is missing
@@ -262,11 +283,14 @@ document.addEventListener('DOMContentLoaded', () => {
             badgesHTML += `<span class="absolute top-2 left-2 ${formatBadgeClass} text-white text-xs font-semibold px-2 py-1 rounded shadow-md z-10">${formatBadgeText}</span>`;
         }
 
-        // Add a badge if it's a series
-        if (type === 'series') {
+        // Add a badge if it's a series or anime series
+        if (itemType === 'series' || itemType === 'anime-series') {
             // Place series badge on the top-right
             badgesHTML += `<span class="absolute top-2 right-2 series-badge text-white text-xs font-semibold px-2 py-1 rounded shadow-md z-10">Bộ</span>`; // Use CSS class
+        } else if (itemType === 'anime-movie') {
+             badgesHTML += `<span class="absolute top-2 right-2 bg-purple-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md z-10">Anime Movie</span>`;
         }
+
 
         const posterUrl = item.posterUrl || 'https://placehold.co/300x450/111111/eeeeee?text=No+Poster'; // Fallback poster
         const titleText = item.title || 'Không có tiêu đề';
@@ -276,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayTitle = currentFilters.search ? highlightTerm(titleText, currentFilters.search) : titleText;
 
         return `
-            <a href="${detailPageUrl}" class="bg-light-gray rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 cursor-pointer group relative block movie-card" data-item-id="${item.id}" data-item-type="${type}" aria-label="Xem chi tiết ${type === 'movies' ? 'phim' : 'phim bộ'} ${titleText}">
+            <a href="${detailPageUrl}" class="bg-light-gray rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 cursor-pointer group relative block movie-card" data-item-id="${item.id}" data-item-type="${itemType}" aria-label="Xem chi tiết ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${titleText}">
                 <div class="relative">
                     <img src="${posterUrl}" alt="${altText}" class="w-full h-auto object-cover aspect-[2/3]" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/300x450/111111/eeeeee?text=Error'; this.alt='Lỗi tải ảnh poster ${titleText}';">
                     ${badgesHTML}
@@ -291,6 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </a>
         `;
     };
+
 
     /**
      * Updates the hero section UI based on the provided item.
@@ -399,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 6. Render the filtered and sorted items
         if (loadingIndicator) loadingIndicator.classList.add('hidden'); // Hide loading indicator
         if (itemsToDisplay.length > 0) {
-            // Render cards, passing the search term for highlighting
+            // Render cards, passing the item's specific type
             gridContainer.innerHTML = itemsToDisplay.map(item => createItemCard(item, item.itemType)).join('');
         } else {
             // Show "No results" message
@@ -413,6 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
             gridContainer.innerHTML = ''; // Ensure grid is empty
         }
     };
+
 
     /**
      * Fetches initial data (movies and series), filters for 2D/3D items,
@@ -454,6 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const seriesData = seriesResponse.ok ? await seriesResponse.json() : [];
 
             // Combine movies and series, adding an 'itemType' property
+            // **IMPORTANT**: Add itemType here during initial processing
             const allItems = [
                 ...moviesData.map(item => ({ ...item, itemType: 'movies' })),
                 ...seriesData.map(item => ({ ...item, itemType: 'series' }))

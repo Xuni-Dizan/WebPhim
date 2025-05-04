@@ -35,6 +35,16 @@
                         'primary-hover': '#f40612', // Brighter Red
                         'badge-2d': '#10b981', // Emerald 500 for 2D
                         'badge-3d': '#8b5cf6', // Violet 500 for 3D
+                    },
+                    animation: {
+                         'pageFadeIn': 'pageFadeIn 0.6s ease-out forwards 0.2s',
+                         'shimmer': 'shimmer 1.5s infinite linear',
+                         'slideUpFadeIn': 'slideUpFadeIn 0.6s ease-out forwards',
+                    },
+                    keyframes: {
+                         pageFadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
+                         shimmer: { '0%': { left: '-150%' }, '100%': { left: '150%' } },
+                         slideUpFadeIn: { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } }
                     }
                 }
             }
@@ -209,73 +219,78 @@
 </head>
 <body class="bg-secondary text-white font-sans">
 
-    <header id="main-header" class="py-3 px-4 md:px-6 lg:px-10 sticky top-0 z-50 shadow-md bg-secondary/80 backdrop-blur-md border-b border-border-color">
+    <header id="main-header" class="py-3 px-4 md:px-6 lg:px-10">
         <div class="container mx-auto flex justify-between items-center max-w-screen-xl">
-            <a href="../index.html" class="header-logo-link" aria-label="Trang chủ LOGO PHIM">
-                <img src="../access/img/logo.png" alt="Logo Trang Web Phim" class="header-logo">
+            <a href="../index.html" class="header-logo-link" aria-label="Trang chủ Flick Tale">
+                <img src="../access/img/logo.png" alt="Logo Flick Tale" class="header-logo">
             </a>
 
             <nav class="hidden md:flex flex-grow justify-center space-x-5 lg:space-x-7 items-center" aria-label="Điều hướng chính">
                 <a href="../index.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">Trang Chủ</a>
-                <a href="../index.html#filter-controls" class="text-gray-300 hover:text-white transition duration-300 font-medium">Thể Loại</a>
-                <a href="anime.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">Anime</a>
-                <a href="hoat_hinh_2D_3D.html" class="active-link-primary transition duration-300 font-medium" aria-current="page">Phim 2D/3D</a>
+                <a href="anime.html" id="nav-anime" class="text-gray-300 hover:text-white transition duration-300 font-medium">Anime</a>
+                <a href="hoat_hinh_2D_3D.html" id="nav-2d3d" class="active-link-primary transition duration-300 font-medium" aria-current="page">Phim 2D/3D</a>
             </nav>
 
-            <div class="flex items-center space-x-4 flex-shrink-0">
-                 <div class="relative hidden md:block">
-                    <label for="search-input-desktop-2d3d" class="sr-only">Tìm kiếm phim 2D/3D</label>
-                    <input type="text" id="search-input-desktop-2d3d" placeholder="Tìm kiếm 2D/3D..." class="bg-light-gray text-white px-4 py-1.5 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:bg-gray-700 transition duration-300 w-40 sm:w-48 md:w-56 text-sm" aria-label="Tìm kiếm phim 2D/3D" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-desktop-2d3d" aria-expanded="false">
+            <div class="hidden md:flex items-center space-x-3 lg:space-x-4 flex-shrink-0">
+                <a href="#filters-2d3d" id="nav-filter-icon" class="filter-icon-button" aria-label="Mở bộ lọc">
+                    <i class="fas fa-filter"></i>
+                </a>
+                <div class="relative">
+                    <label for="search-input-desktop" class="sr-only">Tìm kiếm phim hoặc phim bộ</label>
+                    <input type="text" id="search-input-desktop" placeholder="Tìm kiếm..." class="bg-light-gray text-white px-4 py-1.5 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:bg-gray-700 transition duration-300 w-40 sm:w-48 md:w-56 lg:w-64 text-sm" aria-label="Tìm kiếm" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-desktop" aria-expanded="false">
                     <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
                         <i class="fas fa-search text-xs"></i>
                     </span>
-                    <div id="search-suggestions-desktop-2d3d" role="listbox" class="search-suggestions absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm 2D/3D">
+                    <div id="search-suggestions-desktop" role="listbox" class="search-suggestions search-suggestions-desktop absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm">
                         <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
                     </div>
-                 </div>
+                </div>
                 <button class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Tài khoản người dùng">
                     <i class="fas fa-user text-lg"></i>
                 </button>
             </div>
 
             <div class="md:hidden flex items-center space-x-2">
-                 <button id="search-icon-mobile-2d3d" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở tìm kiếm" aria-expanded="false" aria-controls="mobile-search-container-2d3d">
-                     <i class="fas fa-search text-xl"></i>
-                 </button>
-                 <button id="mobile-menu-button-2d3d" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu-panel-2d3d">
+                <a href="#filters-2d3d" id="mobile-nav-filter-icon" class="filter-icon-button" aria-label="Mở bộ lọc">
+                    <i class="fas fa-filter"></i>
+                </a>
+                <button id="search-icon-mobile" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở tìm kiếm" aria-expanded="false" aria-controls="mobile-search-container">
+                    <i class="fas fa-search text-xl"></i>
+                </button>
+                <button id="mobile-menu-button" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu-panel">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
             </div>
         </div>
 
-        <div id="mobile-search-container-2d3d" class="md:hidden hidden mt-3 px-4 pb-3 relative">
-            <label for="search-input-mobile-2d3d" class="sr-only">Tìm kiếm phim 2D/3D</label>
-            <input type="text" id="search-input-mobile-2d3d" placeholder="Tìm kiếm phim 2D/3D..." class="bg-light-gray text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary w-full text-sm" aria-label="Tìm kiếm 2D/3D trên di động" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-mobile-2d3d" aria-expanded="false">
+        <div id="mobile-search-container" class="md:hidden hidden mt-3 px-4 pb-3 relative">
+            <label for="search-input-mobile" class="sr-only">Tìm kiếm phim hoặc phim bộ</label>
+            <input type="text" id="search-input-mobile" placeholder="Tìm kiếm phim, phim bộ..." class="bg-light-gray text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary w-full text-sm" aria-label="Tìm kiếm trên di động" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-mobile" aria-expanded="false">
             <span class="absolute right-7 top-1/2 transform -translate-y-1/2 text-gray-400 -mt-px" aria-hidden="true">
                 <i class="fas fa-search text-xs"></i>
             </span>
-            <div id="search-suggestions-mobile-2d3d" role="listbox" class="search-suggestions absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm 2D/3D di động">
+            <div id="search-suggestions-mobile" role="listbox" class="search-suggestions search-suggestions-mobile absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm di động">
                  <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
             </div>
         </div>
     </header>
 
-    <div id="mobile-menu-overlay-2d3d" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden hidden"></div>
-    <div id="mobile-menu-panel-2d3d" class="fixed top-0 right-0 bottom-0 w-64 bg-light-gray p-5 pt-16 shadow-lg z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
-        <button id="close-mobile-menu-button-2d3d" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white" aria-label="Đóng menu">
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden hidden"></div>
+    <div id="mobile-menu-panel" class="fixed top-0 right-0 bottom-0 w-64 bg-light-gray p-5 pt-16 shadow-lg z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        <button id="close-mobile-menu-button" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white" aria-label="Đóng menu">
             <i class="fas fa-times text-2xl"></i>
         </button>
         <nav class="flex flex-col space-y-4" aria-label="Điều hướng di động">
             <a href="../index.html" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium">Trang Chủ</a>
-            <a href="../index.html#filter-controls" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium">Thể Loại</a>
-            <a href="anime.html" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium">Anime</a>
-            <a href="hoat_hinh_2D_3D.html" class="block py-2 px-3 text-white bg-primary rounded font-semibold" aria-current="page">Phim 2D/3D</a>
+            <a href="anime.html" id="mobile-nav-anime" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium">Anime</a>
+            <a href="hoat_hinh_2D_3D.html" id="mobile-nav-2d3d" class="block py-2 px-3 text-white bg-primary rounded font-semibold" aria-current="page">Phim 2D/3D</a>
             <hr class="border-gray-600 my-3">
              <a href="#" class="block py-2 px-3 text-gray-200 hover:bg-gray-700 rounded font-medium flex items-center gap-2">
                  <i class="fas fa-user w-4 text-center"></i> Tài Khoản
              </a>
         </nav>
     </div>
+
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-screen-xl">
 
@@ -343,8 +358,8 @@
         <div class="container mx-auto max-w-screen-xl grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="space-y-4">
                 <a href="../index.html" class="inline-block mb-2" aria-label="Trang chủ LOGO PHIM">
-                    <img src="../access/img/logo.png" alt="Logo Trang Web Phim" class="h-10 hover:opacity-80 transition-opacity duration-300">
-                </a>
+                    <span class="text-xl font-bold text-white">Flick Tale</span>
+                    </a>
                 <p class="text-sm pr-4">
                     Khám phá thế giới điện ảnh với hàng ngàn phim lẻ và phim bộ hấp dẫn. Cập nhật liên tục, chất lượng cao.
                 </p>
@@ -370,13 +385,11 @@
                     <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
                 </div>
                 <h3 class="text-lg font-semibold mb-2 mt-6">Thông Tin Liên Hệ</h3>
-                <p class="text-sm">Email: support@flicktake.com</p>
-                <p class="text-sm">Hotline: 1900-1234</p>
+                <p class="text-sm">Email: support@flicktale.com</p> <p class="text-sm">Hotline: 1900-1234</p>
            </div>
        </div>
        <div class="mt-10 pt-8 border-t border-gray-700 text-center">
-           <p class="text-sm">© <span id="footer-year">2025</span> Flick Take. Mọi quyền được bảo lưu.</p>
-           <p class="text-xs mt-2 opacity-70">
+           <p class="text-sm">© <span id="footer-year">2025</span> Flick Tale. Mọi quyền được bảo lưu.</p> <p class="text-xs mt-2 opacity-70">
                Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn và học tập.
            </p>
        </div>
@@ -386,6 +399,200 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
+    <script>
+        const footerYearSpan = document.getElementById('footer-year');
+        if (footerYearSpan) {
+            footerYearSpan.textContent = new Date().getFullYear();
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const header = document.getElementById('main-header');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenuPanel = document.getElementById('mobile-menu-panel');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const closeMobileMenuButton = document.getElementById('close-mobile-menu-button');
+            const searchIconMobile = document.getElementById('search-icon-mobile');
+            const mobileSearchContainer = document.getElementById('mobile-search-container');
+            const searchInputDesktop = document.getElementById('search-input-desktop');
+            const searchSuggestionsDesktop = document.getElementById('search-suggestions-desktop');
+            const searchInputMobile = document.getElementById('search-input-mobile');
+            const searchSuggestionsMobile = document.getElementById('search-suggestions-mobile');
+            const navFilterIcon = document.getElementById('nav-filter-icon'); // Desktop filter icon
+            const mobileNavFilterIcon = document.getElementById('mobile-nav-filter-icon'); // Mobile filter icon
+            const genreDropdown = document.getElementById('genre-dropdown');
+            const genreButton = document.getElementById('genre-filter-button');
+            const filterControls = document.getElementById('filters-2d3d'); // Corrected ID
+
+            let debounceTimer;
+
+            // Debounce Function
+            const debounce = (func, wait) => {
+                return (...args) => { clearTimeout(debounceTimer); debounceTimer = setTimeout(() => { func.apply(this, args); }, wait); };
+            };
+
+            // Highlight Search Term
+            const highlightTerm = (text, term) => {
+                if (!term || !text) return text || '';
+                const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const regex = new RegExp(`(${escapedTerm})`, 'gi');
+                return text.replace(regex, `<span class="search-highlight">$1</span>`);
+            };
+
+            // Create Suggestion Item
+            const createSuggestionItem = (item, type, searchTerm) => {
+                 let detailPageUrl = '#';
+                 const itemType = item.itemType || type;
+                 if (itemType === 'anime-series' || itemType === 'anime-movie') {
+                     detailPageUrl = `animeDetails.html?id=${item.id}&type=${itemType}`;
+                 } else if (itemType === 'series') {
+                     detailPageUrl = `filmDetails_phimBo.html?id=${item.id}&type=series`;
+                 } else { // movies
+                     detailPageUrl = `filmDetail.html?id=${item.id}&type=movies`;
+                 }
+                const altText = `Poster nhỏ của ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${item.title || 'không có tiêu đề'}`;
+                const typeLabel = itemType === 'series' || itemType === 'anime-series' ? ' (Bộ)' : (itemType === 'anime-movie' ? ' (Anime Movie)' : '');
+                const posterSrc = item.posterUrl || 'https://placehold.co/40x60/111111/eeeeee?text=N/A';
+                const highlightedTitle = highlightTerm(item.title || 'Không có tiêu đề', searchTerm);
+
+                return `
+                    <a href="${detailPageUrl}" class="suggestion-item" data-item-id="${item.id}" data-item-type="${itemType}" role="option" aria-label="Xem chi tiết ${item.title || ''}${typeLabel}">
+                        <img src="${posterSrc}" alt="${altText}" loading="lazy" class="w-10 h-15 object-cover rounded border border-border-color" onerror="this.onerror=null; this.src='https://placehold.co/40x60/111111/eeeeee?text=Err'; this.alt='Lỗi tải ảnh nhỏ ${item.title || ''}';">
+                        <div class="suggestion-item-info">
+                            <span class="suggestion-item-title">${highlightedTitle}${typeLabel}</span>
+                            <span class="suggestion-item-year">${item.releaseYear || 'N/A'}</span>
+                        </div>
+                    </a>`;
+            };
+
+            // Display Search Suggestions
+            const displaySearchSuggestions = (searchTerm, inputElement, suggestionsContainer) => {
+                if (!suggestionsContainer) return;
+                const placeholder = suggestionsContainer.querySelector('.no-suggestions-placeholder');
+                if (!searchTerm) { suggestionsContainer.style.display = 'none'; inputElement.setAttribute('aria-expanded', 'false'); if (placeholder) placeholder.textContent = 'Nhập để tìm kiếm...'; return; }
+                if (placeholder) placeholder.textContent = 'Đang tìm...'; suggestionsContainer.innerHTML = '';
+                // Use the allFetchedItems from the main script for suggestions on this page
+                if (!window.allFetchedItems || window.allFetchedItems.length === 0) {
+                     suggestionsContainer.innerHTML = `<div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Dữ liệu phim 2D/3D đang tải hoặc không có sẵn...</div>`;
+                     suggestionsContainer.style.display = 'block';
+                     inputElement.setAttribute('aria-expanded', 'true');
+                     return;
+                }
+
+
+                const matchedItems = window.allFetchedItems // Use the filtered 2D/3D items
+                    .filter(item => item.title && item.title.toLowerCase().includes(searchTerm))
+                    .sort((a, b) => (a.title || '').localeCompare(b.title || ''))
+                    .slice(0, 7);
+
+                if (matchedItems.length > 0) { suggestionsContainer.innerHTML = matchedItems.map(item => createSuggestionItem(item, item.itemType, searchTerm)).join(''); suggestionsContainer.style.display = 'block'; inputElement.setAttribute('aria-expanded', 'true'); }
+                else { suggestionsContainer.innerHTML = `<div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Không tìm thấy kết quả nào.</div>`; suggestionsContainer.style.display = 'block'; inputElement.setAttribute('aria-expanded', 'true'); }
+            };
+
+            // Hide Search Suggestions
+            const hideAllSearchSuggestions = () => {
+                if (searchSuggestionsDesktop) { searchSuggestionsDesktop.style.display = 'none'; if(searchInputDesktop) searchInputDesktop.setAttribute('aria-expanded', 'false'); }
+                if (searchSuggestionsMobile) { searchSuggestionsMobile.style.display = 'none'; if(searchInputMobile) searchInputMobile.setAttribute('aria-expanded', 'false'); }
+            };
+            window.hideAllSearchSuggestions = hideAllSearchSuggestions;
+
+            // Mobile Menu
+            const openMobileMenu = () => { mobileMenuPanel?.classList.remove('translate-x-full'); mobileMenuPanel?.classList.add('translate-x-0'); mobileMenuOverlay?.classList.remove('hidden'); mobileMenuButton?.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; };
+            const closeMobileMenu = () => { mobileMenuPanel?.classList.remove('translate-x-0'); mobileMenuPanel?.classList.add('translate-x-full'); mobileMenuOverlay?.classList.add('hidden'); mobileMenuButton?.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; };
+            mobileMenuButton?.addEventListener('click', openMobileMenu);
+            closeMobileMenuButton?.addEventListener('click', closeMobileMenu);
+            mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
+
+            // Mobile Search Toggle
+            searchIconMobile?.addEventListener('click', () => { const isHidden = mobileSearchContainer?.classList.toggle('hidden'); searchIconMobile.setAttribute('aria-expanded', String(!isHidden)); if (!isHidden) searchInputMobile?.focus(); else hideAllSearchSuggestions(); });
+
+            // Search Input Handling
+            const handleSearchInput = (event) => {
+                const inputEl = event.target; const suggestionsEl = inputEl === searchInputDesktop ? searchSuggestionsDesktop : searchSuggestionsMobile; const term = inputEl.value.trim().toLowerCase();
+                // Call global filter function directly if available
+                if (window.currentFilters && typeof window.applyFiltersAndRender === 'function') { // Check for the function from hoat_hinh_2D_3D.js
+                    window.currentFilters.search = term; // Update global search state
+                    debounce(() => window.applyFiltersAndRender(), 300)(); // Debounce grid update
+                } else { console.warn("Global state 'currentFilters' or function 'applyFiltersAndRender' not found."); }
+                debounce(() => displaySearchSuggestions(term, inputEl, suggestionsEl), 150)(); // Debounce suggestions
+            };
+            searchInputDesktop?.addEventListener('input', handleSearchInput);
+            searchInputMobile?.addEventListener('input', handleSearchInput);
+
+            // Genre Dropdown Toggle - Note: This page doesn't have genre filter, but keeping the logic if added later
+            // genreButton?.addEventListener('click', (event) => { event.stopPropagation(); if (genreDropdown) { const isHidden = genreDropdown.classList.toggle('hidden'); genreButton.setAttribute('aria-expanded', String(!isHidden)); } });
+
+            // Click Outside Logic
+            document.addEventListener('click', (event) => {
+                const target = event.target;
+                const isInsideDesktopSearch = searchInputDesktop?.contains(target) || searchSuggestionsDesktop?.contains(target);
+                const isInsideMobileSearch = searchInputMobile?.contains(target) || searchSuggestionsMobile?.contains(target) || searchIconMobile?.contains(target);
+                 // const isInsideGenreFilter = genreDropdown?.contains(target) || genreButton?.contains(target); // Uncomment if genre filter is added
+                 const isInsideFilterControls = filterControls?.contains(target); // Check if click is inside filter section
+                 const isFilterIcon = navFilterIcon?.contains(target) || mobileNavFilterIcon?.contains(target); // Check if click is on filter icon
+
+
+                if (!isInsideDesktopSearch && !isInsideMobileSearch) hideAllSearchSuggestions();
+                // if (!isInsideGenreFilter && genreDropdown && !genreDropdown.classList.contains('hidden')) { genreDropdown.classList.add('hidden'); genreButton?.setAttribute('aria-expanded', 'false'); } // Uncomment if genre filter is added
+                // Hide Filter Controls when clicking outside (unless it's the filter icon)
+                // This page's filter controls are always visible, so this logic is not needed here.
+                // if (filterControls && !filterControls.classList.contains('hidden') && !isInsideFilterControls && !isFilterIcon) { filterControls.classList.add('hidden'); }
+            });
+
+            // Search Submit (Enter Key)
+            const handleSearchSubmit = (event) => {
+                 if (event.key === 'Enter') {
+                     event.preventDefault();
+                     const searchTerm = event.target.value.trim();
+                     console.log(`Performing search for: "${searchTerm}" (Enter key)`);
+                     if (window.currentFilters && typeof window.applyFiltersAndRender === 'function') { // Check for the function from hoat_hinh_2D_3D.js
+                         window.currentFilters.search = searchTerm.toLowerCase(); // Update global state
+                         window.applyFiltersAndRender(); // Trigger filtering
+                     } else { console.warn("Global state 'currentFilters' or function 'applyFiltersAndRender' not found."); }
+                     hideAllSearchSuggestions();
+                     event.target.blur();
+                 }
+            };
+            searchInputDesktop?.addEventListener('keydown', handleSearchSubmit);
+            searchInputMobile?.addEventListener('keydown', handleSearchSubmit);
+
+            // Sticky Header - No change needed
+            let lastScrollTop = 0;
+            window.addEventListener('scroll', function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (header) {
+                    if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) { header.classList.add('header-hidden'); header.classList.remove('header-shadow'); }
+                    else { header.classList.remove('header-hidden'); header.classList.toggle('header-shadow', scrollTop > 50 || !header.classList.contains('header-hidden')); }
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+
+            // Footer Year - No change needed
+            const footerYear = document.getElementById('footer-year'); if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+            // --- Filter Icon Click Handler ---
+            // This page's filter controls are always visible, so the filter icon likely scrolls to the section.
+            const handleFilterIconClick = (event) => {
+                 event.preventDefault(); // Prevent default anchor jump
+                 if (filterControls) {
+                     console.log("Scrolling to filter controls section.");
+                     filterControls.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                 } else { console.error("Filter controls element not found."); }
+                 // Close mobile menu if open and clicked from mobile filter icon
+                 if (mobileMenuPanel && !mobileMenuPanel.classList.contains('translate-x-full') && event.currentTarget === mobileNavFilterIcon) { closeMobileMenu(); }
+            };
+            navFilterIcon?.addEventListener('click', handleFilterIconClick);
+            mobileNavFilterIcon?.addEventListener('click', handleFilterIconClick);
+
+
+            console.log("Inline header & search script (responsive) loaded and updated for 2D/3D page.");
+        });
+    </script>
     <script src="../js/hoat_hinh_2D_3D.js" defer></script>
 
     </body>

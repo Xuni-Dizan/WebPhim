@@ -184,24 +184,25 @@
   },
   {
     "id": 9,
-    "title": "Kẻ Hủy Diệt 2: Ngày Phán Xét",
-    "description": "Một người máy từ tương lai được gửi về quá khứ để bảo vệ John Connor khỏi một kẻ hủy diệt mới.",
-    "posterUrl": "https://upload.wikimedia.org/wikipedia/en/3/3f/Terminator_2_Judgment_Day_poster.jpg",
-    "releaseYear": 1991,
-    "genre": ["Hành động", "Khoa học viễn tưởng"],
-    "director": "James Cameron",
-    "cast": ["Arnold Schwarzenegger", "Linda Hamilton", "Edward Furlong"],
-    "rating": 8.5,
-    "duration": "137 phút",
+    "title": "Harry Potter và Phòng chứa Bí mật",
+    "description": "Harry trở lại trường Hogwarts vào năm thứ hai, khám phá ra một thế lực đen tối đang khủng bố ngôi trường và một căn phòng bí mật chứa đựng một con quái vật.",
+    "posterUrl": "https://static.nutscdn.com/vimg/0-0/17a7b8f48c3a32c59ec6bb15e0334a3b.jpg",
+    "releaseYear": 2002,
+    "genre": ["Giả tưởng", "Phiêu lưu", "Gia đình"],
+    "director": "Chris Columbus",
+    "cast": ["Daniel Radcliffe", "Rupert Grint", "Emma Watson"],
+    "rating": 7.4,
+    "duration": "161 phút",
     "videoUrls": {
       "vietsub": null,
       "dubbed": null,
-      "voiceover": null
+      "voiceover": "https://drive.google.com/file/d/1_qXTb7L6aPavDfTGbOCY35PNZEaDkfmF/view?usp=drive_link"
     },
     "isTrending": false,
     "isNew": false,
     "isHot": false,
-    "heroImage": null,
+    "heroImage": "https://static.nutscdn.com/vimg/0-0/4f355d1ccb2c0397a7a1585612ea9b39.jpg",
     "format": ["Live Action", "Feature"]
   }
+  
 ]

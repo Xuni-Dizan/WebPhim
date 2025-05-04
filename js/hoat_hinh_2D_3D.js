@@ -1,5 +1,7 @@
 // hoat_hinh_2D_3D.js - JavaScript for the 2D/3D Films Page
-// v1.1: Corrected detailPageUrl logic for potential anime items.
+// v1.5: Added more console logging for debugging data loading and filtering.
+//       Ensured itemType is handled consistently.
+//       Improved error handling messages.
 
 // --- START: Basic Page Functionality ---
 // --- BẮT ĐẦU: Chức năng Cơ bản của Trang ---
@@ -30,8 +32,10 @@ if (scrollToTopButton) {
     /**
      * Scrolls the window to the top smoothly.
      * Cuộn cửa sổ lên đầu một cách mượt mà.
+     * @param {Event} event The click event.
      */
-    const scrollToTop = () => {
+    const scrollToTop = (event) => {
+        event.preventDefault(); // Prevent default anchor behavior
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -42,10 +46,10 @@ if (scrollToTopButton) {
 
 // Mobile Menu Toggle (Specific for this page)
 // Chuyển đổi Menu Di động (Cụ thể cho trang này)
-const mobileMenuButton2d3d = document.getElementById('mobile-menu-button-2d3d');
-const mobileMenuPanel2d3d = document.getElementById('mobile-menu-panel-2d3d');
-const mobileMenuOverlay2d3d = document.getElementById('mobile-menu-overlay-2d3d');
-const closeMobileMenuButton2d3d = document.getElementById('close-mobile-menu-button-2d3d');
+const mobileMenuButton2d3d = document.getElementById('mobile-menu-button'); // Corrected ID to match index.html header
+const mobileMenuPanel2d3d = document.getElementById('mobile-menu-panel'); // Corrected ID to match index.html header
+const mobileMenuOverlay2d3d = document.getElementById('mobile-menu-overlay'); // Corrected ID to match index.html header
+const closeMobileMenuButton2d3d = document.getElementById('close-mobile-menu-button'); // Corrected ID to match index.html header
 
 /**
  * Opens the mobile navigation menu.
@@ -95,17 +99,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const dimensionFilter = document.getElementById('dimension-filter');
     const typeFilter = document.getElementById('type-filter-2d3d');
     const sortFilter = document.getElementById('sort-filter-2d3d');
-    const searchInputDesktop = document.getElementById('search-input-desktop-2d3d');
-    const searchInputMobile = document.getElementById('search-input-mobile-2d3d');
-    const searchIconMobile = document.getElementById('search-icon-mobile-2d3d');
-    const mobileSearchContainer = document.getElementById('mobile-search-container-2d3d');
+    // Corrected search input IDs to match the updated header
+    const searchInputDesktop = document.getElementById('search-input-desktop');
+    const searchInputMobile = document.getElementById('search-input-mobile');
+    const searchIconMobile = document.getElementById('search-icon-mobile');
+    const mobileSearchContainer = document.getElementById('mobile-search-container');
     const gridTitle = document.getElementById('grid-title-2d3d');
-    const suggestionsDesktop = document.getElementById('search-suggestions-desktop-2d3d'); // Suggestions container
-    const suggestionsMobile = document.getElementById('search-suggestions-mobile-2d3d');   // Suggestions container
+    // Corrected search suggestions container IDs
+    const suggestionsDesktop = document.getElementById('search-suggestions-desktop');
+    const suggestionsMobile = document.getElementById('search-suggestions-mobile');
+
 
     // State Variables
     // Biến trạng thái
-    let allFetchedItems = []; // Store initially fetched 2D/3D items - Lưu trữ các mục 2D/3D được tìm nạp ban đầu
+    let allFetchedItems = []; // Store all 2D/3D items fetched - Lưu trữ tất cả các mục 2D/3D được tìm nạp
     let currentFilters = {
         dimension: 'all', // 'all', '2D', '3D'
         type: 'all',      // 'all', 'movies', 'series'
@@ -113,6 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
         search: ''        // Added search state - Đã thêm trạng thái tìm kiếm
     };
     let searchDebounceTimer; // Timer for search input debounce - Bộ hẹn giờ cho debounce đầu vào tìm kiếm
+
+    // --- Helper Functions ---
 
     /**
      * Debounce function to limit the rate at which a function can fire.
@@ -150,33 +159,35 @@ document.addEventListener('DOMContentLoaded', () => {
      * Creates the HTML string for a single search suggestion item.
      * Tạo chuỗi HTML cho một mục gợi ý tìm kiếm đơn lẻ.
      * @param {object} item The movie/series data object.
-     * @param {string} type The type ('movies' or 'series').
      * @param {string} searchTerm The current search term for highlighting.
      * @returns {string} The HTML string for the suggestion item.
      */
-    const createSuggestionItem = (item, type, searchTerm) => {
-        // *** UPDATED LOGIC FOR ANIME LINKS IN SUGGESTIONS ***
+    const createSuggestionItem = (item, searchTerm) => {
+        // Determine detail page URL based on itemType (movies, series, anime-movie, anime-series)
+        // Xác định URL trang chi tiết dựa trên itemType
         let detailPageUrl = '#';
-        const itemType = item.itemType || type; // Use specific itemType if available
+        const itemType = item.itemType; // Use itemType from data
 
         if (itemType === 'anime-series' || itemType === 'anime-movie') {
+            // Link anime types to animeDetails.html
             detailPageUrl = `animeDetails.html?id=${item.id}&type=${itemType}`;
         } else if (itemType === 'series') {
+            // Link series to filmDetails_phimBo.html
             detailPageUrl = `filmDetails_phimBo.html?id=${item.id}&type=series`;
         } else { // movies
+            // Link standard movies to filmDetail.html
             detailPageUrl = `filmDetail.html?id=${item.id}&type=movies`;
         }
-        // *** END UPDATED LOGIC ***
 
         const altText = `Poster nhỏ của ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${item.title || 'không có tiêu đề'}`;
         const typeLabel = (itemType === 'series' || itemType === 'anime-series') ? ' (Bộ)' : (itemType === 'anime-movie' ? ' (Anime Movie)' : ''); // Add labels
-        const posterSrc = item.posterUrl || 'https://placehold.co/40x60/111111/eeeeee?text=N/A'; // Fallback poster
+        const posterSrc = item.posterUrl || '../https://placehold.co/40x60/111111/eeeeee?text=N/A'; // Fallback poster (relative path)
         // Highlight the search term in the title
         const highlightedTitle = highlightTerm(item.title || 'Không có tiêu đề', searchTerm);
 
         return `
             <a href="${detailPageUrl}" class="suggestion-item" data-item-id="${item.id}" data-item-type="${itemType}" role="option" aria-label="Xem chi tiết ${item.title || ''}${typeLabel}">
-                <img src="${posterSrc}" alt="${altText}" loading="lazy" class="w-10 h-15 object-cover rounded border border-border-color" onerror="this.onerror=null; this.src='https://placehold.co/40x60/111111/eeeeee?text=Err'; this.alt='Lỗi tải ảnh nhỏ ${item.title || ''}';">
+                <img src="${posterSrc}" alt="${altText}" loading="lazy" class="w-10 h-15 object-cover rounded border border-border-color" onerror="this.onerror=null; this.src='../https://placehold.co/40x60/111111/eeeeee?text=Err'; this.alt='Lỗi tải ảnh nhỏ ${item.title || ''}';">
                 <div class="suggestion-item-info">
                     <span class="suggestion-item-title">${highlightedTitle}${typeLabel}</span>
                     <span class="suggestion-item-year">${item.releaseYear || 'N/A'}</span>
@@ -208,14 +219,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (placeholder) placeholder.textContent = 'Đang tìm...';
         suggestionsContainer.innerHTML = ''; // Clear old suggestions
 
-        // Filter the already fetched 2D/3D items based on the search term
+        // Filter the *allFetchedItems* (which are already 2D/3D) based on the search term
         const matchedItems = allFetchedItems
             .filter(item => item.title && item.title.toLowerCase().includes(searchTerm))
             .slice(0, 7); // Limit to a reasonable number of suggestions (e.g., 7)
 
         if (matchedItems.length > 0) {
             // Populate container with new suggestions
-            suggestionsContainer.innerHTML = matchedItems.map(item => createSuggestionItem(item, item.itemType, searchTerm)).join('');
+            suggestionsContainer.innerHTML = matchedItems.map(item => createSuggestionItem(item, searchTerm)).join('');
             suggestionsContainer.style.display = 'block'; // Show the container
             inputElement.setAttribute('aria-expanded', 'true'); // Indicate suggestions are shown
         } else {
@@ -240,28 +251,32 @@ document.addEventListener('DOMContentLoaded', () => {
             if(searchInputMobile) searchInputMobile.setAttribute('aria-expanded', 'false');
         }
     };
+    // Expose globally for inline script or other parts of the page if needed
+    window.hideAllSearchSuggestions = hideAllSearchSuggestions;
+
 
     /**
      * Creates the HTML string for a movie or series card with badges.
      * Tạo chuỗi HTML cho thẻ phim hoặc phim bộ với các huy hiệu.
      * @param {object} item The movie or series data object.
-     * @param {string} type The type ('movies' or 'series'). **Note: Use item.itemType for correct linking.**
      * @returns {string} The HTML string for the card.
      */
-    const createItemCard = (item, type) => { // 'type' might be redundant if item.itemType exists
-        // *** UPDATED LOGIC FOR ANIME LINKS ***
+    const createItemCard = (item) => {
+        // Determine detail page URL based on itemType (movies, series, anime-movie, anime-series)
+        // Xác định URL trang chi tiết dựa trên itemType
         let detailPageUrl = '#';
-        const itemType = item.itemType || type; // Prioritize item.itemType
+        const itemType = item.itemType; // Use itemType from data
 
         if (itemType === 'anime-series' || itemType === 'anime-movie') {
-            // **Direct ALL anime types found on this page to animeDetails.html**
+            // Link anime types to animeDetails.html
             detailPageUrl = `animeDetails.html?id=${item.id}&type=${itemType}`;
         } else if (itemType === 'series') {
+            // Link series to filmDetails_phimBo.html
             detailPageUrl = `filmDetails_phimBo.html?id=${item.id}&type=series`;
         } else { // movies
+            // Link standard movies to filmDetail.html
             detailPageUrl = `filmDetail.html?id=${item.id}&type=movies`;
         }
-        // *** END UPDATED LOGIC ***
 
         const altText = `Poster ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${item.title || 'không có tiêu đề'}, năm ${item.releaseYear || 'không rõ'}`;
 
@@ -278,21 +293,26 @@ document.addEventListener('DOMContentLoaded', () => {
             formatBadgeText = '2D';
             formatBadgeClass = 'format-badge-2d'; // Use CSS class for styling
         }
+        // Note: Animation badge is not typically needed on the 2D/3D page as all items are expected to be animated.
+        // If you want to show it for non-2D/3D animated content that might somehow appear here, add:
+        // else if (format.includes("Animation")) { formatBadgeText = 'Hoạt Hình'; formatBadgeClass = 'bg-yellow-500'; }
+
         if (formatBadgeText) {
             // Place format badge on the top-left
             badgesHTML += `<span class="absolute top-2 left-2 ${formatBadgeClass} text-white text-xs font-semibold px-2 py-1 rounded shadow-md z-10">${formatBadgeText}</span>`;
         }
 
-        // Add a badge if it's a series or anime series
+        // Add a badge if it's a series or anime series (Top Right)
         if (itemType === 'series' || itemType === 'anime-series') {
-            // Place series badge on the top-right
             badgesHTML += `<span class="absolute top-2 right-2 series-badge text-white text-xs font-semibold px-2 py-1 rounded shadow-md z-10">Bộ</span>`; // Use CSS class
         } else if (itemType === 'anime-movie') {
              badgesHTML += `<span class="absolute top-2 right-2 bg-purple-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md z-10">Anime Movie</span>`;
+        } else if (itemType === 'movies') {
+             badgesHTML += `<span class="absolute top-2 right-2 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded shadow-md z-10">Lẻ</span>`;
         }
 
 
-        const posterUrl = item.posterUrl || 'https://placehold.co/300x450/111111/eeeeee?text=No+Poster'; // Fallback poster
+        const posterUrl = item.posterUrl || '../https://placehold.co/300x450/111111/eeeeee?text=No+Poster'; // Relative path
         const titleText = item.title || 'Không có tiêu đề';
         const yearText = item.releaseYear || 'N/A';
 
@@ -302,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return `
             <a href="${detailPageUrl}" class="bg-light-gray rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 cursor-pointer group relative block movie-card" data-item-id="${item.id}" data-item-type="${itemType}" aria-label="Xem chi tiết ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${titleText}">
                 <div class="relative">
-                    <img src="${posterUrl}" alt="${altText}" class="w-full h-auto object-cover aspect-[2/3]" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/300x450/111111/eeeeee?text=Error'; this.alt='Lỗi tải ảnh poster ${titleText}';">
+                    <img src="${posterUrl}" alt="${altText}" class="w-full h-auto object-cover aspect-[2/3]" loading="lazy" onerror="this.onerror=null; this.src='../https://placehold.co/300x450/111111/eeeeee?text=Error'; this.alt='Lỗi tải ảnh poster ${titleText}';">
                     ${badgesHTML}
                     <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100" aria-hidden="true">
                         <i class="fas fa-play text-white text-4xl"></i>
@@ -317,44 +337,76 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    /**
-     * Updates the hero section UI based on the provided item.
-     * Cập nhật giao diện người dùng phần hero dựa trên mục được cung cấp.
-     * Uses enhanced CSS styles for animations and appearance.
-     * Sử dụng các kiểu CSS nâng cao cho hoạt ảnh và giao diện.
-     * @param {object|null} item The movie or series object, or null for default/error state.
-     */
-     const updateHeroUI = (item) => {
-         if (!heroSection) {
-             console.warn("Hero section element not found.");
-             return;
-         }
+     /**
+      * Updates the hero section UI based on the provided item.
+      * Cập nhật giao diện người dùng phần hero dựa trên mục được cung cấp.
+      * Uses enhanced CSS styles for animations and appearance.
+      * Sử dụng các kiểu CSS nâng cao cho hoạt ảnh và giao diện.
+      * @param {object|null} item The movie or series object, or null for default/error state.
+      */
+      const updateHeroUI = (item) => {
+          if (!heroSection) {
+              console.warn("Hero section element not found.");
+              return;
+          }
 
-         if (!item) {
-             // Set a default or error state if no item is provided
-             console.warn("Hero item data is missing. Setting default hero.");
-             heroSection.style.backgroundImage = `url('https://placehold.co/1920x500/141414/333333?text=No+Featured+Item')`;
-             if (heroTitle) heroTitle.textContent = "Không có phim nổi bật";
-             if (heroDescription) heroDescription.textContent = "Khám phá danh sách phim 2D và 3D.";
-             heroSection.setAttribute('aria-label', 'Không có phim nổi bật');
-             return;
-         }
+          if (!item) {
+              // Set a default or error state if no item is provided
+              console.warn("Hero item data is missing. Setting default hero.");
+              heroSection.style.backgroundImage = `url('../https://placehold.co/1920x500/141414/333333?text=No+Featured+Item')`;
+              if (heroTitle) heroTitle.textContent = "Không có phim nổi bật";
+              if (heroDescription) heroDescription.textContent = "Khám phá danh sách phim 2D và 3D.";
+              heroSection.setAttribute('aria-label', 'Không có phim nổi bật');
+              // Disable buttons if no item
+              const heroPlayButton = heroSection.querySelector('#hero-play-button');
+              const heroDetailButton = heroSection.querySelector('#hero-detail-button');
+              if (heroPlayButton) heroPlayButton.style.display = 'none';
+              if (heroDetailButton) heroDetailButton.style.display = 'none';
+              return;
+          }
 
-         // Determine the background image URL (prefer heroImage, fallback to posterUrl)
-         const backgroundImageUrl = item.heroImage || item.posterUrl || 'https://placehold.co/1920x500/141414/333333?text=Image+Error';
+          // Determine the background image URL (prefer heroImage, fallback to posterUrl)
+          const backgroundImageUrl = item.heroImage || item.posterUrl || '../https://placehold.co/1920x500/141414/333333?text=Image+Error'; // Relative path
 
-         // Apply new background image (CSS handles the zoom animation)
-         heroSection.style.backgroundImage = `url('${backgroundImageUrl}')`;
-         heroSection.setAttribute('aria-label', `Phim nổi bật: ${item.title || 'Đang tải'}`);
+          // Apply new background image (CSS handles the zoom animation)
+          heroSection.style.backgroundImage = `url('${backgroundImageUrl}')`;
+          heroSection.setAttribute('aria-label', `Phim nổi bật: ${item.title || 'Đang tải'}`);
 
-         // Update text content (CSS handles the fade-in animation)
-         if (heroTitle) heroTitle.textContent = item.title || 'Đang tải...';
-         if (heroDescription) {
-             // Limit description length for display
-             const shortDesc = item.description ? (item.description.length > 150 ? item.description.substring(0, 150) + '...' : item.description) : 'Khám phá thế giới 2D và 3D sống động.';
-             heroDescription.textContent = shortDesc;
-         }
-     };
+          // Update text content (CSS handles the fade-in animation)
+          if (heroTitle) heroTitle.textContent = item.title || 'Đang tải...';
+          if (heroDescription) {
+              // Limit description length for display
+              const shortDesc = item.description ? (item.description.length > 150 ? item.description.substring(0, 150) + '...' : item.description) : 'Khám phá thế giới 2D và 3D sống động.';
+              heroDescription.textContent = shortDesc;
+          }
+
+          // Determine detail page URL based on itemType
+          // Xác định URL trang chi tiết dựa trên itemType
+          let detailPageUrl = '#';
+          const itemType = item.itemType; // Should exist now from combined data
+          if (itemType === 'anime-series' || itemType === 'anime-movie') {
+              detailPageUrl = `animeDetails.html?id=${item.id}&type=${itemType}`;
+          } else if (itemType === 'series') {
+              detailPageUrl = `filmDetails_phimBo.html?id=${item.id}&type=series`;
+          } else { // movies
+              detailPageUrl = `filmDetail.html?id=${item.id}&type=movies`;
+          }
+
+          // Update button links and visibility
+          const heroPlayButton = heroSection.querySelector('#hero-play-button');
+          const heroDetailButton = heroSection.querySelector('#hero-detail-button');
+
+          if (heroPlayButton) {
+              heroPlayButton.style.display = ''; // Show button
+              heroPlayButton.onclick = () => { window.location.href = detailPageUrl + '#player-section'; };
+              heroPlayButton.setAttribute('aria-label', `Xem ngay ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${item.title || ''}`);
+          }
+          if (heroDetailButton) {
+              heroDetailButton.style.display = ''; // Show button
+              heroDetailButton.onclick = () => { window.location.href = detailPageUrl; };
+              heroDetailButton.setAttribute('aria-label', `Xem chi tiết ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${item.title || ''}`);
+          }
+      };
 
 
     /**
@@ -365,8 +417,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!gridContainer) return; // Exit if grid container not found
 
         // Show loading indicators
-        if (loadingIndicator) loadingIndicator.classList.remove('hidden');
-        if (noResultsIndicator) noResultsIndicator.classList.add('hidden');
+        // Keep loading indicator visible briefly during re-render if needed, but hide if data is ready
+        if (allFetchedItems.length > 0) {
+             if (loadingIndicator) loadingIndicator.classList.add('hidden'); // Hide if data is loaded
+        } else {
+             if (loadingIndicator) loadingIndicator.classList.remove('hidden'); // Keep visible if no data yet
+        }
+        if (noResultsIndicator) noResultsIndicator.classList.add('hidden'); // Hide "no results" initially
         gridContainer.innerHTML = ''; // Clear previous results
 
         let itemsToDisplay = [...allFetchedItems]; // Start with all fetched 2D/3D items
@@ -375,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 1. Apply Search Filter FIRST
         if (currentFilters.search) {
-            const searchTerm = currentFilters.search.toLowerCase();
+            const searchTerm = currentFilters.search.trim().toLowerCase(); // Trim whitespace
             itemsToDisplay = itemsToDisplay.filter(item =>
                 item.title && item.title.toLowerCase().includes(searchTerm)
             );
@@ -397,10 +454,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 3. Apply Type Filter (Movie/Series)
         if (currentFilters.type === 'movies') {
-            itemsToDisplay = itemsToDisplay.filter(item => item.itemType === 'movies');
+            // Filter for items that are movies OR anime-movies
+            itemsToDisplay = itemsToDisplay.filter(item => item.itemType === 'movies' || item.itemType === 'anime-movie');
             if (!currentFilters.search) filterDescriptions.push("Phim lẻ"); // Add description if not searching
         } else if (currentFilters.type === 'series') {
-            itemsToDisplay = itemsToDisplay.filter(item => item.itemType === 'series');
+             // Filter for items that are series OR anime-series
+            itemsToDisplay = itemsToDisplay.filter(item => item.itemType === 'series' || item.itemType === 'anime-series');
             if (!currentFilters.search) filterDescriptions.push("Phim bộ"); // Add description if not searching
         }
         // If 'all', no type filtering is needed
@@ -421,11 +480,13 @@ document.addEventListener('DOMContentLoaded', () => {
             gridTitle.textContent = filterDescriptions.length > 0 ? `${titlePrefix} (${filterDescriptions.join(', ')})` : titlePrefix;
         }
 
+        console.log(`Đang hiển thị ${itemsToDisplay.length} mục sau khi áp dụng bộ lọc và tìm kiếm.`, itemsToDisplay);
+
         // 6. Render the filtered and sorted items
         if (loadingIndicator) loadingIndicator.classList.add('hidden'); // Hide loading indicator
         if (itemsToDisplay.length > 0) {
-            // Render cards, passing the item's specific type
-            gridContainer.innerHTML = itemsToDisplay.map(item => createItemCard(item, item.itemType)).join('');
+            // Render cards, passing the item itself
+            gridContainer.innerHTML = itemsToDisplay.map(item => createItemCard(item)).join('');
         } else {
             // Show "No results" message
             if (noResultsIndicator) {
@@ -441,9 +502,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     /**
-     * Fetches initial data (movies and series), filters for 2D/3D items,
+     * Fetches initial data (movies, series, anime), filters for 2D/3D items,
      * updates the hero section, sets up filters, and renders the initial grid.
-     * Tìm nạp dữ liệu ban đầu (phim lẻ và phim bộ), lọc các mục 2D/3D,
+     * Tìm nạp dữ liệu ban đầu (phim lẻ, bộ, anime), lọc các mục 2D/3D,
      * cập nhật phần hero, thiết lập bộ lọc và hiển thị lưới ban đầu.
      */
     const loadAndDisplayFilms = async () => {
@@ -462,38 +523,82 @@ document.addEventListener('DOMContentLoaded', () => {
         `).join('');
         if (gridContainer) gridContainer.innerHTML = initialSkeletonsHTML;
 
+        console.log("--- Bắt đầu tải dữ liệu phim 2D/3D ---");
+        console.log("Đang cố gắng tải dữ liệu từ: ../json/filmData.json, ../json/filmData_phimBo.json, ../json/animeData.json");
+
 
         try {
-            // Fetch both movie and series data concurrently
-            const [moviesResponse, seriesResponse] = await Promise.all([
-                fetch('../json/filmData.json').catch(e => { console.error("Fetch movies failed:", e); return { ok: false }; }),
-                fetch('../json/filmData_phimBo.json').catch(e => { console.error("Fetch series failed:", e); return { ok: false }; })
+            // Fetch ALL data sources concurrently
+            const [moviesResponse, seriesResponse, animeResponse] = await Promise.all([
+                fetch('../json/filmData.json').catch(e => { console.error("Fetch movies failed:", e); return { ok: false, error: e, url: '../json/filmData.json' }; }),
+                fetch('../json/filmData_phimBo.json').catch(e => { console.error("Fetch series failed:", e); return { ok: false, error: e, url: '../json/filmData_phimBo.json' }; }),
+                fetch('../json/animeData.json').catch(e => { console.error("Fetch anime failed:", e); return { ok: false, error: e, url: '../json/animeData.json' }; })
             ]);
 
-            // Check if fetches were successful
-            if (!moviesResponse.ok && !seriesResponse.ok) {
-                throw new Error('Lỗi khi tải cả dữ liệu phim lẻ và phim bộ.');
+            console.log("Trạng thái phản hồi Fetch:");
+            console.log("moviesResponse:", moviesResponse);
+            console.log("seriesResponse:", seriesResponse);
+            console.log("animeResponse:", animeResponse);
+
+            // Process responses, default to empty array on error or non-ok status
+            const moviesData = moviesResponse.ok ? await moviesResponse.json().catch(e => { console.error(`Parse JSON failed for ${moviesResponse.url}:`, e); return []; }) : [];
+            const seriesData = seriesResponse.ok ? await seriesResponse.json().catch(e => { console.error(`Parse JSON failed for ${seriesResponse.url}:`, e); return []; }) : [];
+            const animeData = animeResponse.ok ? await animeResponse.json().catch(e => { console.error(`Parse JSON failed for ${animeResponse.url}:`, e); return []; }) : [];
+
+            console.log("Dữ liệu đã tải và phân tích cú pháp:");
+            console.log("moviesData (count):", moviesData.length, moviesData);
+            console.log("seriesData (count):", seriesData.length, seriesData);
+            console.log("animeData (count):", animeData.length, animeData);
+
+
+            // Combine all data sources and add itemType if missing
+            // Ensure itemType is correctly assigned based on source if not present
+            const allItems = [];
+            if (Array.isArray(moviesData)) {
+                allItems.push(...moviesData.map(item => ({ ...item, itemType: item.itemType || 'movies' })));
+            } else {
+                console.warn("moviesData không phải là mảng hoặc trống:", moviesData);
             }
+            if (Array.isArray(seriesData)) {
+                 allItems.push(...seriesData.map(item => ({ ...item, itemType: item.itemType || 'series' })));
+            } else {
+                console.warn("seriesData không phải là mảng hoặc trống:", seriesData);
+            }
+            if (Array.isArray(animeData)) {
+                // Assuming anime items can also be 2D/3D, add them with appropriate itemType
+                allItems.push(...animeData.map(item => ({ ...item, itemType: item.itemType || 'anime' })));
+            } else {
+                 console.warn("animeData không phải là mảng hoặc trống:", animeData);
+            }
+            console.log("Tổng số mục sau khi kết hợp:", allItems.length, allItems);
+            // Log a sample item to check structure
+            if (allItems.length > 0) console.log("Mục mẫu sau khi kết hợp:", allItems[0]);
 
-            // Parse JSON data, defaulting to empty array if fetch failed
-            const moviesData = moviesResponse.ok ? await moviesResponse.json() : [];
-            const seriesData = seriesResponse.ok ? await seriesResponse.json() : [];
-
-            // Combine movies and series, adding an 'itemType' property
-            // **IMPORTANT**: Add itemType here during initial processing
-            const allItems = [
-                ...moviesData.map(item => ({ ...item, itemType: 'movies' })),
-                ...seriesData.map(item => ({ ...item, itemType: 'series' }))
-            ];
 
             // Filter the combined list to get only items marked as 2D or 3D
-            allFetchedItems = allItems.filter(item => Array.isArray(item.format) && (item.format.includes('2D') || item.format.includes('3D')));
+            // This includes movies, series, and anime that have these formats
+            // CRITICAL CHECK: Ensure your JSON data items have a 'format' property which is an array,
+            // and contains the strings '2D' or '3D' for items you want to appear here.
+            allFetchedItems = allItems.filter(item => {
+                const is2D3D = Array.isArray(item.format) && (item.format.includes('2D') || item.format.includes('3D'));
+                // Uncomment the line below if you want to see which items are being filtered out
+                // if (!is2D3D) { console.log("Loại bỏ mục không có format 2D/3D:", item); }
+                return is2D3D;
+            });
 
-            console.log(`Fetched ${allFetchedItems.length} 2D/3D items.`);
+
+            console.log(`Số lượng mục 2D/3D sau khi lọc: ${allFetchedItems.length}`, allFetchedItems);
+             // Log a sample item from the filtered list
+            if (allFetchedItems.length > 0) console.log("Mục mẫu 2D/3D đã lọc:", allFetchedItems[0]);
+            else console.warn("Không tìm thấy mục nào có định dạng 2D hoặc 3D trong dữ liệu đã tải. Vui lòng kiểm tra nội dung các file JSON.");
+
 
             // Update the Hero section with the first 2D/3D item found (or a default)
             if (allFetchedItems.length > 0) {
-                updateHeroUI(allFetchedItems[0]); // Use the first item for the hero
+                // Find the first item that has a heroImage, otherwise use the very first item
+                // Prioritize items with heroImage for better visual appeal in the hero section
+                const heroItem = allFetchedItems.find(item => item.heroImage) || allFetchedItems[0];
+                updateHeroUI(heroItem);
             } else {
                  updateHeroUI(null); // Handle case with no 2D/3D items
             }
@@ -506,9 +611,21 @@ document.addEventListener('DOMContentLoaded', () => {
             applyFiltersAndRender(); // Initial render
 
             // Add event listeners to filter controls AFTER data is loaded
-            dimensionFilter?.addEventListener('change', (e) => { currentFilters.dimension = e.target.value; applyFiltersAndRender(); });
-            typeFilter?.addEventListener('change', (e) => { currentFilters.type = e.target.value; applyFiltersAndRender(); });
-            sortFilter?.addEventListener('change', (e) => { currentFilters.sort = e.target.value; applyFiltersAndRender(); });
+            dimensionFilter?.addEventListener('change', (e) => {
+                currentFilters.dimension = e.target.value;
+                console.log("Bộ lọc thay đổi: Dimension =", currentFilters.dimension);
+                applyFiltersAndRender();
+            });
+            typeFilter?.addEventListener('change', (e) => {
+                currentFilters.type = e.target.value;
+                 console.log("Bộ lọc thay đổi: Type =", currentFilters.type);
+                applyFiltersAndRender();
+            });
+            sortFilter?.addEventListener('change', (e) => {
+                currentFilters.sort = e.target.value;
+                 console.log("Bộ lọc thay đổi: Sort =", currentFilters.sort);
+                applyFiltersAndRender();
+            });
 
             // --- SEARCH EVENT LISTENERS & SUGGESTIONS ---
             /**
@@ -524,16 +641,35 @@ document.addEventListener('DOMContentLoaded', () => {
                  // Debounce the main grid filtering to avoid excessive updates
                  debounce(() => {
                      currentFilters.search = searchTerm; // Update the global search filter state
+                     console.log("Search term updated (debounced):", searchTerm);
                      applyFiltersAndRender(); // Re-filter and render the main grid
                  }, 300)(); // 300ms debounce delay for filtering
 
                  // Show/hide suggestions with a shorter debounce (or immediately)
+                 // Suggestions should search within allFetchedItems for this page
+                 // Note: Suggestions are based on the *current* search term, not the debounced one for filtering
                  debounce(() => displaySearchSuggestions(searchTerm, inputElement, suggestionsContainer), 150)(); // 150ms delay for suggestions
             };
+
+            // Add listener for Enter key on search inputs to trigger filter immediately
+             const handleSearchSubmit = (event) => {
+                  if (event.key === 'Enter') {
+                      event.preventDefault();
+                      const searchTerm = event.target.value.trim().toLowerCase();
+                      console.log(`Performing search for: "${searchTerm}" (Enter key)`);
+                      currentFilters.search = searchTerm; // Update the global search filter state
+                      applyFiltersAndRender(); // Trigger filtering
+                      hideAllSearchSuggestions(); // Hide suggestions after search submit
+                      event.target.blur(); // Remove focus from input
+                  }
+             };
+
 
             // Attach the input handler to both desktop and mobile search inputs
             searchInputDesktop?.addEventListener('input', handleSearchInput);
             searchInputMobile?.addEventListener('input', handleSearchInput);
+            searchInputDesktop?.addEventListener('keydown', handleSearchSubmit); // Add keydown listener
+            searchInputMobile?.addEventListener('keydown', handleSearchSubmit); // Add keydown listener
 
             // Add listener to hide suggestions when clicking outside search areas
             document.addEventListener('click', (event) => {
@@ -569,7 +705,7 @@ document.addEventListener('DOMContentLoaded', () => {
             errorSkeletons?.forEach(skeleton => skeleton.remove());
             // Display an error message to the user
             if (noResultsIndicator) {
-                noResultsIndicator.textContent = `Đã xảy ra lỗi khi tải phim (${error.message || 'Lỗi không xác định'}). Vui lòng thử lại sau.`;
+                noResultsIndicator.textContent = `Đã xảy ra lỗi khi tải phim (${error.message || 'Lỗi không xác định'}). Vui lòng kiểm tra console để biết chi tiết và thử lại sau.`;
                 noResultsIndicator.classList.remove('hidden');
             }
             if (gridContainer) gridContainer.innerHTML = ''; // Clear the grid
@@ -577,6 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             // Always hide the main loading indicator when done (success or error)
             if (loadingIndicator) loadingIndicator.classList.add('hidden');
+            console.log("--- Kết thúc quá trình tải dữ liệu phim 2D/3D ---");
         }
     };
 

@@ -55,7 +55,7 @@
       "rating": 8.8,
       "numberOfSeasons": 3,
       "totalEpisodes": 44,
-      "status": "Đang chiếu",
+      "status": "Sắp chiếu",
       "isTrending": true,
       "isNew": false,
       "itemType": "anime-series",
@@ -113,6 +113,22 @@
               "thumbnailUrl": "https://image.tmdb.org/t/p/w500/Amq30gPaGG7uSqh1yOVTjAEWb3f.jpg",
               "videoUrls": {
                 "vietsub": "https://www.youtube.com/watch?v=VIDEO_ID_S3E1_VIETSUB",
+                "dubbed": null,
+                "voiceover": null
+              }
+            }
+          ]
+        },
+        {
+          "seasonNumber": 4,
+          "numberOfEpisodes": 5,
+          "episodes": [
+            {
+              "episodeNumber": 1,
+              "title": "The Hashira Meeting",
+              "thumbnailUrl": "https://image.tmdb.org/t/p/w500/7v0Xk2j6g3x8J9Z5qY1Qz4m2G7.jpg",
+              "videoUrls": {
+                "vietsub": null,
                 "dubbed": null,
                 "voiceover": null
               }

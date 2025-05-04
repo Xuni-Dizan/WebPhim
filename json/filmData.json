@@ -44,7 +44,7 @@
     "isHot": false, 
     "heroImage": "https://kritikanstvo.ru/movies/h/howtotrainyourdragon2/posters/howtotrainyourdragon2_178975.jpg",
     "skipIntroSeconds": 65,
-    "format": ["Animation", "Feature", "2D"] 
+    "format": ["Animation", "Feature"] 
   },
   {
     "id": 3,
@@ -203,6 +203,29 @@
     "isHot": false,
     "heroImage": "https://static.nutscdn.com/vimg/0-0/4f355d1ccb2c0397a7a1585612ea9b39.jpg",
     "format": ["Live Action", "Feature"]
-  }
+  },
+  {
+    "id": 10,
+    "title": "Mai",
+    "description": "Bộ phim xoay quanh cuộc đời của Mai, một nữ nhân viên mát-xa gần 40 tuổi với số phận éo le, luôn khao khát tình yêu nhưng gặp nhiều trắc trở, đặc biệt là mối tình với Dương - một nhạc công trẻ tuổi lãng tử.",
+    "posterUrl": "https://i.pinimg.com/736x/95/2e/bc/952ebc759df64e59e497471be03a3c1d.jpg",
+    "releaseYear": 2024,
+    "genre": ["Tâm lý", "Tình cảm", "Chính kịch"],
+    "director": "Trấn Thành",
+    "cast": ["Phương Anh Đào", "Tuấn Trần", "Trấn Thành", "Hồng Đào", "Uyển Ân", "NSND Ngọc Giàu", "NSND Việt Anh", "Quốc Khánh", "Anh Đức", "Khả Như"],
+    "rating": 6.7,
+    "duration": "131 phút",
+    "videoUrls": {
+      "vietsub": null,
+      "dubbed": null,
+      "voiceover": null
+    },
+    "isTrending": true,
+    "isNew": false,
+    "isHot": true,
+    "hotnumber": 1,
+    "heroImage": "https://i.pinimg.com/736x/81/44/cc/8144cc32a474b0afae3db789221d063e.jpg",
+    "format": ["Live Action", "Feature"]
+  }  
   
 ]

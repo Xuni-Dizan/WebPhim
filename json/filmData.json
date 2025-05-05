@@ -226,6 +226,38 @@
     "hotnumber": 1,
     "heroImage": "https://i.pinimg.com/736x/81/44/cc/8144cc32a474b0afae3db789221d063e.jpg",
     "format": ["Live Action", "Feature"]
+  },
+  {
+    "id": 11,
+    "title": "Người vợ cuối cùng",
+    "description": "Lấy bối cảnh Việt Nam vào thế kỷ 19 thời Nguyễn, cuộc sống của Linh, người vợ bất đắc dĩ của một quan tri huyện, thay đổi chóng mặt khi cuộc gặp gỡ tình cờ với người yêu thời thơ ấu của cô làm dấy lên hàng loạt sự kiện bất ngờ, đặt cô vào những tình thế éo le giữa tình yêu và nghĩa vụ.",
+    "posterUrl": "https://i.pinimg.com/736x/8f/0d/e5/8f0de576a5a9ad1e43fde4f85c36bfc9.jpg",
+    "releaseYear": 2023,
+    "genre": ["Cổ trang", "Tâm lý", "Tình cảm", "Chính kịch"],
+    "director": "Victor Vũ",
+    "cast": [
+      "Kaity Nguyễn",
+      "Thuận Nguyễn",
+      "NSƯT Quang Thắng",
+      "NSƯT Kim Oanh",
+      "Đinh Ngọc Diệp",
+      "Nguyễn Anh Dũng",
+      "Quốc Huy"
+    ],
+    "rating": 6.1,
+    "duration": "132 phút",
+    "videoUrls": {
+      "vietsub": "https://drive.google.com/file/d/1rrKprQPeXKORg1LpWg0_ipRcXIMgUkVA/view?usp=drive_link",
+      "dubbed": null,
+      "voiceover": null
+    },
+    "isTrending": false,
+    "isNew": false,
+    "isHot": false,
+    "hotnumber": null,
+    "heroImage": "https://i.ytimg.com/vi/eeDw5MJESok/maxresdefault.jpg",
+    "skipIntroSeconds": null,
+    "format": ["Live Action", "Feature"]
   }  
   
 ]

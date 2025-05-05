@@ -332,13 +332,23 @@
     },
     {
       "id": 208,
-      "title": "Weathering with You (Tenki no Ko)",
-      "description": "Một cậu học sinh trung học chạy trốn đến Tokyo và kết bạn với một cô gái dường như có thể điều khiển thời tiết.",
-      "posterUrl": "https://image.tmdb.org/t/p/w500/1n0jQ5TWPAyC2oNl8GjN4S4dKGH.jpg",
-      "heroImage": "https://image.tmdb.org/t/p/original/4D9itlCId739bo4457sYjCeQ9i.jpg",
-      "releaseYear": 2019,
-      "genre": ["Lãng mạn", "Giả tưởng", "Chính kịch"],
-      "rating": 8.0,
+      "title": "Đại Chiến Người Khổng Lồ: Lần Tấn Công Cuối Cùng (Attack on Titan Final Season THE FINAL CHAPTERS Special 2)",
+      "description": "Trong cuộc chiến cuối cùng định đoạt số phận thế giới, Eren Yeager đã giải phóng sức mạnh tối thượng của các Titan. Dẫn đầu đội quân Titan Đại hình khổng lồ, Eren quyết tâm hủy diệt mọi kẻ thù đe dọa đến quê hương Eldia. Thế nhưng, cuộc chiến này không chỉ là về sự sống còn, mà còn là cuộc đối đầu giữa lòng thù hận và hy vọng. Kết thúc khúc hùng ca đầy bi tráng, di sản của chiến tranh và những ám ảnh về tự do vẫn tiếp tục đeo bám nhân loại, để lại câu hỏi về giá trị của sự hy sinh và tự do thật sự.",
+      "posterUrl": "https://static.nutscdn.com/vimg/0-0/5e6397fbf8269c4663677e9df07e0f30.jpg",
+      "heroImage": "https://static.nutscdn.com/vimg/0-0/fb9ebadf82dfa55e0eded5d0240c579c.jpg",
+      "releaseYear": 2023,
+      "genre": ["Hành động", "Anime", "Hoạt Hình", "Viễn Tưởng", "Phiêu Lưu", "Chính kịch"],
+      "rating": 9.2,
+      "cast": [
+        "Yûki Kaji",
+        "Yui Ishikawa",
+        "Marina Inoue",
+        "Hiroshi Kamiya",
+        "Yu Shimamura",
+        "Romi Park",
+        "Yoshimasa Hosoya",
+        "Kisho Taniyama"
+      ],
       "episodes": null,
       "status": "Hoàn thành",
       "isTrending": false,
@@ -346,7 +356,7 @@
       "itemType": "anime-movie",
       "skipIntroSeconds": null,
       "videoUrls": {
-        "vietsub": null,
+        "vietsub": "https://drive.google.com/file/d/1_anROdR6-sZjHpFcXkZ4MOYr4w07mzZl/view?usp=drive_link",
         "dubbed": null,
         "voiceover": null
       }

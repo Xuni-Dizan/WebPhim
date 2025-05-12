@@ -18,7 +18,7 @@
     "isTrending": false,
     "isNew": false,
     "isHot": true, 
-    "hotnumber": 3, 
+    "hotnumber": 4, 
     "heroImage": "https://image.tmdb.org/t/p/original/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg",
     "skipIntroSeconds": 120,
     "format": ["Live Action", "Feature"]
@@ -133,7 +133,7 @@
     "isTrending": false,
     "isNew": false,
     "isHot": true, 
-    "hotnumber": 2, 
+    "hotnumber": 3, 
     "heroImage": "https://wallpaperaccess.com/full/9631283.jpg",
     "format": ["Live Action", "Feature"]
   },
@@ -156,7 +156,7 @@
     "isTrending": false,
     "isNew": true,
     "isHot": true, 
-    "hotnumber": 1,
+    "hotnumber": 2,
     "heroImage": "https://images.hdqwalls.com/download/captain-america-brave-new-world-official-poster-vx-3840x2160.jpg",
     "format": ["Live Action", "Feature"]
   },
@@ -258,6 +258,37 @@
     "heroImage": "https://i.ytimg.com/vi/eeDw5MJESok/maxresdefault.jpg",
     "skipIntroSeconds": null,
     "format": ["Live Action", "Feature"]
-  }  
-  
+  },
+  {
+    "id": 12,
+    "title": "Thunderbolts: Biệt Đội Sấm Sét",
+    "description": "Ai trong team này cũng từng làm việc ác, giờ là lúc làm việc ác cùng nhau. Các thành phần bất hảo trong vũ trụ điện ảnh Marvel giờ đây đã được triệu tập trở thành một nhóm gọi là “Biệt Đội Sấm Sét”, để làm những nhiệm vụ nguy hiểm bậc nhất mà có thể sẽ thay đổi con người, cuộc đời họ mãi mãi.",
+    "posterUrl": "https://static.nutscdn.com/vimg/0-0/8051e3ae246c5e276828cf6eb5b3ebd1.jpg",
+    "releaseYear": 2025,
+    "genre": ["Hành Động", "Chiếu Rạp", "Siêu Anh Hùng", "Marvel", "Kỳ Ảo", "Phiêu Lưu"],
+    "director": "Jake Schreier, George Cottle",
+    "cast": [
+      "Florence Pugh",
+      "Sebastian Stan",
+      "David Harbour",
+      "Wyatt Russell",
+      "Olga Kurylenko",
+      "Hannah John-Kamen",
+      "Julia Louis-Dreyfus",
+      "Lewis Pullman"
+    ],
+    "rating": 7.6,
+    "duration": "2h 10m",
+    "videoUrls": {
+      "vietsub": "https://drive.google.com/file/d/1Zbdi1jH3q8y-xCHtRE8XMninv2YVza31/view?usp=sharing",
+      "dubbed": null,
+      "voiceover": null
+    },
+    "isTrending": false,
+    "isNew": true,
+    "isHot": true,
+    "hotnumber": 1,
+    "heroImage": "https://static.nutscdn.com/vimg/0-0/705999298fff92f2bc73deb920e69a4a.jpg",
+    "format": ["Live Action", "Feature", "Chiếu Rạp"]
+  }   
 ]

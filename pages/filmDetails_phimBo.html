@@ -205,12 +205,18 @@
             pointer-events: none;
         }
         body.lights-off #lights-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
-        body.lights-off .player-area { z-index: 999; position: relative; }
+        body.lights-off .player-area { 
+            z-index: 999; 
+            position: relative; 
+            opacity: 1 !important; /* Ensure player stays fully visible */
+            filter: none !important; /* Remove any blur effect */
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); /* Add shadow for emphasis */
+        }
         body.lights-off header,
         body.lights-off main > *:not(#player-section):not(#series-content-section),
         body.lights-off footer,
         body.lights-off #scroll-to-top {
-            opacity: 0.1; pointer-events: none; transition: opacity 0.4s ease; filter: blur(2px);
+            opacity: 0.4; pointer-events: none; transition: opacity 0.4s ease; filter: blur(1px);
         }
         #toggle-lights-button {
             background-color: rgba(50, 50, 50, 0.8); color: #ccc; border: 1px solid #444;

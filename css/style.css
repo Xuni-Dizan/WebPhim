@@ -1,25 +1,52 @@
-/* style.css - Refreshed Look v3.5 - Added Anime Page Styles & Synchronization */
+/* style.css - Refreshed Look v3.6 - Enhanced Design System */
 
-/* Import Font */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Import Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
 /* Material Icons Outlined (already linked in HTML) */
 
-/* CSS Variables - Define base theme variables here */
+/* CSS Variables - Enhanced Design System */
 :root {
+    /* Core Brand Colors */
     --primary-color: #e50914; /* Netflix Red */
     --primary-hover-color: #f40612; /* Brighter Red */
     --secondary-color: #101010; /* Slightly darker background */
+    
+    /* Extended Color Palette */
     --light-gray-color: #1f1f1f; /* Lighter gray for cards/elements */
     --dark-gray-color: #181818; /* Even darker gray for dropdowns etc. */
+    --darker-gray-color: #0f0f0f; /* For footer and dark sections */
+    --card-bg-color: #222222; /* Card background */
+    
+    /* UI Element Colors */
     --skeleton-base-color: #333; /* Base color for skeleton */
     --skeleton-shine-color: #444; /* Shine color for skeleton animation */
-    --text-color: #e0e0e0; /* Slightly off-white text */
-    --text-muted-color: #8c8c8c;
     --border-color: #333333; /* Subtle border color */
-    --highlight-color: #facc15; /* Tailwind yellow-400 for highlight */
+    --border-hover-color: #555555; /* Hover state for borders */
+    
+    /* Text Colors */
+    --text-color: #e0e0e0; /* Slightly off-white text */
+    --text-muted-color: #8c8c8c; /* Subdued text */
+    --text-bright-color: #ffffff; /* Pure white for emphasis */
+    
+    /* Accent Colors */
+    --highlight-color: #facc15; /* Yellow for highlights */
     --highlight-bg-color: rgba(250, 204, 21, 0.1); /* Background for highlight */
+    --gold-accent: #ffd700; /* Gold for ratings */
+    --blue-accent: #3b82f6; /* Blue for series badge */
+    --purple-accent: #9333ea; /* Purple for anime */
+    --green-accent: #10b981; /* Green for 2D */
+    
+    /* Anime Theme Colors */
+    --anime-accent: #8a2be2; /* Vibrant Purple Accent for Anime page */
+    --anime-accent-hover: #9d4cf7; /* Brighter Purple on hover */
+    
+    /* Overlay Colors */
     --gradient-start: rgba(16, 16, 16, 0.8); /* Gradient for overlays */
     --gradient-end: rgba(16, 16, 16, 0);
+    --overlay-bg-color: rgba(0, 0, 0, 0.6); /* Card overlay background */
+    --overlay-text-shadow: 0 1px 3px rgba(0,0,0,0.8); /* Text shadow for overlay */
+    
+    /* Interactive Element Colors */
     --scroll-button-bg: rgba(229, 9, 20, 0.85); /* Semi-transparent primary */
     --scroll-button-hover-bg: rgba(244, 6, 18, 1); /* Opaque primary hover */
     --lights-off-overlay-bg: rgba(0, 0, 0, 0.88); /* Darker overlay for lights off */
@@ -27,24 +54,37 @@
     --slider-connect-bg: var(--primary-color);
     --slider-handle-bg: #fff;
     --slider-handle-border: var(--primary-color);
-    --overlay-bg-color: rgba(0, 0, 0, 0.6); /* Card overlay background */
-    --overlay-text-shadow: 0 1px 3px rgba(0,0,0,0.8); /* Text shadow for overlay */
-
-    /* Anime Theme Variables (Can be overridden inline or via Tailwind config) */
-    --anime-accent: #6a0dad; /* Vibrant Purple Accent for Anime page */
-    --anime-accent-hover: #8a2be2; /* Brighter Purple on hover */
-    --gold-accent: #ffd700; /* Gold for highlights/ratings */
-
-
-    /* Animation Variables */
+    
+    /* Shadows */
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Enhanced shadow for cards */
+    --hover-shadow: 0 6px 25px rgba(0, 0, 0, 0.4); /* Shadow for hover states */
+    --button-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Shadow for buttons */
+    --button-hover-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Enhanced shadow for button hover */
+    
+    /* Typography */
+    --body-font: 'Inter', sans-serif;
+    --heading-font: 'Montserrat', sans-serif;
+    --letter-spacing-tight: -0.01em; /* For headings */
+    --letter-spacing-normal: 0; /* For body text */
+    
+    /* Animation Variables - Enhanced */
     --animation-duration: 0.6s;
     --animation-delay: 0.1s; /* Base delay for staggered items */
-    --animation-timing: ease-out;
+    --animation-timing: cubic-bezier(0.16, 1, 0.3, 1); /* Improved easing */
     --shimmer-duration: 1.5s; /* Duration for skeleton shimmer */
     --tab-transition-duration: 0.3s; /* Duration for tab slide/fade */
     --tab-transition-timing: cubic-bezier(0.4, 0, 0.2, 1); /* Easing for tab transition */
     --overlay-transition-duration: 0.3s; /* Transition for card overlay */
     --pulse-duration: 1s; /* Duration for pulse animation */
+    --hover-transition-duration: 0.25s; /* Duration for hover effects */
+    --micro-interaction-duration: 0.15s; /* Duration for small interactions */
+    
+    /* Border Radius */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
+    --border-radius-round: 50%;
 }
 
 /* Base HTML and Body Styles */
@@ -54,7 +94,7 @@ html {
 }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--body-font);
     background-color: var(--secondary-color);
     color: var(--text-color);
     overflow-x: hidden; /* Prevent horizontal scroll */
@@ -66,20 +106,32 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    line-height: 1.5;
 }
 
 main {
     flex-grow: 1; /* Ensure main content pushes footer down */
 }
 
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--heading-font);
+    letter-spacing: var(--letter-spacing-tight);
+    font-weight: 600;
+}
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 10px; }
-::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; border: 1px solid #1a1a1a; }
+::-webkit-scrollbar-thumb { 
+    background: #444; 
+    border-radius: 10px; 
+    border: 1px solid #1a1a1a;
+    transition: background-color var(--hover-transition-duration) ease;
+}
 ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-/* Header Styling */
+/* Header Styling - Enhanced */
 header#main-header {
     position: sticky;
     top: 0;
@@ -88,10 +140,18 @@ header#main-header {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border-color);
-    transition: transform 0.3s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease-in-out, opacity 0.4s ease, filter 0.4s ease;
+    transition: transform 0.3s var(--animation-timing), 
+                background-color 0.3s ease, 
+                box-shadow 0.3s ease-in-out, 
+                opacity 0.4s ease, 
+                filter 0.4s ease;
 }
 header#main-header.header-hidden { transform: translateY(-100%); }
-header#main-header.header-shadow { box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); }
+header#main-header.header-shadow { 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background-color: rgba(10, 10, 10, 0.92); /* Slightly darker when scrolled */
+}
+
 /* Ensure touch targets are large enough */
 header button.p-2, header a.p-2 {
     min-width: 44px;
@@ -100,30 +160,67 @@ header button.p-2, header a.p-2 {
     align-items: center;
     justify-content: center;
 }
-/* Navigation Link Styling */
+
+/* Navigation Link Styling - Enhanced */
 header nav a {
+    position: relative;
     color: var(--text-muted-color);
-    transition: color 0.3s ease, border-color 0.3s ease; /* Added border-color transition */
-    padding-bottom: 2px; /* Space for border */
-    border-bottom: 2px solid transparent; /* Default transparent border */
-    font-medium: 500; /* Consistent font weight */
+    transition: color var(--hover-transition-duration) ease;
+    font-weight: 500; /* Medium font weight */
+    padding: 0.5rem 0.25rem;
+    text-decoration: none;
 }
+
+header nav a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--primary-color);
+    transition: width var(--hover-transition-duration) var(--animation-timing);
+}
+
 header nav a:hover {
     color: var(--text-color);
 }
-/* General active link style (e.g., for index page) */
-header nav a.active-link-primary {
-    color: var(--primary-color);
-    font-weight: 600;
-    border-bottom-color: var(--primary-color);
-}
-/* Specific active link style for Anime page (using anime accent color) */
-header nav a.active-link-anime {
-    color: var(--anime-accent);
-    font-weight: 600;
-    border-bottom-color: var(--anime-accent);
+
+header nav a:hover::after {
+    width: 100%;
 }
 
+/* Active link styles */
+header nav a.active-link-primary {
+    color: var(--text-bright-color);
+    font-weight: 600;
+}
+
+header nav a.active-link-primary::after {
+    width: 100%;
+    background-color: var(--primary-color);
+}
+
+header nav a.active-link-anime {
+    color: var(--text-bright-color);
+    font-weight: 600;
+}
+
+header nav a.active-link-anime::after {
+    width: 100%;
+    background-color: var(--anime-accent);
+}
+
+/* Header logo link with subtle hover effect */
+.header-logo-link {
+    display: inline-block;
+    transition: transform var(--hover-transition-duration) ease, 
+                opacity var(--hover-transition-duration) ease;
+}
+.header-logo-link:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
 
 /* Mobile Menu Overlay & Panel */
 #mobile-menu-overlay, #mobile-menu-overlay-anime, #mobile-menu-overlay-2d3d { /* Target all overlays */
@@ -155,49 +252,276 @@ header nav a.active-link-anime {
     transform: rotate(90deg);
 }
 
-/* Hero Section (General Styles) */
+/* Hero Section - Completely Redesigned */
 #hero-section, .anime-hero, .hero-2d3d {
-    /* Background image set inline */
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    overflow: hidden;
     position: relative;
     display: flex;
     color: white;
-    /* Responsive height is handled by Tailwind */
+    overflow: hidden;
+    min-height: 70vh;
+    background-size: cover;
+    background-position: center center;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--card-shadow);
+    animation: heroFadeIn 1s var(--animation-timing) forwards;
+    will-change: opacity, transform;
 }
-#hero-section .hero-overlay, .anime-hero::before, .hero-2d3d::before { /* Target all hero overlays/pseudo-elements */
-    content: ''; /* Ensure pseudo-elements work */
+
+@keyframes heroFadeIn {
+    from { opacity: 0; transform: scale(0.98); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Hero background with parallax effect */
+.hero-bg {
     position: absolute;
     inset: 0;
-    /* Gradient adjusted for better visibility on different screens */
-    background: linear-gradient(to top, var(--secondary-color) 10%, transparent 70%);
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.1);
+    transition: transform 0.8s ease-out;
+}
+
+#hero-section:hover .hero-bg {
+    transform: scale(1.05);
+}
+
+/* Enhanced overlay gradient */
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(to top, 
+            rgba(16, 16, 16, 1) 0%, 
+            rgba(16, 16, 16, 0.9) 10%, 
+            rgba(16, 16, 16, 0.6) 30%, 
+            rgba(16, 16, 16, 0.3) 60%,
+            rgba(16, 16, 16, 0.2) 80%,
+            rgba(16, 16, 16, 0) 100%),
+        linear-gradient(to right, 
+            rgba(16, 16, 16, 1) 0%, 
+            rgba(16, 16, 16, 0.8) 15%, 
+            rgba(16, 16, 16, 0.3) 50%,
+            rgba(16, 16, 16, 0) 100%);
     z-index: 1;
 }
-/* Desktop gradient for index hero */
-@media (min-width: 768px) {
-    #hero-section .hero-overlay {
-        background: linear-gradient(to top, var(--secondary-color) 5%, transparent 60%), linear-gradient(to right, var(--secondary-color) 15%, transparent 80%);
-    }
-    /* Specific gradient for anime hero (already defined inline, but could be moved here) */
-    .anime-hero::before {
-         background: linear-gradient(to top, rgba(16, 16, 16, 0.95) 15%, rgba(16, 16, 16, 0.7) 40%, transparent 80%);
-    }
-    /* Specific gradient for 2d3d hero (already defined inline, but could be moved here) */
-     .hero-2d3d::before {
-         background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0.4) 40%, transparent 80%),
-                     linear-gradient(to right, rgba(0,0,0,0.8) 15%, rgba(0,0,0,0.3) 50%, transparent 80%);
-     }
-}
-#hero-section .hero-content, .hero-content-anime, .hero-2d3d .hero-content { /* Target all hero content areas */
+
+.hero-content {
     position: relative;
     z-index: 2;
-    /* Padding and max-width handled by Tailwind */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 3rem;
+    max-width: 650px;
+    animation: heroContentFadeIn 1.2s var(--animation-timing) forwards 0.3s;
+    opacity: 0;
+    transform: translateY(20px);
 }
-/* Text shadow for better readability */
-.text-shadow-lg { text-shadow: 1px 1px 4px rgba(0,0,0,0.8); }
-.text-shadow-md { text-shadow: 1px 1px 3px rgba(0,0,0,0.7); }
+
+@keyframes heroContentFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero typography */
+.hero-title {
+    font-family: var(--heading-font);
+    font-weight: 800;
+    font-size: 3rem;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    margin-bottom: 1rem;
+    background: linear-gradient(to right, #ffffff, #cccccc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-description {
+    font-size: 1.125rem;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+    line-height: 1.5;
+}
+
+/* Hero buttons with enhanced styling */
+.hero-button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.hero-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: all 0.3s var(--animation-timing);
+    z-index: 1;
+}
+
+.hero-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255,255,255,0.1), rgba(255,255,255,0));
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+    z-index: -1;
+}
+
+.hero-button:hover::before {
+    transform: translateX(0);
+}
+
+.hero-play-button {
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+}
+
+.hero-play-button:hover {
+    background-color: var(--primary-hover-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(229, 9, 20, 0.4);
+}
+
+.hero-detail-button {
+    background-color: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-detail-button:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.hero-button i {
+    margin-right: 0.5rem;
+    font-size: 0.9em;
+}
+
+/* Hero badges */
+.hero-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.hero-badge-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.hero-badge-secondary {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #000;
+}
+
+.hero-badge-tertiary {
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Hero metadata (rating, year, etc.) */
+.hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.hero-meta-item {
+    display: flex;
+    align-items: center;
+}
+
+.hero-meta-item i {
+    margin-right: 0.4rem;
+    opacity: 0.8;
+}
+
+.hero-rating {
+    color: var(--gold-accent);
+    font-weight: 600;
+}
+
+/* Anime-specific hero styling */
+.anime-hero .hero-title {
+    background: linear-gradient(to right, #ffffff, #d8bdff);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.anime-hero .hero-play-button {
+    background-color: var(--anime-accent);
+    box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
+}
+
+.anime-hero .hero-play-button:hover {
+    background-color: var(--anime-accent-hover);
+    box-shadow: 0 6px 15px rgba(138, 43, 226, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-content {
+        padding: 2rem;
+    }
+    
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+    }
+    
+    .hero-button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content {
+        padding: 1.5rem;
+    }
+    
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .hero-meta {
+        gap: 0.75rem;
+        font-size: 0.8rem;
+    }
+}
 
 /* Buttons Styling (General) */
 .button-primary { /* Generic primary button */
@@ -261,6 +585,261 @@ select.appearance-none {
 }
 select option {
     background-color: #333;
+    color: var(--text-color);
+}
+
+/* Movie Cards - Completely Redesigned */
+.movie-card, .related-movie-card, .anime-card {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--card-bg-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--card-shadow);
+    transition: transform var(--hover-transition-duration) var(--animation-timing),
+                box-shadow var(--hover-transition-duration) ease-in-out;
+    will-change: transform, box-shadow;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.movie-card:hover, .related-movie-card:hover, .anime-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--hover-shadow);
+    z-index: 1;
+}
+
+.movie-card-poster-container, .anime-card-poster-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+}
+
+.movie-card img, .related-movie-card img, .anime-card img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+    transition: transform var(--hover-transition-duration) ease-out;
+    will-change: transform;
+}
+
+.movie-card:hover img, .related-movie-card:hover img, .anime-card:hover img {
+    transform: scale(1.08);
+}
+
+/* Card overlay with play button and info */
+.card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, 
+                rgba(0, 0, 0, 0.9) 0%, 
+                rgba(0, 0, 0, 0.5) 30%, 
+                rgba(0, 0, 0, 0.2) 60%, 
+                rgba(0, 0, 0, 0) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.25rem;
+    opacity: 0;
+    transition: opacity var(--hover-transition-duration) ease;
+}
+
+.movie-card:hover .card-overlay, 
+.related-movie-card:hover .card-overlay, 
+.anime-card:hover .card-overlay {
+    opacity: 1;
+}
+
+/* Play button in overlay */
+.card-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background-color: rgba(229, 9, 20, 0.85);
+    color: white;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    box-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+    transition: transform 0.3s var(--animation-timing),
+                opacity 0.3s ease,
+                background-color 0.2s ease;
+}
+
+.movie-card:hover .card-play-button, 
+.related-movie-card:hover .card-play-button,
+.anime-card:hover .card-play-button {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.card-play-button:hover {
+    background-color: rgba(244, 6, 18, 1);
+    transform: translate(-50%, -50%) scale(1.1) !important;
+}
+
+/* Card badges */
+.card-badge {
+    position: absolute;
+    z-index: 2;
+    font-weight: 600;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.card-badge-top-right {
+    top: 0.5rem;
+    right: 0.5rem;
+}
+
+.card-badge-top-left {
+    top: 0.5rem;
+    left: 0.5rem;
+}
+
+.badge-series {
+    background-color: var(--blue-accent);
+    color: white;
+}
+
+.badge-anime {
+    background-color: var(--purple-accent);
+    color: white;
+}
+
+.badge-movie {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.badge-2d {
+    background-color: var(--green-accent);
+    color: white;
+}
+
+.badge-3d {
+    background-color: var(--purple-accent);
+    color: white;
+}
+
+.badge-animation {
+    background-color: var(--gold-accent);
+    color: black;
+}
+
+/* Card info section */
+.card-info {
+    padding: 0.875rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.card-title {
+    font-family: var(--heading-font);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text-bright-color);
+    margin-bottom: 0.25rem;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 2.6rem; /* Fixed height to accommodate 2 lines */
+    transition: color var(--micro-interaction-duration) ease;
+}
+
+.movie-card:hover .card-title, 
+.related-movie-card:hover .card-title,
+.anime-card:hover .card-title {
+    color: var(--primary-color);
+}
+
+.card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted-color);
+}
+
+.card-year {
+    display: flex;
+    align-items: center;
+}
+
+.card-year i {
+    font-size: 0.75rem;
+    margin-right: 0.25rem;
+    opacity: 0.7;
+}
+
+.card-rating {
+    display: flex;
+    align-items: center;
+    color: var(--gold-accent);
+}
+
+.card-rating i {
+    font-size: 0.75rem;
+    margin-right: 0.25rem;
+}
+
+.card-episodes {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-muted-color);
+    display: flex;
+    align-items: center;
+}
+
+.card-episodes i {
+    font-size: 0.7rem;
+    margin-right: 0.25rem;
+    opacity: 0.8;
+}
+
+/* Anime card specific styling */
+.anime-card .card-title {
+    color: var(--text-bright-color);
+}
+
+.anime-card:hover .card-title {
+    color: var(--anime-accent);
+}
+
+.anime-card .card-play-button {
+    background-color: rgba(138, 43, 226, 0.85); /* Purple for anime */
+    box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+}
+
+.anime-card .card-play-button:hover {
+    background-color: rgba(157, 76, 247, 1);
+}
+
+/* Hover effects for card text */
+.movie-card:hover .card-meta,
+.related-movie-card:hover .card-meta,
+.anime-card:hover .card-meta,
+.movie-card:hover .card-episodes,
+.related-movie-card:hover .card-episodes,
+.anime-card:hover .card-episodes {
     color: var(--text-color);
 }
 
@@ -510,43 +1089,207 @@ select option {
 }
 
 
-/* Search Suggestions Styling */
-.search-suggestions {
-    background-color: var(--dark-gray-color, #181818); /* Use darker gray */
-    border: 1px solid var(--border-color, #333);
-    border-radius: 8px;
-    max-height: 350px;
-    overflow-y: auto;
-    z-index: 100; /* High z-index */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-    display: none; /* Controlled by JS */
-    scrollbar-width: thin;
-    scrollbar-color: #555 var(--dark-gray-color);
-    position: absolute;
-    width: 100%; /* Full width relative to parent */
-    left: 0;
-    /* Top position handled by Tailwind classes */
+/* Search UI - Enhanced */
+.search-container {
+    position: relative;
 }
+
+.search-input {
+    background-color: rgba(35, 35, 35, 0.7);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 0.95rem;
+    border-radius: 50px;
+    padding: 0.65rem 1rem 0.65rem 2.75rem;
+    width: 100%;
+    transition: all var(--hover-transition-duration) ease;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.search-input:focus {
+    background-color: rgba(50, 50, 50, 0.9);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+    outline: none;
+    width: calc(100% + 20px);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted-color);
+    transition: color var(--hover-transition-duration) ease;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.search-input:focus + .search-icon {
+    color: var(--primary-color);
+}
+
+/* Search Suggestions Enhanced */
+.search-suggestions {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background-color: rgba(30, 30, 30, 0.98);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    max-height: 360px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    transition: all 0.2s ease-in-out;
+    opacity: 0;
+    transform: translateY(10px);
+    pointer-events: none;
+}
+
+.search-suggestions.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Custom scrollbar for suggestions */
+.search-suggestions::-webkit-scrollbar {
+    width: 6px;
+}
+
+.search-suggestions::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+}
+
+.search-suggestions::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+}
+
+.search-suggestions::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 .suggestion-item {
-    padding: 10px 15px;
-    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 12px;
-    border-bottom: 1px solid var(--border-color, #333);
-    transition: background-color 0.2s ease;
-    color: inherit;
+    padding: 10px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color var(--hover-transition-duration) ease;
+    cursor: pointer;
     text-decoration: none;
+    color: inherit;
 }
-.suggestion-item:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
-.suggestion-item:last-child { border-bottom: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
-.suggestion-item:hover { background-color: var(--light-gray-color, #222); }
-.suggestion-item img { width: 40px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid #444; }
-.suggestion-item-info { display: flex; flex-direction: column; overflow: hidden; flex-grow: 1; }
-.suggestion-item-title { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color, #e0e0e0); }
-.suggestion-item-year { font-size: 0.75rem; color: var(--text-muted-color, #8c8c8c); }
-.no-suggestions-placeholder { padding: 20px; text-align: center; color: var(--text-muted-color); font-style: italic; font-size: 0.9rem; }
-.search-highlight { font-weight: bold; color: var(--highlight-color); background-color: var(--highlight-bg-color); padding: 0 2px; border-radius: 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+.suggestion-item:hover {
+    background-color: rgba(60, 60, 60, 0.7);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item img {
+    width: 40px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform var(--hover-transition-duration) ease;
+    flex-shrink: 0;
+}
+
+.suggestion-item:hover img {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.suggestion-item-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-grow: 1;
+}
+
+.suggestion-item-title {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--text-bright-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color var(--hover-transition-duration) ease;
+}
+
+.suggestion-item:hover .suggestion-item-title {
+    color: var(--primary-color);
+}
+
+.suggestion-item-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: var(--text-muted-color);
+}
+
+.suggestion-item-year,
+.suggestion-item-type {
+    display: flex;
+    align-items: center;
+}
+
+.suggestion-item-meta i {
+    font-size: 0.75rem;
+    margin-right: 4px;
+    opacity: 0.7;
+}
+
+.search-highlight {
+    font-weight: 600;
+    color: var(--highlight-color);
+    background-color: rgba(250, 204, 21, 0.08);
+    padding: 0 2px;
+    border-radius: 2px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.no-suggestions-placeholder {
+    padding: 20px;
+    text-align: center;
+    color: var(--text-muted-color);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+/* Mobile search UI */
+#mobile-search-container {
+    transition: all 0.3s ease;
+}
+
+#mobile-search-container.active {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .search-input {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem 0.6rem 2.5rem;
+    }
+    
+    .search-icon {
+        left: 0.9rem;
+        font-size: 0.85rem;
+    }
+}
 
 /* Footer Styling */
 footer {
@@ -734,12 +1477,9 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 /* Lights Off Feature (Detail Pages) */
 #lights-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-color: var(--lights-off-overlay-bg);
-    z-index: 998; /* Below player area when active */
+    z-index: 998; /* Below player area (999) but above other content */
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.4s ease, visibility 0.4s ease, backdrop-filter 0.4s ease;
@@ -754,14 +1494,38 @@ body.lights-off #lights-overlay {
     -webkit-backdrop-filter: blur(var(--lights-off-blur));
     pointer-events: auto; /* Allow clicking overlay to turn lights on */
 }
-body.lights-off .player-area { z-index: 999; /* Bring player above overlay */ }
+body.lights-off .player-area { 
+    z-index: 999; /* Bring player above overlay */
+    opacity: 1 !important; /* Ensure player stays fully visible */
+    filter: none !important; /* Remove any blur effect */
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5); /* Add shadow for emphasis */
+}
+/* Ensure video player elements remain visible in lights-off mode */
+body.lights-off .video-container,
+body.lights-off #video-player-container,
+body.lights-off #youtube-player,
+body.lights-off #video-poster-image,
+body.lights-off #video-poster-overlay,
+body.lights-off #video-play-button,
+body.lights-off #version-selection,
+body.lights-off .version-button,
+body.lights-off #skip-intro-button,
+body.lights-off #video-message,
+body.lights-off #movie-title-player,
+body.lights-off #anime-title-player, 
+body.lights-off #series-title-player,
+body.lights-off #toggle-lights-button {
+    opacity: 1 !important;
+    filter: none !important;
+    visibility: visible !important;
+}
 /* Fade out other elements */
 body.lights-off header,
 body.lights-off main > *:not(#player-section):not(#series-content-section), /* Target sections correctly */
 body.lights-off footer,
 body.lights-off #scroll-to-top {
-    opacity: 0.1;
-    filter: blur(2px);
+    opacity: 0.4; /* Increased from 0.1 to 0.4 for better visibility */
+    filter: blur(1px); /* Reduced blur from 2px to 1px */
     pointer-events: none; /* Prevent interaction with faded elements */
 }
 /* Ensure elements transition back smoothly */

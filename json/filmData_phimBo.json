@@ -76,7 +76,7 @@
     "isTrending": true,
     "isNew": true,
     "isHot": true,
-    "hotnumber": 2,
+    "hotnumber": 3,
     "heroImage": "https://ss-images.saostar.vn/2025/4/3/pc/1743647808246/k54ot1j00n1-vwb0541e5k2-8036s6bfr73.jpg",
     "format": ["Live Action", "Series"],
     "seasons": [
@@ -146,5 +146,77 @@
         ]
       }
     ]
-  }
+  },
+  {
+    "id": 104,
+    "title": "Đấu La Đại Lục: Nhiên Hồn Chiến",
+    "englishTitle": "The Land of Warriors",
+    "description": "Sau trận chung kết cuộc thi tinh anh học viện hồn sư cao cấp toàn đại lục, Đường Tam cùng các đồng đội lưu luyến tạm biệt nhau, hẹn ước năm năm sau sẽ gặp lại, rồi mỗi người một ngả, bước vào hành trình riêng của cuộc đời. Đường Tam đi theo phụ thân là Đường Hạo đến khe núi ẩn mình để tu luyện đặc biệt, nâng cao năng lực. Với sự giúp đỡ của Đường Hạo, Đường Tam không chỉ tăng cường kinh nghiệm mà còn trở nên ngày càng chín chắn, có thể vững vàng đối mặt với nhiều thử thách hơn. Đới Mộc Bạch và Chu Trúc Thanh được gia tộc tán thành, trở thành thái tử và thái tử phi tương lai của Tinh La. Tiểu Áo và Ninh Vinh Vinh cũng bắt đầu quá trình rèn luyện khắc khổ để tăng cường thực lực còn Mã Hồng Tuấn thì ra ngoài học hỏi, nỗ lực mở mang tầm mắt. Tuy nhiên, vào lúc này, Bỉ Bỉ Đông của điện Võ Hồn lại âm thầm bày mưu, quét sạch các tông môn lớn, tham vọng thống trị đại lục Đấu La. Trước tình thế đó, Đường Tam đã tập hợp các bạn, thành lập Đường Môn, với tinh thần theo đuổi chính nghĩa, kiên quyết gánh trách nhiệm to lớn. Họ hợp sức, dũng cảm xông pha chinh phục đảo Hải Thần, chống lại điện Võ Hồn, không sợ hãi trước các thế lực đen tối và cường quyền, chung tay bảo vệ hòa bình cho toàn đại lục, duy trì chính nghĩa, cùng trưởng thành thành những chiến sĩ bất khuất.",
+    "posterUrl": "https://static.nutscdn.com/vimg/0-0/a13773b0c417c797979cb32084a410b0.jpg",
+    "releaseYear": 2024,
+    "genre": ["Chính Kịch", "Hành Động", "Cổ Trang", "Kỳ Ảo", "Chuyển Thể", "Phiêu Lưu"],
+    "director": "Zhang Wei",
+    "cast": ["Zhou Yiran", "Zhang Yuxi", "Chen Muchi", "Kong Xueer"],
+    "rating": 8.4,
+    "ageRating": "T13",
+    "numberOfSeasons": 1,
+    "totalEpisodes": 38,
+    "status": "Đã hoàn thành",
+    "isTrending": false,
+    "isNew": true,
+    "isHot": true,
+    "hotnumber": 2,
+    "heroImage": "https://static.nutscdn.com/vimg/0-0/e2a2d4efd26f8dff0efb1b8901fb7347.jpg",
+    "skipIntroSeconds": null,
+    "format": ["Series"],
+    "country": "Trung Quốc",
+    "networks": ["Tencent Video"],
+    "productionCompanies": ["Tencent Penguin Pictures", "Linghe Cultural Media"],
+    "seasons": [
+      {
+        "seasonNumber": 1,
+        "numberOfEpisodes": 38,
+        "episodes": [
+        {"episodeNumber": 1, "title": "Tập 1", "thumbnailUrl": "https://static.nutscdn.com/vpreview/5d01c68f09d9e72cb5a3f96289c4de7a/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/12DmBtgjoa8vj3r7MMqrPtJpv1wevw6Gt/view?usp=sharing"}},
+        {"episodeNumber": 2, "title": "Tập 2", "thumbnailUrl": "https://static.nutscdn.com/vpreview/95f8cd935d963dd1c7604214722f04c8/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1PNUaP4KUB06Q2qjeKW83crZdzT2xEnHp/view?usp=sharing"}},
+        {"episodeNumber": 3, "title": "Tập 3", "thumbnailUrl": "https://static.nutscdn.com/vpreview/c0e9b211bc778433cbad5baf260cfa04/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1t-nEk1aw-ursHLXbnuI60ulw9FbeThDE/view?usp=sharing"}},
+        {"episodeNumber": 4, "title": "Tập 4", "thumbnailUrl": "https://static.nutscdn.com/vpreview/e7837c9cbf0237dc7bce2be9d800ee87/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/19MTMIYDoNXkcQVC7x01TvAFT5w44FVhx/view?usp=sharing"}},
+        {"episodeNumber": 5, "title": "Tập 5", "thumbnailUrl": "https://static.nutscdn.com/vpreview/c28850b242031638d98769b34a435077/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1Hp-tA3Pq-eX3PTVl39xddKwW7KrJVPEP/view?usp=sharing"}},
+        {"episodeNumber": 6, "title": "Tập 6", "thumbnailUrl": "https://static.nutscdn.com/vpreview/0d6b1362a2512606451de9e348c8896d/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1PTlS9XePohVf60UPXW-ExbUoceSOHqZw/view?usp=sharing"}},
+        {"episodeNumber": 7, "title": "Tập 7", "thumbnailUrl": "https://static.nutscdn.com/vpreview/8b8f02c8c14836116298697eb1f4459c/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1OM_cRgPG10w9xsEJsfnfjLVK5fEylhCQ/view?usp=sharing"}},
+        {"episodeNumber": 8, "title": "Tập 8", "thumbnailUrl": "https://static.nutscdn.com/vpreview/fa8abb16251ffe1b0b53dc5636c499b8/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1mvLfk9oAUD6lBilh3cWPQuN1fvoZ-lk3/view?usp=sharing"}},
+        {"episodeNumber": 9, "title": "Tập 9", "thumbnailUrl": "https://static.nutscdn.com/vpreview/a04ed0f9d43b8a50f6439cc00681b9a7/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1ntcVnv2q5wTtofSrxQqZr1wHjhBvFZWO/view?usp=sharing"}},
+        {"episodeNumber": 10, "title": "Tập 10", "thumbnailUrl": "https://static.nutscdn.com/vpreview/ce5e26f049ca0d2d55e65c14132fe886/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1Q37GbK8p5PdmVxJaDLOBBvpVyIDB006x/view?usp=sharing"}},
+        {"episodeNumber": 11, "title": "Tập 11", "thumbnailUrl": "https://static.nutscdn.com/vpreview/944cde8ac72eac5583bf49ee6914d797/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1FQTJpyjgqU3APZzqXDBtpaeKmFPunp0k/view?usp=sharing"}},
+        {"episodeNumber": 12, "title": "Tập 12", "thumbnailUrl": "https://static.nutscdn.com/vpreview/8374cb4ffa3a4ed2c1a9178c8d141203/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1rrU_ubKIOzKdmhl3NgjI_3Pdn7_WTg3k/view?usp=sharing"}},
+        {"episodeNumber": 13, "title": "Tập 13", "thumbnailUrl": "https://static.nutscdn.com/vpreview/92939c2f2715c70dd13f41b452720f38/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/14csnKTyPfdoJl-YJKoVjLNOO_RJ6puRT/view?usp=sharing"}},
+        {"episodeNumber": 14, "title": "Tập 14", "thumbnailUrl": "https://static.nutscdn.com/vpreview/7fbd1f77285f8c8c4c724a31079b3806/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1_fGOqIqlIxHlPXc5uK9nP8-eba108Jzk/view?usp=sharing"}},
+        {"episodeNumber": 15, "title": "Tập 15", "thumbnailUrl": "https://static.nutscdn.com/vpreview/5165ddd9e6483b518e41b6f3528d7925/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": "https://drive.google.com/file/d/1M2AHyFs4r-gv5myCIrQES_ocfe7u-hmk/view?usp=sharing"}},
+        {"episodeNumber": 16, "title": "Tập 16", "thumbnailUrl": "https://static.nutscdn.com/vpreview/8c5d17ecde04e4578e72d752624b7a66/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 17, "title": "Tập 17", "thumbnailUrl": "https://static.nutscdn.com/vpreview/d89e623bf991291c7c29b9d18d037464/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 18, "title": "Tập 18", "thumbnailUrl": "https://static.nutscdn.com/vpreview/7f36e94cb872eac70a92779b238454cb/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 19, "title": "Tập 19", "thumbnailUrl": "https://static.nutscdn.com/vpreview/4bdad07418f8367ff397e1c729391836/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 20, "title": "Tập 20", "thumbnailUrl": "https://static.nutscdn.com/vpreview/6745215575f9b28963517ba987e846cd/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 21, "title": "Tập 21", "thumbnailUrl": "https://static.nutscdn.com/vpreview/c749c75cb834b1f54ddd4ec62976d63e/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 22, "title": "Tập 22", "thumbnailUrl": "https://static.nutscdn.com/vpreview/9ce755bedf9ac70c6151d83407c61932/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 23, "title": "Tập 23", "thumbnailUrl": "https://static.nutscdn.com/vpreview/1ee273466d2dc88e740910f1a28214bf/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 24, "title": "Tập 24", "thumbnailUrl": "https://static.nutscdn.com/vpreview/5d6388d595f7d3674238e119d2090092/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 25, "title": "Tập 25", "thumbnailUrl": "https://static.nutscdn.com/vpreview/210c5e25d3c26c39dd2871c5a6591177/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 26, "title": "Tập 26", "thumbnailUrl": "https://static.nutscdn.com/vpreview/1d9ccd1dd99d60733ba1b3c662d474d2/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 27, "title": "Tập 27", "thumbnailUrl": "https://static.nutscdn.com/vpreview/0506add588f5afa7c3184c2753a08e26/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 28, "title": "Tập 28", "thumbnailUrl": "https://static.nutscdn.com/vpreview/bad5ca2d7c139b93b27b61f7d3eff84f/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 29, "title": "Tập 29", "thumbnailUrl": "https://static.nutscdn.com/vpreview/a823cc29451ef27fe1feacacb9df8d83/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 30, "title": "Tập 30", "thumbnailUrl": "https://static.nutscdn.com/vpreview/e29931815f8ab96fa2d436c3a30b1aa6/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 31, "title": "Tập 31", "thumbnailUrl": "https://static.nutscdn.com/vpreview/adb2b9b868efb6a43ac2d660d3252080/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 32, "title": "Tập 32", "thumbnailUrl": "https://static.nutscdn.com/vpreview/08eda9ac6f66a28b0b9ed7690147c0d7/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 33, "title": "Tập 33", "thumbnailUrl": "https://static.nutscdn.com/vpreview/93950c75a295dca86cdccd7d8c17028d/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 34, "title": "Tập 34", "thumbnailUrl": "https://static.nutscdn.com/vpreview/3786911f03965b7483dfca96edeb383a/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 35, "title": "Tập 35", "thumbnailUrl": "https://static.nutscdn.com/vpreview/d5af81c51873e56ace0993421612d531/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 36, "title": "Tập 36", "thumbnailUrl": "https://static.nutscdn.com/vpreview/9955c330aac535065f4f48d5bc54c35c/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 37, "title": "Tập 37", "thumbnailUrl": "https://static.nutscdn.com/vpreview/4e245634aa10e5770d853b003e8300f3/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}},
+        {"episodeNumber": 38, "title": "Tập 38", "thumbnailUrl": "https://static.nutscdn.com/vpreview/0fb1275a78fc0ec1ec9778e7ec4098ba/thumb/t-6.jpg", "videoUrls": {"vietsub": null, "dubbed": null, "voiceover": null}}
+        ]
+      }
+    ]
+  }  
   ]

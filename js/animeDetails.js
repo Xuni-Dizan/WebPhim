@@ -1099,14 +1099,28 @@ document.addEventListener('DOMContentLoaded', () => {
         const isLightsOff = document.body.classList.toggle('lights-off');
         if (toggleLightsButton) toggleLightsButton.setAttribute('aria-pressed', String(isLightsOff));
         if (toggleLightsText) toggleLightsText.textContent = isLightsOff ? 'Bật đèn' : 'Tắt đèn';
+        
         // Toggle icon class
         const icon = toggleLightsButton?.querySelector('i');
         if (icon) {
             icon.classList.toggle('fa-lightbulb', !isLightsOff);
-            icon.classList.toggle('fa-solid', !isLightsOff); // Assuming FontAwesome 6 solid style
+            icon.classList.toggle('fa-solid', !isLightsOff); 
             icon.classList.toggle('fa-moon', isLightsOff);
-            icon.classList.toggle('fa-regular', isLightsOff); // Assuming FontAwesome 6 regular style
+            icon.classList.toggle('fa-regular', isLightsOff); 
         }
+        
+        // Ensure player area is fully visible
+        const playerArea = document.querySelector('.player-area');
+        if (playerArea) {
+            if (isLightsOff) {
+                playerArea.style.opacity = '1';
+                playerArea.style.filter = 'none';
+            } else {
+                playerArea.style.opacity = '';
+                playerArea.style.filter = '';
+            }
+        }
+        
         console.log("Lights Toggled:", isLightsOff);
     };
 

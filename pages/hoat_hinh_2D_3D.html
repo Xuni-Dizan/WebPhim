@@ -25,40 +25,28 @@
                 extend: {
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'], // Use Inter font
-                        'heading': ['Montserrat', 'sans-serif'],
                     },
                     colors: {
-                        'primary': 'var(--primary-color)',
-                        'primary-hover': 'var(--primary-hover-color)',
-                        'secondary': 'var(--secondary-color)',
-                        'light-gray': 'var(--light-gray-color)',
-                        'dark-gray': 'var(--dark-gray-color)',
-                        'darker-gray': 'var(--darker-gray-color)',
-                        'text-color': 'var(--text-color)',
-                        'text-muted': 'var(--text-muted-color)',
-                        'text-bright': 'var(--text-bright-color)',
-                        'border-color': 'var(--border-color)',
-                        'highlight': 'var(--highlight-color)',
-                        'badge-2d': 'var(--green-accent)', 
-                        'badge-3d': 'var(--purple-accent)',
-                        'badge-series': 'var(--blue-accent)',
-                        'badge-movie': 'var(--primary-color)',
-                        'badge-anime': 'var(--anime-accent)',
-                        'badge-animation': 'var(--gold-accent)',
+                        'primary': '#e50914', // Netflix Red
+                        'secondary': '#141414', // Dark background
+                        'light-gray': '#222222', // Lighter gray for elements
+                        'dark-gray': '#181818', // Even darker gray for dropdowns etc.
+                        'text-muted': '#8c8c8c', // Muted text color
+                        'border-color': '#333333', // Subtle border color
+                        'highlight': '#facc15', // Yellow for highlighting search terms
+                        'primary-hover': '#f40612', // Brighter Red
+                        'badge-2d': '#10b981', // Emerald 500 for 2D
+                        'badge-3d': '#8b5cf6', // Violet 500 for 3D
                     },
                     animation: {
                          'pageFadeIn': 'pageFadeIn 0.6s ease-out forwards 0.2s',
                          'shimmer': 'shimmer 1.5s infinite linear',
                          'slideUpFadeIn': 'slideUpFadeIn 0.6s ease-out forwards',
-                         'heroContentFadeIn': 'heroContentFadeIn 0.8s ease-out 0.3s forwards', // New animation for hero
-                         'slowZoom': 'slowZoom 20s infinite alternate ease-in-out', // New animation for hero background
                     },
                     keyframes: {
                          pageFadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
                          shimmer: { '0%': { left: '-150%' }, '100%': { left: '150%' } },
-                         slideUpFadeIn: { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
-                         heroContentFadeIn: { from: { opacity: '0', transform: 'translateY(10px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
-                         slowZoom: { '0%': { backgroundSize: '100% auto' }, '100%': { backgroundSize: '110% auto' } },
+                         slideUpFadeIn: { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } }
                     }
                 }
             }
@@ -67,97 +55,116 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        /* Custom styles for 2D/3D page specifically */
-        /* These will be moved to style.css in the next step if appropriate */
+        /* --- START: Enhanced Hero Section Styles --- */
+        /* --- BẮT ĐẦU: Kiểu Phần Hero Nâng cao --- */
+        @keyframes slowZoom {
+            0% { background-size: 100%; }
+            100% { background-size: 110%; }
+        }
+        @keyframes fadeInContent {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        /* Hero Section Styles (from your thoughts - to be refined in style.css step) */
         .hero-2d3d {
-            background-size: 100% auto;
+            background-size: 100%; /* Initial size for zoom */
             background-position: center center;
-            min-height: 45vh;
+            min-height: 45vh; /* Slightly taller */
             display: flex;
-            align-items: flex-end;
-            justify-content: center;
+            align-items: flex-end; /* Align content to bottom */
+            justify-content: center; /* Center content horizontally */
             text-align: center;
-            border-radius: 0.75rem;
-            margin-bottom: 2.5rem;
+            border-radius: 0.75rem; /* Slightly larger radius */
+            margin-bottom: 2.5rem; /* Increased margin */
             position: relative;
             color: white;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            overflow: hidden; /* Important for zoom effect */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+            /* Add subtle zoom animation */
             animation: slowZoom 20s infinite alternate ease-in-out;
         }
         .hero-2d3d::before {
             content: '';
             position: absolute;
             inset: 0;
+            /* Smoother, darker gradient from bottom */
             background: linear-gradient(to top, rgba(0,0,0,0.85) 15%, rgba(0,0,0,0.5) 40%, rgba(0,0,0,0.1) 70%, transparent 100%);
             z-index: 1;
+            transition: background 0.5s ease; /* Smooth transition if needed */
         }
         .hero-2d3d .hero-content {
             position: relative;
             z-index: 2;
-            padding: 1.5rem 1rem;
-            max-width: 800px;
-            margin-bottom: 2rem;
+            padding: 1.5rem 1rem; /* Increased padding */
+            max-width: 800px; /* Limit width for better readability */
+            margin-bottom: 2rem; /* Add some space from the bottom edge */
+            /* Add subtle background for more contrast if needed */
+            /* background-color: rgba(0, 0, 0, 0.2); */
+            /* border-radius: 0.5rem; */
+            /* Add fade-in animation */
             opacity: 0;
-            animation: heroContentFadeIn 0.8s ease-out 0.3s forwards;
+            animation: fadeInContent 0.8s ease-out 0.3s forwards;
         }
         .hero-2d3d h1 {
+            /* Enhanced text shadow */
             text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.8);
-            margin-bottom: 0.75rem;
-            font-family: var(--heading-font);
+            /* Tailwind classes handle size, weight */
+            margin-bottom: 0.75rem; /* Increased spacing */
         }
         .hero-2d3d p {
              text-shadow: 0px 1px 6px rgba(0, 0, 0, 0.7);
+             /* Tailwind classes handle size */
         }
+        /* Responsive adjustments */
         @media (min-width: 768px) {
             .hero-2d3d {
                 min-height: 50vh;
-                align-items: center;
-                justify-content: flex-start;
+                align-items: center; /* Center vertically on larger screens */
+                justify-content: flex-start; /* Align left on larger screens */
                 text-align: left;
             }
              .hero-2d3d::before {
+                 /* Gradient from left as well on larger screens */
                  background: linear-gradient(to top, rgba(0,0,0,0.85) 10%, rgba(0,0,0,0.4) 40%, transparent 80%),
                              linear-gradient(to right, rgba(0,0,0,0.8) 15%, rgba(0,0,0,0.3) 50%, transparent 80%);
              }
             .hero-2d3d .hero-content {
-                 padding: 2rem 3rem;
-                 margin-left: 3rem;
-                 margin-bottom: 0;
-                 max-width: 50%;
+                 padding: 2rem 3rem; /* More padding */
+                 margin-left: 3rem; /* Indent from left */
+                 margin-bottom: 0; /* Reset bottom margin */
+                 max-width: 50%; /* Limit width more */
+                 /* background-color: transparent; Remove background on larger screens */
             }
         }
+        /* --- END: Enhanced Hero Section Styles --- */
+        /* --- KẾT THÚC: Kiểu Phần Hero Nâng cao --- */
 
-        /* Skeleton Styles (from your thoughts) */
+
+        /* Skeleton Styles */
         .skeleton { background-color: var(--skeleton-base-color, #333); border-radius: 4px; position: relative; overflow: hidden; }
         .skeleton::before { content: ''; position: absolute; top: 0; left: -150%; height: 100%; width: 150%; background: linear-gradient(to right, transparent 0%, var(--skeleton-shine-color, #444) 50%, transparent 100%); animation: shimmer var(--shimmer-duration, 1.5s) infinite linear; }
+        @keyframes shimmer { 0% { left: -150%; } 100% { left: 150%; } }
         .skeleton-image { height: 0; padding-bottom: 150%; margin-bottom: 0; border-radius: 0; }
         .skeleton-title { height: 18px; width: 75%; margin-bottom: 8px; border-radius: 3px;}
         .skeleton-text { height: 12px; width: 50%; border-radius: 3px;}
         .movie-card-skeleton .p-3 { padding: 0.75rem; }
 
-        /* Logo Styles (from your thoughts) */
+        /* Logo Styles */
         .header-logo-link { display: inline-block; transition: transform 0.3s ease, opacity 0.3s ease; flex-shrink: 0; }
         .header-logo-link:hover { transform: scale(1.05); opacity: 0.9; }
         .header-logo { height: 32px; max-height: 40px; width: auto; object-fit: contain; vertical-align: middle; }
         @media (max-width: 640px) { .header-logo { height: 28px; } }
 
-        /* Badge Styles (from your thoughts - will be defined in style.css) */
-        .badge-2d { background-color: var(--badge-2d); }
-        .badge-3d { background-color: var(--badge-3d); }
-        .badge-series { background-color: var(--badge-series); }
-        .badge-movie { background-color: var(--badge-movie); }
-        .badge-anime { background-color: var(--badge-anime); }
-        .badge-animation { background-color: var(--badge-animation); }
+        /* Badge Styles */
+        .format-badge-2d { background-color: var(--badge-2d, #10b981); }
+        .format-badge-3d { background-color: var(--badge-3d, #8b5cf6); }
+        .series-badge { background-color: #2563eb; } /* Blue for Series */
 
-
-        /* Custom select arrow (from your thoughts) */
+        /* Custom select arrow */
         select.custom-select-arrow {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23e0e0e0' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.7rem center;
@@ -169,23 +176,27 @@
             appearance: none;
         }
 
-        /* Search Suggestions Styles (from your thoughts) */
+        /* --- START: Search Suggestions Styles --- */
+        /* --- BẮT ĐẦU: Kiểu Gợi ý Tìm kiếm --- */
         .search-suggestions {
             background-color: var(--dark-gray-color, #181818);
             border: 1px solid var(--border-color, #333);
             border-radius: 8px;
             max-height: 350px;
             overflow-y: auto;
-            z-index: 100;
+            z-index: 100; /* High z-index */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-            display: none;
+            display: none; /* Controlled by JS */
             scrollbar-width: thin;
             scrollbar-color: #555 var(--dark-gray-color);
             position: absolute;
             width: 100%;
             left: 0;
+            /* Top position handled by Tailwind classes */
         }
-        .search-suggestions.visible { display: block; }
+        .search-suggestions.visible { /* Added class for JS to control visibility */
+            display: block;
+        }
         .suggestion-item {
             padding: 10px 15px;
             cursor: pointer;
@@ -199,16 +210,19 @@
         }
         .suggestion-item:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
         .suggestion-item:last-child { border-bottom: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
-        .suggestion-item:hover, .suggestion-item.active { background-color: var(--light-gray-color, #222); }
+        .suggestion-item:hover, .suggestion-item.active { /* Added .active for keyboard navigation */
+            background-color: var(--light-gray-color, #222); 
+        }
         .suggestion-item img { width: 40px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid #444; }
         .suggestion-item-info { display: flex; flex-direction: column; overflow: hidden; flex-grow: 1; }
         .suggestion-item-title { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color, #e0e0e0); }
         .suggestion-item-year { font-size: 0.75rem; color: var(--text-muted-color, #8c8c8c); }
         .no-suggestions-placeholder { padding: 20px; text-align: center; color: var(--text-muted-color); font-style: italic; font-size: 0.9rem; }
         .search-highlight { font-weight: bold; color: var(--highlight-color); background-color: var(--highlight-bg-color); padding: 0 2px; border-radius: 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        /* --- END: Search Suggestions Styles --- */
+        /* --- KẾT THÚC: Kiểu Gợi ý Tìm kiếm --- */
+
     </style>
-    <!-- External JS (noUiSlider, wNumb, searchUtils) -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
     <script src="../js/searchUtils.js"></script>
@@ -229,8 +243,8 @@
             </nav>
 
             <div class="hidden md:flex items-center space-x-3 lg:space-x-4 flex-shrink-0">
-                <a href="#filters-2d3d" id="nav-filter-icon" class="filter-icon-button p-2 rounded-full hover:bg-light-gray" aria-label="Mở bộ lọc">
-                    <i class="fas fa-filter text-lg"></i>
+                <a href="#filters-2d3d" id="nav-filter-icon" class="filter-icon-button" aria-label="Mở bộ lọc">
+                    <i class="fas fa-filter"></i>
                 </a>
                 <div class="relative search-container"> 
                     <label for="search-input-desktop" class="sr-only">Tìm kiếm phim hoặc phim bộ</label>
@@ -252,8 +266,8 @@
             </div>
 
             <div class="md:hidden flex items-center space-x-2">
-                <a href="#filters-2d3d" id="mobile-nav-filter-icon" class="filter-icon-button p-2 rounded-full hover:bg-light-gray" aria-label="Mở bộ lọc">
-                    <i class="fas fa-filter text-xl"></i>
+                <a href="#filters-2d3d" id="mobile-nav-filter-icon" class="filter-icon-button" aria-label="Mở bộ lọc">
+                    <i class="fas fa-filter"></i>
                 </a>
                 <button id="search-icon-mobile" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở tìm kiếm" aria-expanded="false" aria-controls="mobile-search-container">
                     <i class="fas fa-search text-xl"></i>
@@ -300,14 +314,13 @@
 
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 max-w-screen-xl">
-        <!-- New Hero Section for 2D/3D Page -->
-        <section id="hero-section-2d3d" class="hero-2d3d" style="background-image: url('../https://placehold.co/1920x500/141414/333333?text=Loading+2D/3D+Hero...');" aria-labelledby="hero-title-2d3d">
+
+        <section id="hero-section-2d3d" class="hero-2d3d" style="background-image: url('https://placehold.co/1920x500/141414/333333?text=Loading+2D/3D+Hero...');" aria-labelledby="hero-title-2d3d">
             <div class="hero-content">
-                <h1 id="hero-title-2d3d" class="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 font-heading">Đang tải...</h1>
-                <p id="hero-description-2d3d" class="text-base sm:text-lg md:text-xl text-gray-300">Khám phá thế giới 2D và 3D sống động, đầy màu sắc và phiêu lưu.</p>
+                <h1 id="hero-title-2d3d" class="text-3xl sm:text-4xl md:text-5xl font-bold mb-3">Đang tải...</h1>
+                <p id="hero-description-2d3d" class="text-base sm:text-lg md:text-xl text-gray-300">Khám phá thế giới 2D và 3D sống động.</p>
             </div>
         </section>
-        <!-- End New Hero Section -->
 
         <section id="filters-2d3d" class="mb-6 p-4 bg-light-gray rounded-lg shadow-md">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -323,8 +336,8 @@
                     <label for="type-filter-2d3d" class="block text-sm font-medium text-gray-300 mb-1">Loại</label>
                     <select id="type-filter-2d3d" name="type" class="w-full bg-dark-gray border border-border-color text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 custom-select-arrow" aria-label="Lọc theo loại phim">
                         <option selected value="all">Tất cả (Phim lẻ & Bộ)</option>
-                        <option value="movies">Chỉ Phim lẻ & Anime Movie</option>
-                        <option value="series">Chỉ Phim bộ & Anime Series</option>
+                        <option value="movies">Chỉ Phim lẻ</option>
+                        <option value="series">Chỉ Phim bộ</option>
                     </select>
                 </div>
                 <div>
@@ -343,7 +356,6 @@
         <section id="film-grid-2d3d" aria-labelledby="grid-title-2d3d">
             <h2 id="grid-title-2d3d" class="text-xl sm:text-2xl font-semibold mb-6 text-gray-100">Danh Sách Phim 2D/3D</h2>
             <div id="grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5" aria-live="polite">
-                <!-- Skeleton cards -->
                 <div class="movie-card-skeleton"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
                 <div class="movie-card-skeleton"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
                 <div class="movie-card-skeleton hidden sm:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
@@ -356,8 +368,7 @@
                 <div class="movie-card-skeleton hidden md:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
                 <div class="movie-card-skeleton hidden lg:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
                 <div class="movie-card-skeleton hidden xl:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                
-                <p id="loading-films" class="text-text-muted col-span-full text-center py-8 hidden"><i class="fas fa-spinner fa-spin mr-2"></i>Đang tải phim...</p>
+                 <p id="loading-films" class="text-text-muted col-span-full text-center py-8 hidden">Đang tải phim...</p>
                 <p id="no-films-found" class="text-text-muted col-span-full hidden text-center py-8">Không tìm thấy phim 2D/3D nào.</p>
             </div>
         </section>
@@ -409,7 +420,13 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- Inline script for basic interactions, menu, sticky header, etc. -->
+    <script>
+        const footerYearSpan = document.getElementById('footer-year');
+        if (footerYearSpan) {
+            footerYearSpan.textContent = new Date().getFullYear();
+        }
+    </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Elements
@@ -426,16 +443,16 @@
             const searchSuggestionsMobile = document.getElementById('search-suggestions-mobile');
             const navFilterIcon = document.getElementById('nav-filter-icon'); 
             const mobileNavFilterIcon = document.getElementById('mobile-nav-filter-icon'); 
-            const filterControls = document.getElementById('filters-2d3d'); // Specific ID for this page's filters
+            const filterControls = document.getElementById('filters-2d3d'); 
 
-            // Mobile Menu
+            // Mobile Menu (Re-using logic from index.html, assuming IDs are consistent in header)
             const openMobileMenu = () => { mobileMenuPanel?.classList.remove('translate-x-full'); mobileMenuPanel?.classList.add('translate-x-0'); mobileMenuOverlay?.classList.remove('hidden'); mobileMenuButton?.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; };
             const closeMobileMenu = () => { mobileMenuPanel?.classList.remove('translate-x-0'); mobileMenuPanel?.classList.add('translate-x-full'); mobileMenuOverlay?.classList.add('hidden'); mobileMenuButton?.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; };
             mobileMenuButton?.addEventListener('click', openMobileMenu);
             closeMobileMenuButton?.addEventListener('click', closeMobileMenu);
             mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
 
-            // Mobile Search Toggle
+            // Mobile Search Toggle (Re-using logic)
             searchIconMobile?.addEventListener('click', () => { 
                 const isHidden = mobileSearchContainer?.classList.toggle('hidden'); 
                 if (!isHidden) {
@@ -454,17 +471,15 @@
                 const suggestionsEl = inputEl === searchInputDesktop ? searchSuggestionsDesktop : searchSuggestionsMobile; 
                 const term = inputEl.value.trim();
 
-                // Assuming hoat_hinh_2D_3D.js defines window.currentFilters and window.applyFiltersAndRender
                 if (window.currentFilters && typeof window.applyFiltersAndRender === 'function') {
-                    window.currentFilters.search = term.toLowerCase(); // Update global filter state
-                    SearchUtils.debounce(() => window.applyFiltersAndRender(), 300)(); // Debounce grid update
+                    window.currentFilters.search = term.toLowerCase(); 
+                    SearchUtils.debounce(() => window.applyFiltersAndRender(), 300)(); 
                 } else { console.warn("Global state 'currentFilters' or function 'applyFiltersAndRender' not found for 2D/3D page."); }
                 
-                SearchUtils.debounce(() => { // Debounce suggestions
+                SearchUtils.debounce(() => {
                     if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.displaySearchSuggestions === 'function') {
-                        // Assuming hoat_hinh_2D_3D.js defines window.allFetchedItems
                         SearchUtils.displaySearchSuggestions(term, inputEl, suggestionsEl, window.allFetchedItems || [], { 
-                            maxResults: 7 // Example: limit to 7 suggestions
+                            maxResults: 7 
                         });
                     }
                 }, 150)();
@@ -497,13 +512,13 @@
                      if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.hideAllSearchSuggestions === 'function') {
                         SearchUtils.hideAllSearchSuggestions();
                      }
-                     event.target.blur(); // Remove focus from input
+                     event.target.blur();
                  }
             };
             searchInputDesktop?.addEventListener('keydown', handleSearchSubmit);
             searchInputMobile?.addEventListener('keydown', handleSearchSubmit);
 
-            // Sticky Header
+            // Sticky Header (Re-using logic)
             let lastScrollTop = 0;
             window.addEventListener('scroll', function() {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;

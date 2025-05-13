@@ -96,11 +96,31 @@
         #filter-controls:not(.hidden) { max-height: 1000px; opacity: 1; visibility: visible; padding-top: 1rem; padding-bottom: 1rem; margin-bottom: 1rem; border-width: 1px; }
 
         /* Search Suggestions Styles */
-        .search-suggestions { background-color: var(--dark-gray-color, #181818); border: 1px solid var(--border-color, #333); border-radius: 8px; max-height: 350px; overflow-y: auto; z-index: 100; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); display: none; scrollbar-width: thin; scrollbar-color: #555 var(--dark-gray-color); }
+        .search-suggestions { 
+            background-color: var(--dark-gray-color, #181818); 
+            border: 1px solid var(--border-color, #333); 
+            border-radius: 8px; 
+            max-height: 350px; 
+            overflow-y: auto; 
+            z-index: 100; 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); 
+            display: none; /* Initially hidden, JS will manage visibility */
+            scrollbar-width: thin; 
+            scrollbar-color: #555 var(--dark-gray-color);
+            position: absolute; /* Ensure it's positioned relative to search input container */
+            width: 100%; /* Take full width of parent */
+            left: 0;
+            /* top: 100%; Removed, as Tailwind mt-2 handles this */
+        }
+        .search-suggestions.visible { /* Added class for JS to control visibility */
+            display: block;
+        }
         .suggestion-item { padding: 10px 15px; cursor: pointer; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-color, #333); transition: background-color 0.2s ease; color: inherit; text-decoration: none; }
         .suggestion-item:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
         .suggestion-item:last-child { border-bottom: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
-        .suggestion-item:hover { background-color: var(--light-gray-color, #222); }
+        .suggestion-item:hover, .suggestion-item.active { /* Added .active for keyboard navigation */
+            background-color: var(--light-gray-color, #222); 
+        }
         .suggestion-item img { width: 40px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid #444; }
         .suggestion-item-info { display: flex; flex-direction: column; overflow: hidden; flex-grow: 1; }
         .suggestion-item-title { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color, #e0e0e0); }
@@ -154,7 +174,7 @@
                         type="text" 
                         id="search-input-desktop" 
                         placeholder="Tìm kiếm phim, anime..." 
-                        class="search-input" 
+                        class="search-input"
                         aria-label="Tìm kiếm" 
                         autocomplete="off" 
                         aria-haspopup="listbox" 
@@ -167,7 +187,7 @@
                     <div 
                         id="search-suggestions-desktop" 
                         role="listbox" 
-                        class="search-suggestions" 
+                        class="search-suggestions mt-2"
                         aria-label="Gợi ý tìm kiếm"
                     >
                         <div class="no-suggestions-placeholder">Nhập để tìm kiếm...</div>
@@ -192,7 +212,7 @@
         </div>
 
         <div id="mobile-search-container" class="md:hidden hidden mt-3 px-4 pb-3 relative">
-            <div class="search-container">
+            <div class="search-container relative">
                 <label for="search-input-mobile" class="sr-only">Tìm kiếm phim hoặc phim bộ</label>
                 <input 
                     type="text" 
@@ -205,13 +225,13 @@
                     aria-controls="search-suggestions-mobile" 
                     aria-expanded="false"
                 >
-                <span class="search-icon" aria-hidden="true">
+                <span class="search-icon" aria-hidden="true"> 
                     <i class="fas fa-search"></i>
                 </span>
                 <div 
                     id="search-suggestions-mobile" 
                     role="listbox" 
-                    class="search-suggestions" 
+                    class="search-suggestions mt-2" 
                     aria-label="Gợi ý tìm kiếm di động"
                 >
                     <div class="no-suggestions-placeholder">Nhập để tìm kiếm...</div>
@@ -439,6 +459,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
 
+    <script src="js/searchUtils.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Elements
@@ -458,26 +479,6 @@
             const genreDropdown = document.getElementById('genre-dropdown');
             const genreButton = document.getElementById('genre-filter-button');
             const filterControls = document.getElementById('filter-controls');
-
-            let debounceTimer;
-
-            // Debounce Function
-            const debounce = (func, wait) => {
-                return (...args) => { 
-                    clearTimeout(debounceTimer); 
-                    debounceTimer = setTimeout(() => { 
-                        func.apply(this, args); 
-                    }, wait); 
-                };
-            };
-
-            // Highlight Search Term
-            const highlightTerm = (text, term) => {
-                if (!term || !text) return text || '';
-                const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const regex = new RegExp(`(${escapedTerm})`, 'gi');
-                return text.replace(regex, `<span class="search-highlight">$1</span>`);
-            };
 
             // Mobile Menu
             const openMobileMenu = () => { 
@@ -508,7 +509,9 @@
                     searchInputMobile?.focus();
                 } else {
                     mobileSearchContainer?.classList.remove('active');
-                    hideAllSearchSuggestions();
+                    if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.hideAllSearchSuggestions === 'function') {
+                        SearchUtils.hideAllSearchSuggestions();
+                    }
                 }
                 searchIconMobile.setAttribute('aria-expanded', String(!isHidden)); 
             });
@@ -522,29 +525,16 @@
                 // Update global filter state if it exists
                 if (typeof window.filterAndSortContent === 'function') {
                     window.currentFilters.search = term.toLowerCase();
-                    debounce(() => window.filterAndSortContent(), 300)();
+                    SearchUtils.debounce(() => window.filterAndSortContent(), 300)();
                 }
                 
-                // Show search suggestions
-                debounce(() => {
-                    if (typeof displaySearchSuggestions === 'function') {
-                        displaySearchSuggestions(term, inputEl, suggestionsEl);
-                    } else {
-                        console.warn("Function 'displaySearchSuggestions' not found. Using fallback.");
-                        fallbackDisplaySuggestions(term, inputEl, suggestionsEl);
-                    }
+                // Use unified search utility
+                SearchUtils.debounce(() => {
+                    const allItems = [...(window.allMovies || []), ...(window.allSeries || [])];
+                    SearchUtils.displaySearchSuggestions(term, inputEl, suggestionsEl, allItems, {
+                        maxResults: 8
+                    });
                 }, 150)();
-            };
-            
-            // Fallback function if the main one isn't loaded yet
-            const fallbackDisplaySuggestions = (term, inputEl, suggestionsEl) => {
-                if (!suggestionsEl) return;
-                if (!term) {
-                    suggestionsEl.classList.remove('visible');
-                    return;
-                }
-                suggestionsEl.innerHTML = `<div class="no-suggestions-placeholder">Đang tải gợi ý tìm kiếm...</div>`;
-                suggestionsEl.classList.add('visible');
             };
             
             searchInputDesktop?.addEventListener('input', handleSearchInput);
@@ -562,39 +552,34 @@
             // Click Outside Logic
             document.addEventListener('click', (event) => {
                 const target = event.target;
-                const searchContainers = document.querySelectorAll('.search-container');
-                let isInsideSearch = false;
                 
-                searchContainers.forEach(container => {
-                    if (container.contains(target)) {
-                        isInsideSearch = true;
-                    }
-                });
-                
+                // Check if click is inside genre filter elements
                 const isInsideGenreFilter = genreDropdown?.contains(target) || genreButton?.contains(target);
+                // Check if click is inside main filter controls section
                 const isInsideFilterControls = filterControls?.contains(target);
+                // Check if click is on filter toggle icons
                 const isFilterIcon = navFilterIcon?.contains(target) || mobileNavFilterIcon?.contains(target);
+                
+                // Check if click is inside search areas
+                const isInsideDesktopSearch = searchInputDesktop?.contains(target) || searchSuggestionsDesktop?.contains(target);
+                const isInsideMobileSearch = searchInputMobile?.contains(target) || searchSuggestionsMobile?.contains(target) || searchIconMobile?.contains(target);
 
-                if (!isInsideSearch) {
-                    // Hide search suggestions when clicking outside
-                    if (typeof hideAllSearchSuggestions === 'function') {
-                        hideAllSearchSuggestions();
-                    } else {
-                        // Fallback
-                        document.querySelectorAll('.search-suggestions').forEach(el => {
-                            el.classList.remove('visible');
-                        });
-                    }
+                // Hide Filter Controls when clicking outside (unless it's the filter icon)
+                if (filterControls && !filterControls.classList.contains('hidden') && !isInsideFilterControls && !isFilterIcon) { 
+                    filterControls.classList.add('hidden'); 
                 }
                 
+                // Hide Genre Dropdown if click is outside genre filter elements
                 if (!isInsideGenreFilter && genreDropdown && !genreDropdown.classList.contains('hidden')) { 
                     genreDropdown.classList.add('hidden'); 
                     genreButton?.setAttribute('aria-expanded', 'false'); 
                 }
-                
-                // Hide Filter Controls when clicking outside (unless it's the filter icon)
-                if (filterControls && !filterControls.classList.contains('hidden') && !isInsideFilterControls && !isFilterIcon) { 
-                    filterControls.classList.add('hidden'); 
+
+                // Hide Search Suggestions if click is outside search areas
+                if (!isInsideDesktopSearch && !isInsideMobileSearch) {
+                    if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.hideAllSearchSuggestions === 'function') {
+                        SearchUtils.hideAllSearchSuggestions();
+                    }
                 }
             });
 
@@ -609,15 +594,9 @@
                         window.filterAndSortContent();
                     }
                     
-                    if (typeof hideAllSearchSuggestions === 'function') {
-                        hideAllSearchSuggestions();
-                    } else {
-                        // Fallback
-                        document.querySelectorAll('.search-suggestions').forEach(el => {
-                            el.classList.remove('visible');
-                        });
+                    if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.hideAllSearchSuggestions === 'function') {
+                        SearchUtils.hideAllSearchSuggestions();
                     }
-                    
                     event.target.blur();
                 }
             };
@@ -664,8 +643,8 @@
             mobileNavFilterIcon?.addEventListener('click', handleFilterIconClick);
 
             // Update footer year
-            const footerYear = document.getElementById('footer-year');
-            if (footerYear) footerYear.textContent = new Date().getFullYear();
+            // const footerYear = document.getElementById('footer-year'); // Already handled by separate script block
+            // if (footerYear) footerYear.textContent = new Date().getFullYear();
         });
     </script>
     <script src="js/script.js" defer></script>

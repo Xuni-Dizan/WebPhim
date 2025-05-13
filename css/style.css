@@ -1095,14 +1095,14 @@ select option {
 }
 
 .search-input {
-    background-color: rgba(35, 35, 35, 0.7);
+    background-color: rgba(35, 35, 35, 0.8);
     border: 1px solid var(--border-color);
     color: var(--text-color);
     font-size: 0.95rem;
     border-radius: 50px;
     padding: 0.65rem 1rem 0.65rem 2.75rem;
     width: 100%;
-    transition: all var(--hover-transition-duration) ease;
+    transition: all 0.25s ease;
     backdrop-filter: blur(5px);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -1112,7 +1112,7 @@ select option {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
     outline: none;
-    width: calc(100% + 20px);
+    width: calc(100% + 30px);
 }
 
 .search-icon {
@@ -1121,7 +1121,7 @@ select option {
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-muted-color);
-    transition: color var(--hover-transition-duration) ease;
+    transition: color 0.25s ease;
     font-size: 0.9rem;
     pointer-events: none;
 }
@@ -1140,14 +1140,16 @@ select option {
     backdrop-filter: blur(10px);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
-    max-height: 360px;
+    max-height: 400px;
     overflow-y: auto;
     z-index: 100;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-    transition: all 0.2s ease-in-out;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    transition: all 0.25s ease-in-out;
     opacity: 0;
     transform: translateY(10px);
     pointer-events: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) rgba(0, 0, 0, 0.2);
 }
 
 .search-suggestions.visible {
@@ -1156,7 +1158,6 @@ select option {
     pointer-events: auto;
 }
 
-/* Custom scrollbar for suggestions */
 .search-suggestions::-webkit-scrollbar {
     width: 6px;
 }
@@ -1179,35 +1180,40 @@ select option {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 15px;
+    padding: 12px 15px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    transition: background-color var(--hover-transition-duration) ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
     cursor: pointer;
     text-decoration: none;
     color: inherit;
-}
-
-.suggestion-item:hover {
-    background-color: rgba(60, 60, 60, 0.7);
+    position: relative;
 }
 
 .suggestion-item:last-child {
     border-bottom: none;
 }
 
+.suggestion-item.active,
+.suggestion-item:hover {
+    background-color: rgba(70, 70, 70, 0.7);
+    transform: translateX(5px);
+}
+
 .suggestion-item img {
-    width: 40px;
-    height: 60px;
+    width: 45px;
+    height: 68px;
     object-fit: cover;
     border-radius: var(--border-radius-sm);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform var(--hover-transition-duration) ease;
+    transition: transform 0.2s ease, border-color 0.2s ease;
     flex-shrink: 0;
 }
 
-.suggestion-item:hover img {
+.suggestion-item:hover img,
+.suggestion-item.active img {
     transform: scale(1.05);
     border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
 }
 
 .suggestion-item-info {
@@ -1224,37 +1230,48 @@ select option {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    transition: color var(--hover-transition-duration) ease;
+    transition: color 0.2s ease;
+    margin-bottom: 4px;
+    line-height: 1.2;
 }
 
-.suggestion-item:hover .suggestion-item-title {
+.suggestion-item:hover .suggestion-item-title,
+.suggestion-item.active .suggestion-item-title {
     color: var(--primary-color);
 }
 
 .suggestion-item-meta {
     display: flex;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-top: 4px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-muted-color);
 }
 
 .suggestion-item-year,
-.suggestion-item-type {
+.suggestion-item-type,
+.suggestion-item-rating {
     display: flex;
     align-items: center;
+    white-space: nowrap;
 }
 
 .suggestion-item-meta i {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     margin-right: 4px;
     opacity: 0.7;
+}
+
+.suggestion-item-rating {
+    color: var(--gold-accent);
+    font-weight: 600;
 }
 
 .search-highlight {
     font-weight: 600;
     color: var(--highlight-color);
-    background-color: rgba(250, 204, 21, 0.08);
+    background-color: rgba(250, 204, 21, 0.1);
     padding: 0 2px;
     border-radius: 2px;
     box-decoration-break: clone;
@@ -1267,6 +1284,37 @@ select option {
     color: var(--text-muted-color);
     font-style: italic;
     font-size: 0.9rem;
+}
+
+.suggestion-item-badges {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.suggestion-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: var(--border-radius-round);
+    font-size: 0.7rem;
+}
+
+.suggestion-badge-hot {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.suggestion-badge-new {
+    background-color: var(--green-accent);
+    color: white;
+}
+
+.suggestion-badge-trending {
+    background-color: var(--gold-accent);
+    color: black;
 }
 
 /* Mobile search UI */
@@ -1288,6 +1336,23 @@ select option {
     .search-icon {
         left: 0.9rem;
         font-size: 0.85rem;
+    }
+    
+    .suggestion-item {
+        padding: 10px 12px;
+    }
+    
+    .suggestion-item-title {
+        font-size: 0.85rem;
+    }
+    
+    .suggestion-item-meta {
+        font-size: 0.7rem;
+    }
+    
+    .suggestion-item img {
+        width: 40px;
+        height: 60px;
     }
 }
 
@@ -1729,4 +1794,111 @@ header, main > *:not(#player-section):not(#series-content-section), footer, #scr
 @media (max-width: 1024px) { /* lg breakpoint */
     /* Adjustments for large screens if needed */
      #hero-title, .hero-content-anime h1, .hero-2d3d h1 { font-size: 2.75rem; /* Adjusted from text-4xl/5xl */ }
+}
+/* style.css - ADD THESE STYLES AT THE END OR IN A RELEVANT SECTION */
+
+/* ===============================
+   HERO BUTTONS - ENHANCED STYLES
+   =============================== */
+
+   .hero-button-container {
+    /* Styles for the container are already handled by Tailwind in index.html */
+    /* e.g., display: flex; flex-wrap: wrap; gap: 0.75rem (gap-3); */
+}
+
+/* Base style for both hero buttons */
+.hero-play-button,
+.hero-detail-button {
+    display: inline-flex; /* Ensures icon and text align well */
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.75rem; /* py-3 px-7 equivalent for more presence */
+    font-family: var(--heading-font, 'Montserrat', sans-serif); /* Use heading font */
+    font-size: var(--text-base, 1rem); /* Tailwind 'text-base' */
+    font-weight: 600; /* Tailwind 'font-semibold' */
+    border-radius: var(--border-radius-md, 8px); /* Slightly more rounded */
+    text-transform: uppercase; /* Make text uppercase for a bolder look */
+    letter-spacing: 0.05em; /* Add some letter spacing */
+    cursor: pointer;
+    text-decoration: none; /* Remove underline from <a> tags if used */
+    transition: all 0.25s var(--animation-timing, cubic-bezier(0.16, 1, 0.3, 1));
+    position: relative;
+    overflow: hidden; /* For potential pseudo-element effects */
+    z-index: 1;
+    border: none; /* Remove default border if button element is used */
+}
+
+.hero-play-button i,
+.hero-detail-button i {
+    margin-right: 0.6rem; /* Space between icon and text */
+    font-size: 1em; /* Icon size relative to button font size */
+}
+
+/* Primary Hero Button (Xem Ngay) */
+.hero-play-button {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover-color) 100%);
+    color: var(--text-bright-color, #ffffff);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(229, 9, 20, 0.3); /* Base shadow + accent glow */
+}
+
+.hero-play-button:hover,
+.hero-play-button:focus-visible {
+    background: linear-gradient(135deg, var(--primary-hover-color) 0%, var(--primary-color) 100%);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25), 0 3px 10px rgba(229, 9, 20, 0.4);
+}
+
+/* Secondary Hero Button (Chi Tiết) */
+.hero-detail-button {
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+    color: var(--text-bright-color, #ffffff);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.hero-detail-button:hover,
+.hero-detail-button:focus-visible {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Optional: Add a subtle shine effect on hover for both buttons */
+.hero-play-button::before,
+.hero-detail-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%; /* Start off-screen */
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: skewX(-25deg);
+    z-index: 1; /* Above background but below text */
+    transition: left 0.5s ease-in-out;
+}
+
+.hero-play-button:hover::before,
+.hero-detail-button:hover::before {
+    left: 150%; /* Move across the button */
+}
+
+/* Ensure text and icon are above the shine effect */
+.hero-play-button span, .hero-play-button i,
+.hero-detail-button span, .hero-detail-button i {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* Ensure focus-visible styles from style.css apply correctly if needed */
+/* If the base a:focus-visible or button:focus-visible in style.css is sufficient, 
+   you might not need to repeat them here, but good to keep in mind. */
+.hero-play-button:focus-visible,
+.hero-detail-button:focus-visible {
+    outline: 2px solid var(--primary-hover-color); /* Example focus outline */
+    outline-offset: 2px;
 }

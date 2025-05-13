@@ -74,8 +74,15 @@
         header nav a { color: var(--text-muted-color); transition: color 0.3s ease, border-color 0.3s ease; padding-bottom: 2px; border-bottom: 2px solid transparent; font-weight: 500; }
         header nav a:hover { color: var(--text-color); }
         header nav a.active-link-anime { color: var(--anime-accent); font-weight: 600; border-bottom-color: var(--anime-accent); }
-        header input[type="text"] { background-color: var(--light-gray-color); color: var(--text-color); border: 1px solid var(--border-color); transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease; }
-        header input[type="text"]:focus { border-color: var(--anime-accent); box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.3); background-color: #2a2a2a; outline: none; }
+        
+        /* Unified Search Input Styling - applied via .search-input class in style.css or here if specific override needed */
+        /* header input[type="text"] { ... } /* Removed specific styling here, rely on .search-input from style.css */
+        
+        /* Focus specific to anime page's accent color */
+        #search-input-desktop-anime:focus, #search-input-mobile-anime:focus { 
+            border-color: var(--anime-accent) !important; /* Use !important if needed to override general .search-input:focus */
+            box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.3) !important; 
+        }
         header button, header a.filter-icon-button { color: var(--text-muted-color); transition: color 0.3s ease, background-color 0.3s ease; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
         header button:hover, header a.filter-icon-button:hover { color: var(--text-color); background-color: var(--light-gray-color); }
 
@@ -86,12 +93,12 @@
         /* Anime Filter Section Transition */
         #anime-filter-section {
             transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, padding 0.5s ease-in-out, margin 0.5s ease-in-out, border-width 0.5s ease-in-out;
-            overflow: visible; /* Changed from hidden to visible */ max-height: 0; opacity: 0; visibility: hidden; padding-top: 0; padding-bottom: 0; margin-bottom: 0; border-width: 0;
+            overflow: visible; max-height: 0; opacity: 0; visibility: hidden; padding-top: 0; padding-bottom: 0; margin-bottom: 0; border-width: 0;
             background-color: var(--light-gray-color); border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border: 1px solid var(--border-color);
-            position: relative; /* Added relative positioning for z-index context */
-            z-index: 10; /* Ensure filter section itself is above grid */
+            position: relative; 
+            z-index: 10; 
         }
-        #anime-filter-section:not(.hidden) { max-height: 1000px; opacity: 1; visibility: visible; padding-top: 1rem; padding-bottom: 1rem; margin-bottom: 1.5rem; border-width: 1px; overflow: visible; /* Ensure overflow is visible when open */ }
+        #anime-filter-section:not(.hidden) { max-height: 1000px; opacity: 1; visibility: visible; padding-top: 1rem; padding-bottom: 1rem; margin-bottom: 1.5rem; border-width: 1px; overflow: visible; }
         #anime-filter-section select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238c8c8c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; appearance: none; -webkit-appearance: none; -moz-appearance: none;
@@ -107,8 +114,8 @@
             width: 100%;
             max-height: 240px;
             overflow-y: auto;
-            z-index: 50; /* INCREASED z-index significantly */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Adjusted shadow */
+            z-index: 50; 
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
             opacity: 0; visibility: hidden; transform: translateY(-10px);
             transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out;
             scrollbar-width: thin; scrollbar-color: #555 var(--dark-gray-color);
@@ -163,11 +170,30 @@
         .skeleton-text { height: 12px; width: 50%; margin: 0 12px 8px 12px; border-radius: 4px; background-color: #444; }
 
         /* Search Suggestions Styles */
-        .search-suggestions { background-color: var(--dark-gray-color, #181818); border: 1px solid var(--border-color, #333); border-radius: 8px; max-height: 350px; overflow-y: auto; z-index: 100; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); display: none; scrollbar-width: thin; scrollbar-color: #555 var(--dark-gray-color); position: absolute; width: 100%; left: 0; }
+        .search-suggestions { 
+            background-color: var(--dark-gray-color, #181818); 
+            border: 1px solid var(--border-color, #333); 
+            border-radius: 8px; 
+            max-height: 350px; 
+            overflow-y: auto; 
+            z-index: 100; 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); 
+            display: none; 
+            scrollbar-width: thin; 
+            scrollbar-color: #555 var(--dark-gray-color); 
+            position: absolute; 
+            width: 100%; 
+            left: 0; 
+        }
+        .search-suggestions.visible {
+            display: block;
+        }
         .suggestion-item { padding: 10px 15px; cursor: pointer; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-color, #333); transition: background-color 0.2s ease; color: inherit; text-decoration: none; }
         .suggestion-item:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
         .suggestion-item:last-child { border-bottom: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
-        .suggestion-item:hover { background-color: var(--light-gray-color, #222); }
+        .suggestion-item:hover, .suggestion-item.active { 
+             background-color: var(--light-gray-color, #222); 
+        }
         .suggestion-item img { width: 40px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid #444; }
         .suggestion-item-info { display: flex; flex-direction: column; overflow: hidden; flex-grow: 1; }
         .suggestion-item-title { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color, #e0e0e0); }
@@ -192,6 +218,10 @@
         main { flex-grow: 1; }
 
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
+    <script src="../js/searchUtils.js"></script> 
+    <script src="../js/anime.js" defer></script>
 </head>
 <body class="bg-secondary text-text-color font-sans">
 
@@ -211,13 +241,17 @@
                 <a href="#anime-filter-section" id="nav-filter-icon-anime" class="filter-icon-button" aria-label="Mở bộ lọc Anime">
                     <i class="fas fa-filter"></i>
                 </a>
-                <div class="relative">
+                <div class="relative search-container"> 
                     <label for="search-input-desktop-anime" class="sr-only">Tìm kiếm Anime</label>
-                    <input type="text" id="search-input-desktop-anime" placeholder="Tìm Anime..." class="bg-light-gray text-white px-4 py-1.5 rounded-full focus:outline-none focus:ring-2 focus:ring-anime-accent focus:bg-gray-700 transition duration-300 w-40 sm:w-48 md:w-56 lg:w-64 text-sm" aria-label="Tìm kiếm Anime" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-desktop-anime" aria-expanded="false">
-                    <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
-                        <i class="fas fa-search text-xs"></i>
+                    <input type="text" id="search-input-desktop-anime" placeholder="Tìm Anime..." 
+                           class="search-input" 
+                           aria-label="Tìm kiếm Anime" autocomplete="off" 
+                           aria-haspopup="listbox" aria-controls="search-suggestions-desktop-anime" 
+                           aria-expanded="false">
+                    <span class="search-icon" aria-hidden="true"> 
+                        <i class="fas fa-search"></i>
                     </span>
-                    <div id="search-suggestions-desktop-anime" role="listbox" class="search-suggestions mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm Anime">
+                    <div id="search-suggestions-desktop-anime" role="listbox" class="search-suggestions mt-2" aria-label="Gợi ý tìm kiếm Anime">
                         <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
                     </div>
                 </div>
@@ -240,13 +274,19 @@
         </div>
 
         <div id="mobile-search-container-anime" class="md:hidden hidden mt-3 px-4 pb-3 relative">
-            <label for="search-input-mobile-anime" class="sr-only">Tìm kiếm Anime</label>
-            <input type="text" id="search-input-mobile-anime" placeholder="Tìm kiếm Anime..." class="bg-light-gray text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-anime-accent w-full text-sm" aria-label="Tìm kiếm Anime trên di động" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-mobile-anime" aria-expanded="false">
-            <span class="absolute right-7 top-1/2 transform -translate-y-1/2 text-gray-400 -mt-px" aria-hidden="true">
-                <i class="fas fa-search text-xs"></i>
-            </span>
-            <div id="search-suggestions-mobile-anime" role="listbox" class="search-suggestions mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm Anime di động">
-                 <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
+            <div class="search-container relative"> 
+                <label for="search-input-mobile-anime" class="sr-only">Tìm kiếm Anime</label>
+                <input type="text" id="search-input-mobile-anime" placeholder="Tìm kiếm Anime..." 
+                       class="search-input" 
+                       aria-label="Tìm kiếm Anime trên di động" autocomplete="off" 
+                       aria-haspopup="listbox" aria-controls="search-suggestions-mobile-anime" 
+                       aria-expanded="false">
+                <span class="search-icon" aria-hidden="true"> 
+                    <i class="fas fa-search"></i>
+                </span>
+                <div id="search-suggestions-mobile-anime" role="listbox" class="search-suggestions mt-2" aria-label="Gợi ý tìm kiếm Anime di động">
+                     <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
+                </div>
             </div>
         </div>
     </header>
@@ -387,8 +427,6 @@
     <button id="scroll-to-top" class="hidden" aria-label="Cuộn lên đầu trang">
         <i class="fas fa-arrow-up"></i>
     </button>
-
-    <script src="../js/anime.js" defer></script>
 
 </body>
 </html>

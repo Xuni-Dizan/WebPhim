@@ -610,28 +610,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    /**
-     * Handles input events on search fields.
-     * @param {Event} event The input event.
-     */
+    // Handle search functionality 
     const handleAnimeSearchInput = (event) => {
-        const searchTerm = event.target.value.trim().toLowerCase();
-        const inputElement = event.target;
-        const suggestionsContainer = inputElement === searchInputDesktop ? suggestionsDesktop : suggestionsMobile;
+        const inputEl = event.target;
+        const suggestionsEl = inputEl === searchInputDesktop ? suggestionsDesktop : suggestionsMobile;
+        const term = inputEl.value.trim();
+        
+        // Update global filter state
+        currentAnimeFilters.search = term.toLowerCase();
+        SearchUtils.debounce(() => applyAnimeFiltersAndRender(), 300)();
+        
+        // Use unified search utility for suggestions
+        SearchUtils.debounce(() => {
+            // Display search suggestions
+            SearchUtils.displaySearchSuggestions(term, inputEl, suggestionsEl, allAnimeData, {
+                maxResults: 8
+            });
+        }, 150)();
+    };
 
-        window.currentAnimeSearchTerm = searchTerm; // Update global search term
-        currentAnimeFilters.search = searchTerm; // Update filter state
-
-        // Debounce main grid filtering
-        debounceAnimeFilter(applyAnimeFiltersAndRender, 300)();
-
-        // Show/hide suggestions with a shorter debounce
-        debounceAnimeSearch(() => displayAnimeSearchSuggestions(searchTerm, inputElement, suggestionsContainer), 150)();
+    // Handle search form submission
+    const handleAnimeSearchSubmit = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            const searchTerm = event.target.value.trim();
+            
+            // Update filter and apply
+            currentAnimeFilters.search = searchTerm.toLowerCase();
+            applyAnimeFiltersAndRender();
+            
+            // Hide suggestions and blur input
+            hideAllAnimeSearchSuggestions();
+            event.target.blur();
+        }
     };
 
     // Attach input listeners
     searchInputDesktop?.addEventListener('input', handleAnimeSearchInput);
     searchInputMobile?.addEventListener('input', handleAnimeSearchInput);
+    searchInputDesktop?.addEventListener('keydown', handleAnimeSearchSubmit);
+    searchInputMobile?.addEventListener('keydown', handleAnimeSearchSubmit);
 
     // Hide suggestions on click outside
     document.addEventListener('click', (event) => {

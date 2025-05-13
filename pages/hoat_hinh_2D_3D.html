@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../js/hoat_hinh_2D_3D.js"></script>
+    
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
@@ -194,6 +194,9 @@
             left: 0;
             /* Top position handled by Tailwind classes */
         }
+        .search-suggestions.visible { /* Added class for JS to control visibility */
+            display: block;
+        }
         .suggestion-item {
             padding: 10px 15px;
             cursor: pointer;
@@ -207,7 +210,9 @@
         }
         .suggestion-item:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
         .suggestion-item:last-child { border-bottom: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
-        .suggestion-item:hover { background-color: var(--light-gray-color, #222); }
+        .suggestion-item:hover, .suggestion-item.active { /* Added .active for keyboard navigation */
+            background-color: var(--light-gray-color, #222); 
+        }
         .suggestion-item img { width: 40px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid #444; }
         .suggestion-item-info { display: flex; flex-direction: column; overflow: hidden; flex-grow: 1; }
         .suggestion-item-title { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color, #e0e0e0); }
@@ -218,6 +223,10 @@
         /* --- KẾT THÚC: Kiểu Gợi ý Tìm kiếm --- */
 
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
+    <script src="../js/searchUtils.js"></script>
+    <script src="../js/hoat_hinh_2D_3D.js" defer></script>
 </head>
 <body class="bg-secondary text-white font-sans">
 
@@ -237,13 +246,17 @@
                 <a href="#filters-2d3d" id="nav-filter-icon" class="filter-icon-button" aria-label="Mở bộ lọc">
                     <i class="fas fa-filter"></i>
                 </a>
-                <div class="relative">
+                <div class="relative search-container"> 
                     <label for="search-input-desktop" class="sr-only">Tìm kiếm phim hoặc phim bộ</label>
-                    <input type="text" id="search-input-desktop" placeholder="Tìm kiếm..." class="bg-light-gray text-white px-4 py-1.5 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:bg-gray-700 transition duration-300 w-40 sm:w-48 md:w-56 lg:w-64 text-sm" aria-label="Tìm kiếm" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-desktop" aria-expanded="false">
-                    <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true">
-                        <i class="fas fa-search text-xs"></i>
+                    <input type="text" id="search-input-desktop" placeholder="Tìm kiếm..." 
+                           class="search-input" 
+                           aria-label="Tìm kiếm" autocomplete="off" 
+                           aria-haspopup="listbox" aria-controls="search-suggestions-desktop" 
+                           aria-expanded="false">
+                    <span class="search-icon" aria-hidden="true"> 
+                        <i class="fas fa-search"></i>
                     </span>
-                    <div id="search-suggestions-desktop" role="listbox" class="search-suggestions search-suggestions-desktop absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm">
+                    <div id="search-suggestions-desktop" role="listbox" class="search-suggestions search-suggestions-desktop mt-2" aria-label="Gợi ý tìm kiếm"> 
                         <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
                     </div>
                 </div>
@@ -266,13 +279,19 @@
         </div>
 
         <div id="mobile-search-container" class="md:hidden hidden mt-3 px-4 pb-3 relative">
-            <label for="search-input-mobile" class="sr-only">Tìm kiếm phim hoặc phim bộ</label>
-            <input type="text" id="search-input-mobile" placeholder="Tìm kiếm phim, phim bộ..." class="bg-light-gray text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary w-full text-sm" aria-label="Tìm kiếm trên di động" autocomplete="off" aria-haspopup="listbox" aria-controls="search-suggestions-mobile" aria-expanded="false">
-            <span class="absolute right-7 top-1/2 transform -translate-y-1/2 text-gray-400 -mt-px" aria-hidden="true">
-                <i class="fas fa-search text-xs"></i>
-            </span>
-            <div id="search-suggestions-mobile" role="listbox" class="search-suggestions search-suggestions-mobile absolute mt-2 w-full rounded-md shadow-lg bg-dark-gray ring-1 ring-black ring-opacity-5 z-30" aria-label="Gợi ý tìm kiếm di động">
-                 <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
+            <div class="search-container relative"> 
+                <label for="search-input-mobile" class="sr-only">Tìm kiếm phim hoặc phim bộ</label>
+                <input type="text" id="search-input-mobile" placeholder="Tìm kiếm phim, phim bộ..." 
+                       class="search-input" 
+                       aria-label="Tìm kiếm trên di động" autocomplete="off" 
+                       aria-haspopup="listbox" aria-controls="search-suggestions-mobile" 
+                       aria-expanded="false">
+                <span class="search-icon" aria-hidden="true"> 
+                    <i class="fas fa-search"></i>
+                </span>
+                <div id="search-suggestions-mobile" role="listbox" class="search-suggestions search-suggestions-mobile mt-2" aria-label="Gợi ý tìm kiếm di động"> 
+                     <div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Nhập để tìm kiếm...</div>
+                </div>
             </div>
         </div>
     </header>
@@ -408,9 +427,6 @@
         }
     </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Elements
@@ -425,125 +441,63 @@
             const searchSuggestionsDesktop = document.getElementById('search-suggestions-desktop');
             const searchInputMobile = document.getElementById('search-input-mobile');
             const searchSuggestionsMobile = document.getElementById('search-suggestions-mobile');
-            const navFilterIcon = document.getElementById('nav-filter-icon'); // Desktop filter icon
-            const mobileNavFilterIcon = document.getElementById('mobile-nav-filter-icon'); // Mobile filter icon
-            const genreDropdown = document.getElementById('genre-dropdown');
-            const genreButton = document.getElementById('genre-filter-button');
-            const filterControls = document.getElementById('filters-2d3d'); // Corrected ID
+            const navFilterIcon = document.getElementById('nav-filter-icon'); 
+            const mobileNavFilterIcon = document.getElementById('mobile-nav-filter-icon'); 
+            const filterControls = document.getElementById('filters-2d3d'); 
 
-            let debounceTimer;
-
-            // Debounce Function
-            const debounce = (func, wait) => {
-                return (...args) => { clearTimeout(debounceTimer); debounceTimer = setTimeout(() => { func.apply(this, args); }, wait); };
-            };
-
-            // Highlight Search Term
-            const highlightTerm = (text, term) => {
-                if (!term || !text) return text || '';
-                const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const regex = new RegExp(`(${escapedTerm})`, 'gi');
-                return text.replace(regex, `<span class="search-highlight">$1</span>`);
-            };
-
-            // Create Suggestion Item
-            const createSuggestionItem = (item, type, searchTerm) => {
-                 let detailPageUrl = '#';
-                 const itemType = item.itemType || type;
-                 if (itemType === 'anime-series' || itemType === 'anime-movie') {
-                     detailPageUrl = `animeDetails.html?id=${item.id}&type=${itemType}`;
-                 } else if (itemType === 'series') {
-                     detailPageUrl = `filmDetails_phimBo.html?id=${item.id}&type=series`;
-                 } else { // movies
-                     detailPageUrl = `filmDetail.html?id=${item.id}&type=movies`;
-                 }
-                const altText = `Poster nhỏ của ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${item.title || 'không có tiêu đề'}`;
-                const typeLabel = itemType === 'series' || itemType === 'anime-series' ? ' (Bộ)' : (itemType === 'anime-movie' ? ' (Anime Movie)' : '');
-                const posterSrc = item.posterUrl || 'https://placehold.co/40x60/111111/eeeeee?text=N/A';
-                const highlightedTitle = highlightTerm(item.title || 'Không có tiêu đề', searchTerm);
-
-                return `
-                    <a href="${detailPageUrl}" class="suggestion-item" data-item-id="${item.id}" data-item-type="${itemType}" role="option" aria-label="Xem chi tiết ${item.title || ''}${typeLabel}">
-                        <img src="${posterSrc}" alt="${altText}" loading="lazy" class="w-10 h-15 object-cover rounded border border-border-color" onerror="this.onerror=null; this.src='https://placehold.co/40x60/111111/eeeeee?text=Err'; this.alt='Lỗi tải ảnh nhỏ ${item.title || ''}';">
-                        <div class="suggestion-item-info">
-                            <span class="suggestion-item-title">${highlightedTitle}${typeLabel}</span>
-                            <span class="suggestion-item-year">${item.releaseYear || 'N/A'}</span>
-                        </div>
-                    </a>`;
-            };
-
-            // Display Search Suggestions
-            const displaySearchSuggestions = (searchTerm, inputElement, suggestionsContainer) => {
-                if (!suggestionsContainer) return;
-                const placeholder = suggestionsContainer.querySelector('.no-suggestions-placeholder');
-                if (!searchTerm) { suggestionsContainer.style.display = 'none'; inputElement.setAttribute('aria-expanded', 'false'); if (placeholder) placeholder.textContent = 'Nhập để tìm kiếm...'; return; }
-                if (placeholder) placeholder.textContent = 'Đang tìm...'; suggestionsContainer.innerHTML = '';
-                // Use the allFetchedItems from the main script for suggestions on this page
-                if (!window.allFetchedItems || window.allFetchedItems.length === 0) {
-                     suggestionsContainer.innerHTML = `<div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Dữ liệu phim 2D/3D đang tải hoặc không có sẵn...</div>`;
-                     suggestionsContainer.style.display = 'block';
-                     inputElement.setAttribute('aria-expanded', 'true');
-                     return;
-                }
-
-
-                const matchedItems = window.allFetchedItems // Use the filtered 2D/3D items
-                    .filter(item => item.title && item.title.toLowerCase().includes(searchTerm))
-                    .sort((a, b) => (a.title || '').localeCompare(b.title || ''))
-                    .slice(0, 7);
-
-                if (matchedItems.length > 0) { suggestionsContainer.innerHTML = matchedItems.map(item => createSuggestionItem(item, item.itemType, searchTerm)).join(''); suggestionsContainer.style.display = 'block'; inputElement.setAttribute('aria-expanded', 'true'); }
-                else { suggestionsContainer.innerHTML = `<div class="no-suggestions-placeholder p-3 text-sm text-text-muted text-center italic">Không tìm thấy kết quả nào.</div>`; suggestionsContainer.style.display = 'block'; inputElement.setAttribute('aria-expanded', 'true'); }
-            };
-
-            // Hide Search Suggestions
-            const hideAllSearchSuggestions = () => {
-                if (searchSuggestionsDesktop) { searchSuggestionsDesktop.style.display = 'none'; if(searchInputDesktop) searchInputDesktop.setAttribute('aria-expanded', 'false'); }
-                if (searchSuggestionsMobile) { searchSuggestionsMobile.style.display = 'none'; if(searchInputMobile) searchInputMobile.setAttribute('aria-expanded', 'false'); }
-            };
-            window.hideAllSearchSuggestions = hideAllSearchSuggestions;
-
-            // Mobile Menu
+            // Mobile Menu (Re-using logic from index.html, assuming IDs are consistent in header)
             const openMobileMenu = () => { mobileMenuPanel?.classList.remove('translate-x-full'); mobileMenuPanel?.classList.add('translate-x-0'); mobileMenuOverlay?.classList.remove('hidden'); mobileMenuButton?.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; };
             const closeMobileMenu = () => { mobileMenuPanel?.classList.remove('translate-x-0'); mobileMenuPanel?.classList.add('translate-x-full'); mobileMenuOverlay?.classList.add('hidden'); mobileMenuButton?.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; };
             mobileMenuButton?.addEventListener('click', openMobileMenu);
             closeMobileMenuButton?.addEventListener('click', closeMobileMenu);
             mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
 
-            // Mobile Search Toggle
-            searchIconMobile?.addEventListener('click', () => { const isHidden = mobileSearchContainer?.classList.toggle('hidden'); searchIconMobile.setAttribute('aria-expanded', String(!isHidden)); if (!isHidden) searchInputMobile?.focus(); else hideAllSearchSuggestions(); });
+            // Mobile Search Toggle (Re-using logic)
+            searchIconMobile?.addEventListener('click', () => { 
+                const isHidden = mobileSearchContainer?.classList.toggle('hidden'); 
+                if (!isHidden) {
+                    searchInputMobile?.focus();
+                } else {
+                    if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.hideAllSearchSuggestions === 'function') {
+                        SearchUtils.hideAllSearchSuggestions();
+                    }
+                }
+                searchIconMobile.setAttribute('aria-expanded', String(!isHidden)); 
+            });
 
-            // Search Input Handling
+            // Search Input Handling (Adapted for this page)
             const handleSearchInput = (event) => {
-                const inputEl = event.target; const suggestionsEl = inputEl === searchInputDesktop ? searchSuggestionsDesktop : searchSuggestionsMobile; const term = inputEl.value.trim().toLowerCase();
-                // Call global filter function directly if available
-                if (window.currentFilters && typeof window.applyFiltersAndRender === 'function') { // Check for the function from hoat_hinh_2D_3D.js
-                    window.currentFilters.search = term; // Update global search state
-                    debounce(() => window.applyFiltersAndRender(), 300)(); // Debounce grid update
-                } else { console.warn("Global state 'currentFilters' or function 'applyFiltersAndRender' not found."); }
-                debounce(() => displaySearchSuggestions(term, inputEl, suggestionsEl), 150)(); // Debounce suggestions
+                const inputEl = event.target; 
+                const suggestionsEl = inputEl === searchInputDesktop ? searchSuggestionsDesktop : searchSuggestionsMobile; 
+                const term = inputEl.value.trim();
+
+                if (window.currentFilters && typeof window.applyFiltersAndRender === 'function') {
+                    window.currentFilters.search = term.toLowerCase(); 
+                    SearchUtils.debounce(() => window.applyFiltersAndRender(), 300)(); 
+                } else { console.warn("Global state 'currentFilters' or function 'applyFiltersAndRender' not found for 2D/3D page."); }
+                
+                SearchUtils.debounce(() => {
+                    if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.displaySearchSuggestions === 'function') {
+                        SearchUtils.displaySearchSuggestions(term, inputEl, suggestionsEl, window.allFetchedItems || [], { 
+                            maxResults: 7 
+                        });
+                    }
+                }, 150)();
             };
             searchInputDesktop?.addEventListener('input', handleSearchInput);
             searchInputMobile?.addEventListener('input', handleSearchInput);
 
-            // Genre Dropdown Toggle - Note: This page doesn't have genre filter, but keeping the logic if added later
-            // genreButton?.addEventListener('click', (event) => { event.stopPropagation(); if (genreDropdown) { const isHidden = genreDropdown.classList.toggle('hidden'); genreButton.setAttribute('aria-expanded', String(!isHidden)); } });
-
-            // Click Outside Logic
+            // Click Outside Logic (Adapted)
             document.addEventListener('click', (event) => {
                 const target = event.target;
                 const isInsideDesktopSearch = searchInputDesktop?.contains(target) || searchSuggestionsDesktop?.contains(target);
                 const isInsideMobileSearch = searchInputMobile?.contains(target) || searchSuggestionsMobile?.contains(target) || searchIconMobile?.contains(target);
-                 // const isInsideGenreFilter = genreDropdown?.contains(target) || genreButton?.contains(target); // Uncomment if genre filter is added
-                 const isInsideFilterControls = filterControls?.contains(target); // Check if click is inside filter section
-                 const isFilterIcon = navFilterIcon?.contains(target) || mobileNavFilterIcon?.contains(target); // Check if click is on filter icon
-
-
-                if (!isInsideDesktopSearch && !isInsideMobileSearch) hideAllSearchSuggestions();
-                // if (!isInsideGenreFilter && genreDropdown && !genreDropdown.classList.contains('hidden')) { genreDropdown.classList.add('hidden'); genreButton?.setAttribute('aria-expanded', 'false'); } // Uncomment if genre filter is added
-                // Hide Filter Controls when clicking outside (unless it's the filter icon)
-                // This page's filter controls are always visible, so this logic is not needed here.
-                // if (filterControls && !filterControls.classList.contains('hidden') && !isInsideFilterControls && !isFilterIcon) { filterControls.classList.add('hidden'); }
+                
+                if (!isInsideDesktopSearch && !isInsideMobileSearch) {
+                    if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.hideAllSearchSuggestions === 'function') {
+                        SearchUtils.hideAllSearchSuggestions();
+                    }
+                }
             });
 
             // Search Submit (Enter Key)
@@ -551,19 +505,20 @@
                  if (event.key === 'Enter') {
                      event.preventDefault();
                      const searchTerm = event.target.value.trim();
-                     console.log(`Performing search for: "${searchTerm}" (Enter key)`);
-                     if (window.currentFilters && typeof window.applyFiltersAndRender === 'function') { // Check for the function from hoat_hinh_2D_3D.js
-                         window.currentFilters.search = searchTerm.toLowerCase(); // Update global state
-                         window.applyFiltersAndRender(); // Trigger filtering
-                     } else { console.warn("Global state 'currentFilters' or function 'applyFiltersAndRender' not found."); }
-                     hideAllSearchSuggestions();
+                     if (window.currentFilters && typeof window.applyFiltersAndRender === 'function') {
+                         window.currentFilters.search = searchTerm.toLowerCase(); 
+                         window.applyFiltersAndRender(); 
+                     } else { console.warn("Global state 'currentFilters' or function 'applyFiltersAndRender' not found for 2D/3D page."); }
+                     if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.hideAllSearchSuggestions === 'function') {
+                        SearchUtils.hideAllSearchSuggestions();
+                     }
                      event.target.blur();
                  }
             };
             searchInputDesktop?.addEventListener('keydown', handleSearchSubmit);
             searchInputMobile?.addEventListener('keydown', handleSearchSubmit);
 
-            // Sticky Header - No change needed
+            // Sticky Header (Re-using logic)
             let lastScrollTop = 0;
             window.addEventListener('scroll', function() {
                 let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -573,26 +528,29 @@
                 }
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
             }, false);
-
-            // Footer Year - No change needed
-            const footerYear = document.getElementById('footer-year'); if (footerYear) footerYear.textContent = new Date().getFullYear();
-
-            // --- Filter Icon Click Handler ---
-            // This page's filter controls are always visible, so the filter icon likely scrolls to the section.
+            
+            // Filter Icon Click Handler (Scroll to filters)
             const handleFilterIconClick = (event) => {
-                 event.preventDefault(); // Prevent default anchor jump
+                 event.preventDefault(); 
                  if (filterControls) {
-                     console.log("Scrolling to filter controls section.");
                      filterControls.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                 } else { console.error("Filter controls element not found."); }
-                 // Close mobile menu if open and clicked from mobile filter icon
+                 } else { console.error("Filter controls element 'filters-2d3d' not found."); }
                  if (mobileMenuPanel && !mobileMenuPanel.classList.contains('translate-x-full') && event.currentTarget === mobileNavFilterIcon) { closeMobileMenu(); }
             };
             navFilterIcon?.addEventListener('click', handleFilterIconClick);
             mobileNavFilterIcon?.addEventListener('click', handleFilterIconClick);
 
+            // Initialize keyboard navigation for search suggestions
+            if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.setupKeyboardNavigation === 'function') {
+                if (searchInputDesktop && searchSuggestionsDesktop) {
+                    SearchUtils.setupKeyboardNavigation(searchInputDesktop, searchSuggestionsDesktop);
+                }
+                if (searchInputMobile && searchSuggestionsMobile) {
+                    SearchUtils.setupKeyboardNavigation(searchInputMobile, searchSuggestionsMobile);
+                }
+            }
 
-            console.log("Inline header & search script (responsive) loaded and updated for 2D/3D page.");
+            console.log("Inline header & search script for 2D/3D page loaded and integrated with SearchUtils.");
         });
     </script>
     </body>

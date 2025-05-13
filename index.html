@@ -27,7 +27,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
 
@@ -36,27 +36,41 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        'sans': ['Inter', 'sans-serif'], // Use Inter font
+                        'sans': ['Inter', 'sans-serif'],
+                        'heading': ['Montserrat', 'sans-serif'],
                     },
                     colors: {
-                        'primary': '#e50914', // Netflix Red
-                        'secondary': '#141414', // Dark background
-                        'light-gray': '#222222', // Lighter gray for elements
-                        'dark-gray': '#181818', // Even darker gray for dropdowns...
-                        'text-muted': '#8c8c8c', // Muted text color
-                        'border-color': '#333333', // Subtle border color
-                        'highlight': '#facc15', // Yellow for highlighting search terms
-                        'primary-hover': '#f40612', // Brighter Red (Added for consistency)
+                        'primary': 'var(--primary-color)',
+                        'primary-hover': 'var(--primary-hover-color)',
+                        'secondary': 'var(--secondary-color)',
+                        'light-gray': 'var(--light-gray-color)',
+                        'dark-gray': 'var(--dark-gray-color)',
+                        'darker-gray': 'var(--darker-gray-color)',
+                        'text-color': 'var(--text-color)',
+                        'text-muted': 'var(--text-muted-color)',
+                        'text-bright': 'var(--text-bright-color)',
+                        'border-color': 'var(--border-color)',
+                        'highlight': 'var(--highlight-color)',
+                        'gold-accent': 'var(--gold-accent)',
+                        'blue-accent': 'var(--blue-accent)',
+                        'purple-accent': 'var(--purple-accent)',
+                        'green-accent': 'var(--green-accent)',
                     },
                     animation: {
-                         'pageFadeIn': 'pageFadeIn 0.6s ease-out forwards 0.2s',
-                         'shimmer': 'shimmer 1.5s infinite linear',
-                         'slideUpFadeIn': 'slideUpFadeIn 0.6s ease-out forwards',
+                         'pageFadeIn': 'pageFadeIn var(--animation-duration) var(--animation-timing) forwards',
+                         'shimmer': 'shimmer var(--shimmer-duration) infinite linear',
+                         'slideUpFadeIn': 'slideUpFadeIn var(--animation-duration) var(--animation-timing) forwards',
+                         'heroFadeIn': 'heroFadeIn 1s var(--animation-timing) forwards',
+                         'heroContentFadeIn': 'heroContentFadeIn 1.2s var(--animation-timing) forwards 0.3s',
+                         'pulse': 'pulse var(--pulse-duration) infinite ease-in-out',
                     },
                     keyframes: {
                          pageFadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
                          shimmer: { '0%': { left: '-150%' }, '100%': { left: '150%' } },
-                         slideUpFadeIn: { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } }
+                         slideUpFadeIn: { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+                         heroFadeIn: { from: { opacity: '0', transform: 'scale(0.98)' }, to: { opacity: '1', transform: 'scale(1)' } },
+                         heroContentFadeIn: { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+                         pulse: { '0%, 100%': { transform: 'scale(1)' }, '50%': { transform: 'scale(1.05)' } }
                     }
                 }
             }
@@ -64,90 +78,9 @@
     </script>
 
     <style>
-        /* Skeleton Loading Styles */
-        .skeleton { background-color: var(--skeleton-base-color, #333); border-radius: 4px; position: relative; overflow: hidden; }
-        .skeleton::before { content: ''; position: absolute; top: 0; left: -150%; height: 100%; width: 150%; background: linear-gradient(to right, transparent 0%, var(--skeleton-shine-color, #444) 50%, transparent 100%); animation: shimmer var(--shimmer-duration, 1.5s) infinite linear; }
-        .skeleton-image { height: 0; padding-bottom: 150%; margin-bottom: 0; border-radius: 0; }
-        .skeleton-title { height: 18px; width: 75%; margin-bottom: 8px; border-radius: 3px;}
-        .skeleton-text { height: 12px; width: 50%; border-radius: 3px;}
-        .movie-card-skeleton .p-3 { padding: 0.75rem; }
-
-        /* Search highlight style */
-        .search-highlight { font-weight: bold; color: var(--highlight-color, #facc15); background-color: var(--highlight-bg-color, rgba(250, 204, 21, 0.1)); padding: 0 2px; border-radius: 2px; }
-
-        /* Filter tag style */
-        .filter-tag { display: inline-flex; align-items: center; background-color: var(--light-gray-color, #222); color: var(--text-color, #e0e0e0); padding: 4px 10px; border-radius: 16px; font-size: 0.8rem; border: 1px solid var(--border-color, #333); cursor: pointer; transition: background-color 0.2s; }
-        .filter-tag:hover { background-color: #444; }
-        .filter-tag .remove-tag { margin-left: 6px; font-size: 1rem; color: var(--text-muted-color, #8c8c8c); transition: color 0.2s; line-height: 1; }
-        .filter-tag:hover .remove-tag { color: var(--primary-hover-color, #f40612); }
-
-        /* Slider container style */
-        .slider-container { margin-top: 1rem; }
-        .slider-label { display: block; font-size: 0.9rem; margin-bottom: 1.5rem; color: var(--text-muted-color, #8c8c8c); }
-
-        /* Logo Styling */
-        .header-logo-link { display: inline-block; transition: transform 0.3s ease, opacity 0.3s ease; flex-shrink: 0; }
-        .header-logo-link:hover { transform: scale(1.05); opacity: 0.9; }
-        .header-logo { height: 32px; max-height: 40px; width: auto; object-fit: contain; vertical-align: middle; }
-        @media (max-width: 640px) { .header-logo { height: 28px; } }
-
-        /* Filter Section Transition */
-        #filter-controls { transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, padding 0.5s ease-in-out, margin 0.5s ease-in-out, border-width 0.5s ease-in-out; overflow: hidden; max-height: 0; opacity: 0; visibility: hidden; padding-top: 0; padding-bottom: 0; margin-bottom: 0; border-width: 0; }
-        #filter-controls:not(.hidden) { max-height: 1000px; opacity: 1; visibility: visible; padding-top: 1rem; padding-bottom: 1rem; margin-bottom: 1rem; border-width: 1px; }
-
-        /* Search Suggestions Styles */
-        .search-suggestions { 
-            background-color: var(--dark-gray-color, #181818); 
-            border: 1px solid var(--border-color, #333); 
-            border-radius: 8px; 
-            max-height: 350px; 
-            overflow-y: auto; 
-            z-index: 100; 
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); 
-            display: none; /* Initially hidden, JS will manage visibility */
-            scrollbar-width: thin; 
-            scrollbar-color: #555 var(--dark-gray-color);
-            position: absolute; /* Ensure it's positioned relative to search input container */
-            width: 100%; /* Take full width of parent */
-            left: 0;
-            /* top: 100%; Removed, as Tailwind mt-2 handles this */
-        }
-        .search-suggestions.visible { /* Added class for JS to control visibility */
-            display: block;
-        }
-        .suggestion-item { padding: 10px 15px; cursor: pointer; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-color, #333); transition: background-color 0.2s ease; color: inherit; text-decoration: none; }
-        .suggestion-item:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
-        .suggestion-item:last-child { border-bottom: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
-        .suggestion-item:hover, .suggestion-item.active { /* Added .active for keyboard navigation */
-            background-color: var(--light-gray-color, #222); 
-        }
-        .suggestion-item img { width: 40px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid #444; }
-        .suggestion-item-info { display: flex; flex-direction: column; overflow: hidden; flex-grow: 1; }
-        .suggestion-item-title { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color, #e0e0e0); }
-        .suggestion-item-year { font-size: 0.75rem; color: var(--text-muted-color, #8c8c8c); }
-        .no-suggestions-placeholder { padding: 20px; text-align: center; color: var(--text-muted-color); font-style: italic; font-size: 0.9rem; }
-
-        /* --- START: Style for Filter Icon Button --- */
-        .filter-icon-button {
-            color: var(--text-muted-color);
-            transition: color 0.3s ease, background-color 0.3s ease;
-            padding: 0.5rem; /* p-2 */
-            border-radius: 9999px; /* rounded-full */
-            display: inline-flex; /* Ensure icon is centered */
-            align-items: center;
-            justify-content: center;
-            min-width: 40px; /* Ensure decent click area */
-            min-height: 40px;
-        }
-        .filter-icon-button:hover {
-            color: var(--text-color);
-            background-color: var(--light-gray-color); /* hover:bg-light-gray */
-        }
-        .filter-icon-button i {
-            font-size: 1.125rem; /* text-lg */
-        }
-        /* --- END: Style for Filter Icon Button --- */
-
+        /* Styles for skeleton, search highlight, filter tag, slider, logo, filter transition, search suggestions, filter icon button */
+        /* These should mostly be covered by style.css now, but can keep specific overrides if needed */
+        /* Styles from style.css will take precedence due to cascade if defined there */
     </style>
 </head>
 <body class="bg-secondary text-white font-sans">
@@ -159,14 +92,14 @@
             </a>
 
             <nav class="hidden md:flex flex-grow justify-center space-x-5 lg:space-x-7 items-center" aria-label="Điều hướng chính">
-                <a href="index.html" class="active-link-primary transition duration-300 font-medium" aria-current="page">Trang Chủ</a>
-                <a href="pages/anime.html" id="nav-anime" class="text-gray-300 hover:text-white transition duration-300 font-medium">Anime</a>
-                <a href="pages/hoat_hinh_2D_3D.html" id="nav-2d3d" class="text-gray-300 hover:text-white transition duration-300 font-medium">Phim 2D/3D</a>
+                <a href="index.html" class="active-link-primary" aria-current="page">Trang Chủ</a>
+                <a href="pages/anime.html" id="nav-anime">Anime</a>
+                <a href="pages/hoat_hinh_2D_3D.html" id="nav-2d3d">Phim 2D/3D</a>
             </nav>
 
             <div class="hidden md:flex items-center space-x-3 lg:space-x-4 flex-shrink-0">
-                <a href="#filter-controls" id="nav-filter-icon" class="filter-icon-button" aria-label="Mở bộ lọc">
-                    <i class="fas fa-filter"></i>
+                <a href="#filter-controls" id="nav-filter-icon" class="filter-icon-button p-2 rounded-full hover:bg-light-gray" aria-label="Mở bộ lọc">
+                    <i class="fas fa-filter text-lg"></i>
                 </a>
                 <div class="relative search-container">
                     <label for="search-input-desktop" class="sr-only">Tìm kiếm phim hoặc phim bộ</label>
@@ -199,8 +132,8 @@
             </div>
 
             <div class="md:hidden flex items-center space-x-2">
-                <a href="#filter-controls" id="mobile-nav-filter-icon" class="filter-icon-button" aria-label="Mở bộ lọc">
-                    <i class="fas fa-filter"></i>
+                <a href="#filter-controls" id="mobile-nav-filter-icon" class="filter-icon-button p-2 rounded-full hover:bg-light-gray" aria-label="Mở bộ lọc">
+                    <i class="fas fa-filter text-xl"></i>
                 </a>
                 <button id="search-icon-mobile" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở tìm kiếm" aria-expanded="false" aria-controls="mobile-search-container">
                     <i class="fas fa-search text-xl"></i>
@@ -258,55 +191,30 @@
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-screen-xl">
 
-        <!-- Enhanced Hero Section with Video Background Option -->
-        <section id="hero-section" class="relative h-[55vh] sm:h-[65vh] md:h-[75vh] lg:h-[80vh] flex items-end md:items-center justify-center md:justify-start text-white bg-cover bg-center bg-no-repeat mb-8 md:mb-10 rounded-lg overflow-hidden shadow-xl" style="background-image: url('https://placehold.co/1920x1080/000000/333333?text=Loading+Hero...');" aria-labelledby="hero-title">
-            <!-- Optional Video Background - Uncomment to enable -->
-            <!--
-            <div class="hero-video-container absolute inset-0 z-0">
-                <video class="hero-video w-full h-full object-cover" autoplay muted loop playsinline poster="https://placehold.co/1920x1080/000000/333333?text=Loading+Hero...">
-                    <source src="access/video/hero-bg.mp4" type="video/mp4">
-                </video>
-            </div>
-            -->
-            
-            <!-- Enhanced Hero Overlay with Improved Gradient -->
-            <div class="hero-overlay absolute inset-0 z-10 bg-gradient-to-t from-secondary via-secondary/70 to-transparent md:bg-gradient-to-r md:from-secondary md:via-secondary/80 md:to-transparent" aria-hidden="true"></div>
-            
-            <!-- Enhanced Hero Content -->
-            <div class="hero-content relative z-20 max-w-md sm:max-w-lg lg:max-w-xl px-4 pb-8 md:px-0 md:pl-8 lg:pl-16 md:pb-0 text-center md:text-left">
-                <!-- Hero Badges -->
+        <section id="hero-section" class="relative min-h-[70vh] flex items-end md:items-center text-white bg-cover bg-center bg-no-repeat mb-8 md:mb-10 rounded-lg overflow-hidden shadow-xl" style="background-image: url('https://placehold.co/1920x1080/000000/333333?text=Loading+Hero...');" aria-labelledby="hero-title">
+            <div class="hero-overlay absolute inset-0 z-10" aria-hidden="true"></div>
+            <div class="hero-content relative z-20 max-w-xl px-4 pb-8 md:px-0 md:pl-8 lg:pl-16 md:pb-0 text-center md:text-left">
                 <div class="flex flex-wrap mb-3">
-                    <span class="hero-badge hero-badge-primary mr-2 mb-2">
-                        <i class="fas fa-star-half-alt mr-1"></i> Đề Xuất
-                    </span>
-                    <span class="hero-badge hero-badge-tertiary">
-                        <i class="fas fa-certificate mr-1"></i> Mới
-                    </span>
-                </div>
-                
-                <h1 id="hero-title" class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 md:mb-4 text-shadow-lg">[Tên Phim Nổi Bật]</h1>
-                
-                <!-- Hero Meta Info -->
-                <div class="hero-meta mb-3 md:mb-4 flex flex-wrap items-center">
+                    </div>
+                <h1 id="hero-title" class="hero-title text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4">Đang tải...</h1>
+                <div class="hero-meta mb-3 md:mb-4 flex flex-wrap items-center text-sm opacity-90">
                     <div class="hero-meta-item mr-4">
-                        <i class="far fa-calendar-alt"></i> <span id="hero-year">2023</span>
+                        <i class="far fa-calendar-alt mr-1"></i> <span id="hero-year">N/A</span>
                     </div>
                     <div class="hero-meta-item mr-4">
-                        <i class="fas fa-film"></i> <span id="hero-type">Phim lẻ</span>
+                        <i class="fas fa-film mr-1"></i> <span id="hero-type">N/A</span>
                     </div>
                     <div class="hero-meta-item hero-rating">
-                        <i class="fas fa-star"></i> <span id="hero-rating">8.5</span>
+                        <i class="fas fa-star mr-1"></i> <span id="hero-rating">N/A</span>
                     </div>
                 </div>
-                
-                <p id="hero-description" class="text-sm sm:text-base md:text-lg mb-5 md:mb-6 text-gray-200 line-clamp-3 sm:line-clamp-4 text-shadow-md">[Mô tả ngắn gọn phim nổi bật...]</p>
-                
-                <div class="hero-button-container flex flex-wrap gap-3">
+                <p id="hero-description" class="hero-description text-sm sm:text-base md:text-lg mb-5 md:mb-6 line-clamp-3 sm:line-clamp-4">Đang tải mô tả...</p>
+                <div class="hero-button-container flex flex-wrap gap-3 justify-center md:justify-start">
                     <button id="hero-play-button" class="hero-play-button">
-                        <i class="fas fa-play mr-1 md:mr-2" aria-hidden="true"></i> Xem Ngay
+                        <i class="fas fa-play" aria-hidden="true"></i> Xem Ngay
                     </button>
                     <button id="hero-detail-button" class="hero-detail-button">
-                        <i class="fas fa-info-circle mr-1 md:mr-2" aria-hidden="true"></i> Chi Tiết
+                        <i class="fas fa-info-circle" aria-hidden="true"></i> Chi Tiết
                     </button>
                 </div>
             </div>
@@ -315,10 +223,10 @@
         <section id="tabs-section" class="mb-6 border-b border-gray-700">
             <div id="content-tabs" class="flex space-x-1 overflow-x-auto whitespace-nowrap" role="tablist" aria-label="Chọn loại nội dung">
                 <button id="tab-movies" role="tab" aria-selected="true" aria-controls="movie-grid-section" class="tab-button active px-4 py-2 sm:px-6">
-                    <i class="fas fa-film mr-2" aria-hidden="true"></i> Phim Lẻ
+                    <i class="fas fa-film mr-2" aria-hidden="true"></i> Phim Lẻ & Anime Movie
                 </button>
                 <button id="tab-series" role="tab" aria-selected="false" aria-controls="movie-grid-section" class="tab-button px-4 py-2 sm:px-6">
-                    <i class="fas fa-tv mr-2" aria-hidden="true"></i> Phim Bộ
+                    <i class="fas fa-tv mr-2" aria-hidden="true"></i> Phim Bộ & Anime Series
                 </button>
             </div>
         </section>
@@ -329,7 +237,7 @@
                  <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
                      <div id="genre-filter-container" class="relative">
                          <label for="genre-filter-button" class="block text-sm font-medium text-gray-300 mb-1">Thể loại</label>
-                         <button id="genre-filter-button" type="button" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 text-left flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="genre-dropdown">
+                         <button id="genre-filter-button" type="button" class="w-full bg-dark-gray border border-border-color text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 text-left flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="genre-dropdown">
                              <span class="truncate">Chọn thể loại...</span>
                              <i class="fas fa-chevron-down text-xs text-gray-400 ml-2 flex-shrink-0"></i>
                          </button>
@@ -339,7 +247,7 @@
 
                      <div>
                          <label for="sort-filter" class="block text-sm font-medium text-gray-300 mb-1">Sắp xếp theo</label>
-                         <select id="sort-filter" name="sort" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 appearance-none" aria-label="Chọn tiêu chí sắp xếp">
+                         <select id="sort-filter" name="sort" class="w-full bg-dark-gray border border-border-color text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 appearance-none custom-select-arrow" aria-label="Chọn tiêu chí sắp xếp">
                              <option selected value="default">Mặc định</option>
                              <option value="newest">Mới nhất</option>
                              <option value="rating_desc">Đánh giá cao nhất</option>
@@ -351,7 +259,7 @@
 
                      <div>
                          <label for="format-filter" class="block text-sm font-medium text-gray-300 mb-1">Định dạng</label>
-                         <select id="format-filter" name="format" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 appearance-none" aria-label="Chọn định dạng phim">
+                         <select id="format-filter" name="format" class="w-full bg-dark-gray border border-border-color text-white text-sm rounded-lg focus:ring-primary focus:border-primary p-2.5 appearance-none custom-select-arrow" aria-label="Chọn định dạng phim">
                              <option selected value="all">Tất cả định dạng</option>
                              <option value="2D">2D</option>
                              <option value="3D">3D</option>
@@ -371,7 +279,7 @@
                      </div>
                  </div>
                  <div class="w-full sm:w-auto flex items-end flex-shrink-0 mt-4 sm:mt-0">
-                     <button id="clear-filters-button" title="Xóa tất cả bộ lọc" class="hidden p-2 text-gray-400 hover:text-white bg-gray-700 rounded-lg border border-gray-600 hover:bg-gray-600 transition duration-200 ml-auto sm:ml-2" aria-label="Xóa bộ lọc">
+                     <button id="clear-filters-button" title="Xóa tất cả bộ lọc" class="hidden p-2 text-gray-400 hover:text-white bg-dark-gray rounded-lg border border-border-color hover:bg-gray-700 transition duration-200 ml-auto sm:ml-2" aria-label="Xóa bộ lọc">
                          <span class="material-icons-outlined text-lg">close</span>
                      </button>
                  </div>
@@ -382,28 +290,16 @@
              </div>
 
         <section id="movie-grid-section" role="tabpanel" aria-labelledby="tab-movies">
-            <h2 id="movie-grid-title" class="text-xl sm:text-2xl font-semibold mb-6 text-gray-100">Phim Lẻ</h2>
+            <h2 id="movie-grid-title" class="text-xl sm:text-2xl font-semibold mb-6 text-gray-100">Phim Lẻ & Anime Movie</h2>
             <div id="movie-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5" aria-live="polite">
-                <div class="movie-card-skeleton"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton hidden sm:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton hidden md:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton hidden lg:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton hidden xl:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton hidden sm:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton hidden md:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton hidden lg:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <div class="movie-card-skeleton hidden xl:block"> <div class="skeleton skeleton-image"></div> <div class="p-3"> <div class="skeleton skeleton-title"></div> <div class="skeleton skeleton-text"></div> </div> </div>
-                <p id="loading-movies" class="text-text-muted col-span-full text-center py-8 hidden">Đang tải...</p>
-                <p id="no-movies-found" class="text-text-muted col-span-full hidden text-center py-8">Không tìm thấy nội dung nào phù hợp.</p>
+                <!-- Skeleton cards will be populated here by JS initially -->
             </div>
+            <p id="no-movies-found" class="text-text-muted col-span-full hidden text-center py-8">Không tìm thấy nội dung nào phù hợp.</p>
         </section>
 
     </main>
 
-    <footer class="bg-gray-900 text-gray-400 py-12 px-4 sm:px-6 lg:px-8 mt-16 border-t border-gray-700" role="contentinfo">
+    <footer class="bg-darker-gray text-gray-400 py-12 px-4 sm:px-6 lg:px-8 mt-16 border-t border-border-color" role="contentinfo">
         <div class="container mx-auto max-w-screen-xl grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="space-y-4">
                 <a href="index.html" class="inline-block mb-2" aria-label="Trang chủ Flick Tale">
@@ -417,22 +313,22 @@
             <div>
                 <h3 class="text-lg font-semibold text-white mb-4">Liên Kết Nhanh</h3>
                 <nav class="space-y-2" aria-label="Liên kết phụ">
-                    <a href="about.html" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Về Chúng Tôi</a>
-                    <a href="pages/auth/dieu_khoan_su_dung.html" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
-                    <a href="pages/auth/chinh_sach_bao_mat.html" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Chính Sách Bảo Mật</a>
-                    <a href="pages/auth/lien_he_ho_tro.html" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Liên Hệ Hỗ Trợ</a>
-                    <a href="pages/hoat_hinh_2D_3D.html" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Phim 2D/3D</a>
-                    <a href="pages/anime.html" class="block text-gray-400 hover:text-white hover:underline transition duration-300 text-sm">Anime</a>
+                    <a href="about.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Về Chúng Tôi</a>
+                    <a href="pages/auth/dieu_khoan_su_dung.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
+                    <a href="pages/auth/chinh_sach_bao_mat.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Chính Sách Bảo Mật</a>
+                    <a href="pages/auth/lien_he_ho_tro.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Liên Hệ Hỗ Trợ</a>
+                    <a href="pages/hoat_hinh_2D_3D.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Phim 2D/3D</a>
+                    <a href="pages/anime.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Anime</a>
                 </nav>
             </div>
 
             <div>
                 <h3 class="text-lg font-semibold text-white mb-4">Theo Dõi Chúng Tôi</h3>
                 <div class="flex space-x-4 mb-4" aria-label="Liên kết mạng xã hội">
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-gray-400 hover:text-white transition duration-300 text-xl" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
                 </div>
                 <h3 class="text-lg font-semibold mb-2 mt-6">Thông Tin Liên Hệ</h3>
                 <p class="text-sm">Email: support@flicktale.com</p> <p class="text-sm">Hotline: 1900-1234</p>
@@ -445,7 +341,7 @@
        </div>
     </footer>
 
-    <button id="scroll-to-top" class="hidden fixed bottom-5 right-5 bg-primary hover:bg-primary-hover text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-lg transition-opacity duration-300 z-50" aria-label="Cuộn lên đầu trang">
+    <button id="scroll-to-top" class="hidden fixed bottom-5 right-5 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-lg transition-opacity duration-300 z-50" aria-label="Cuộn lên đầu trang">
         <i class="fas fa-arrow-up"></i>
     </button>
 
@@ -479,6 +375,7 @@
             const genreDropdown = document.getElementById('genre-dropdown');
             const genreButton = document.getElementById('genre-filter-button');
             const filterControls = document.getElementById('filter-controls');
+            const scrollToTopBtn = document.getElementById('scroll-to-top'); // Added scroll-to-top
 
             // Mobile Menu
             const openMobileMenu = () => { 
@@ -516,24 +413,24 @@
                 searchIconMobile.setAttribute('aria-expanded', String(!isHidden)); 
             });
 
-            // Search Input Handling
+            // Search Input Handling (Global variables currentFilters, filterAndSortContent, allMovies, allSeries are defined in script.js)
             const handleSearchInput = (event) => {
                 const inputEl = event.target; 
                 const suggestionsEl = inputEl === searchInputDesktop ? searchSuggestionsDesktop : searchSuggestionsMobile; 
                 const term = inputEl.value.trim();
                 
-                // Update global filter state if it exists
-                if (typeof window.filterAndSortContent === 'function') {
+                if (typeof window.currentFilters !== 'undefined' && typeof window.filterAndSortContent === 'function') {
                     window.currentFilters.search = term.toLowerCase();
                     SearchUtils.debounce(() => window.filterAndSortContent(), 300)();
                 }
                 
-                // Use unified search utility
                 SearchUtils.debounce(() => {
-                    const allItems = [...(window.allMovies || []), ...(window.allSeries || [])];
-                    SearchUtils.displaySearchSuggestions(term, inputEl, suggestionsEl, allItems, {
-                        maxResults: 8
-                    });
+                    if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.displaySearchSuggestions === 'function') {
+                        const allItems = [...(window.allMovies || []), ...(window.allSeries || [])];
+                        SearchUtils.displaySearchSuggestions(term, inputEl, suggestionsEl, allItems, {
+                            maxResults: 8
+                        });
+                    }
                 }, 150)();
             };
             
@@ -553,29 +450,21 @@
             document.addEventListener('click', (event) => {
                 const target = event.target;
                 
-                // Check if click is inside genre filter elements
                 const isInsideGenreFilter = genreDropdown?.contains(target) || genreButton?.contains(target);
-                // Check if click is inside main filter controls section
                 const isInsideFilterControls = filterControls?.contains(target);
-                // Check if click is on filter toggle icons
                 const isFilterIcon = navFilterIcon?.contains(target) || mobileNavFilterIcon?.contains(target);
-                
-                // Check if click is inside search areas
                 const isInsideDesktopSearch = searchInputDesktop?.contains(target) || searchSuggestionsDesktop?.contains(target);
                 const isInsideMobileSearch = searchInputMobile?.contains(target) || searchSuggestionsMobile?.contains(target) || searchIconMobile?.contains(target);
 
-                // Hide Filter Controls when clicking outside (unless it's the filter icon)
                 if (filterControls && !filterControls.classList.contains('hidden') && !isInsideFilterControls && !isFilterIcon) { 
                     filterControls.classList.add('hidden'); 
                 }
                 
-                // Hide Genre Dropdown if click is outside genre filter elements
                 if (!isInsideGenreFilter && genreDropdown && !genreDropdown.classList.contains('hidden')) { 
                     genreDropdown.classList.add('hidden'); 
                     genreButton?.setAttribute('aria-expanded', 'false'); 
                 }
 
-                // Hide Search Suggestions if click is outside search areas
                 if (!isInsideDesktopSearch && !isInsideMobileSearch) {
                     if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.hideAllSearchSuggestions === 'function') {
                         SearchUtils.hideAllSearchSuggestions();
@@ -589,7 +478,7 @@
                     event.preventDefault();
                     const searchTerm = event.target.value.trim();
                     
-                    if (typeof window.filterAndSortContent === 'function') {
+                    if (typeof window.currentFilters !== 'undefined' && typeof window.filterAndSortContent === 'function') {
                         window.currentFilters.search = searchTerm.toLowerCase();
                         window.filterAndSortContent();
                     }
@@ -615,11 +504,27 @@
                     }
                     else { 
                         header.classList.remove('header-hidden'); 
-                        header.classList.toggle('header-shadow', scrollTop > 50); 
+                        header.classList.toggle('header-shadow', scrollTop > 50 || !header.classList.contains('header-hidden')); 
                     }
                 }
                 lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-            });
+
+                 // Scroll to top button visibility
+                if (scrollToTopBtn) {
+                    const isVisible = window.scrollY > 300;
+                    scrollToTopBtn.classList.toggle('visible', isVisible);
+                    scrollToTopBtn.classList.toggle('hidden', !isVisible);
+                }
+            }, false); // Use false for passive listener if supported and not preventing default
+
+            // Scroll to top button click
+            if (scrollToTopBtn) {
+                scrollToTopBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
 
             // Filter Icon Click Handler
             const handleFilterIconClick = (event) => {
@@ -633,7 +538,6 @@
                     }
                 }
                 
-                // Close mobile menu if open
                 if (mobileMenuPanel && !mobileMenuPanel.classList.contains('translate-x-full') && event.currentTarget === mobileNavFilterIcon) { 
                     closeMobileMenu(); 
                 }
@@ -642,9 +546,16 @@
             navFilterIcon?.addEventListener('click', handleFilterIconClick);
             mobileNavFilterIcon?.addEventListener('click', handleFilterIconClick);
 
-            // Update footer year
-            // const footerYear = document.getElementById('footer-year'); // Already handled by separate script block
-            // if (footerYear) footerYear.textContent = new Date().getFullYear();
+             // Initialize keyboard navigation for search suggestions
+            if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.setupKeyboardNavigation === 'function') {
+                if (searchInputDesktop && searchSuggestionsDesktop) {
+                    SearchUtils.setupKeyboardNavigation(searchInputDesktop, searchSuggestionsDesktop);
+                }
+                if (searchInputMobile && searchSuggestionsMobile) {
+                    SearchUtils.setupKeyboardNavigation(searchInputMobile, searchSuggestionsMobile);
+                }
+            }
+            console.log("Inline header script for index.html loaded and integrated with SearchUtils.");
         });
     </script>
     <script src="js/script.js" defer></script>

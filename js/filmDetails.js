@@ -1,5 +1,6 @@
 // filmDetails.js - Handles MOVIE Details Page Logic ONLY
 // v1.5: Added redirect for anime-movie to animeDetails.html
+// v1.6: Updated createRelatedItemCard structure and ensured data attributes for favorite buttons.
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements (Movie Specific) ---
@@ -20,24 +21,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const movieDescription = document.getElementById('movie-description');
     const movieDirector = document.getElementById('movie-director');
     const movieCast = document.getElementById('movie-cast');
-    const relatedMoviesContainer = document.getElementById('related-movies'); // Container for related items
+    const relatedMoviesContainer = document.getElementById('related-movies');
     const scrollToTopButton = document.getElementById('scroll-to-top');
     const versionSelectionContainer = document.getElementById('version-selection');
     const versionButtons = versionSelectionContainer ? versionSelectionContainer.querySelectorAll('.version-button') : [];
     const toggleLightsButton = document.getElementById('toggle-lights-button');
     const toggleLightsText = document.getElementById('toggle-lights-text');
 
-    // --- Player Elements ---
+    // Player Elements
     const videoPosterImage = document.getElementById('video-poster-image');
     const videoPosterOverlay = document.getElementById('video-poster-overlay');
     const videoPlayButton = document.getElementById('video-play-button');
     const videoIframePlaceholder = document.getElementById('video-iframe-placeholder');
     const youtubePlayerDivId = 'youtube-player';
 
-    // --- Skip Intro Button Element ---
+    // Skip Intro Button Element
     const skipIntroButton = document.getElementById('skip-intro-button');
 
-    // --- Meta Tag Elements ---
+    // Meta Tag Elements
     const pageTitleElement = document.querySelector('title');
     const metaDescriptionTag = document.querySelector('meta[name="description"]');
     const metaKeywordsTag = document.querySelector('meta[name="keywords"]');
@@ -56,18 +57,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const twitterDescriptionTag = document.querySelector('meta[property="twitter:description"]');
     const twitterImageTag = document.querySelector('meta[property="twitter:image"]');
 
-    // --- State Variables ---
-    let allMoviesData = []; // Stores fetched movie data
-    let allSeriesData = []; // Stores fetched series data
-    let allAnimeData = []; // Stores fetched anime data
-    let currentMovieData = null; // Data for the current movie being viewed
+    // Favorite/Watchlist buttons
+    const favoriteButton = document.querySelector('.favorite-button');
+    const watchlistButton = document.querySelector('.watchlist-button');
+
+
+    // State Variables
+    let allMoviesData = [];
+    let allSeriesData = [];
+    let allAnimeData = [];
+    let currentMovieData = null;
     let currentActiveVersion = null;
     let currentVideoUrl = null;
     let observer;
     let youtubePlayer = null;
     let ytApiReady = false;
 
-    // --- Helper Functions ---
+    // Helper Functions
     const getQueryParam = (param) => {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
@@ -129,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- YouTube API Functions ---
+    // YouTube API Functions
     function loadYouTubeApiScript() {
         if (window.YT && window.YT.Player) { ytApiReady = true; return; }
         if (document.getElementById('youtube-api-script')) return;
@@ -177,9 +183,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         hideVideoMessage(); if (videoIframePlaceholder) videoIframePlaceholder.classList.add('active');
         if (youtubePlayer) { try { youtubePlayer.destroy(); } catch (e) {} youtubePlayer = null; }
-        const playerDivTarget = document.getElementById(youtubePlayerDivId);
-        if (!playerDivTarget) { if (videoIframePlaceholder) videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; else { showVideoMessage("Lỗi: Không thể tạo vùng chứa trình phát.", true); return; } }
-        else { playerDivTarget.innerHTML = ''; }
+        let playerDivTarget = document.getElementById(youtubePlayerDivId);
+        if (!playerDivTarget) { 
+            if (videoIframePlaceholder) {
+                videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; 
+                playerDivTarget = document.getElementById(youtubePlayerDivId);
+            }
+            if (!playerDivTarget) { // Still not found after trying to recreate
+                showVideoMessage("Lỗi: Không thể tạo vùng chứa trình phát.", true); 
+                return; 
+            }
+        } else { 
+            playerDivTarget.innerHTML = ''; // Clear any previous content if div existed
+        }
         try {
             youtubePlayer = new YT.Player(youtubePlayerDivId, {
                 height: '100%', width: '100%', videoId: videoId,
@@ -213,12 +229,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Updated startVideoPlayback ---
     const startVideoPlayback = (urlToPlay, shouldSkipIntro = false) => {
         console.log(`startVideoPlayback (filmDetails): Yêu cầu phát: ${urlToPlay}, Bỏ qua Intro: ${shouldSkipIntro}`);
         if (youtubePlayer) { try { youtubePlayer.destroy(); } catch(e) {} youtubePlayer = null; }
         if (videoIframePlaceholder) { videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; videoIframePlaceholder.classList.remove('active'); }
-        else { return; }
+        else { console.error("Video iframe placeholder not found."); return; } // Added guard
         if (!urlToPlay) { showVideoMessage(`<i class="fas fa-exclamation-circle mr-2"></i>Không có URL video hợp lệ.`, true); if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing'); return; }
 
         hideVideoMessage();
@@ -234,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadYouTubePlayer(youtubeId, effectiveStartSeconds);
         } else if (googleDriveEmbedUrl) {
             if (videoIframePlaceholder) {
-                 videoIframePlaceholder.innerHTML = `<iframe src="${googleDriveEmbedUrl}" frameborder="0" allow="autoplay; fullscreen" title="Trình phát video Google Drive cho phim ${playerTitleText}"></iframe>`;
+                 videoIframePlaceholder.innerHTML = `<iframe src="${googleDriveEmbedUrl}" class="w-full h-full" frameborder="0" allow="autoplay; fullscreen" allowfullscreen title="Trình phát video Google Drive cho phim ${playerTitleText}"></iframe>`; // Added class for styling
                  videoIframePlaceholder.classList.add('active');
                  if (videoPlayerContainer) videoPlayerContainer.classList.add('playing');
                  showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Đang tải video từ Google Drive...`, false, true);
@@ -246,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Skip Intro Button Visibility ---
     const updateSkipIntroButtonVisibility = () => {
         if (!skipIntroButton || !currentMovieData || !currentActiveVersion) {
             if (skipIntroButton) skipIntroButton.classList.add('hidden');
@@ -263,7 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Version Button State Update ---
     const updateVersionButtonStates = (activeVersionKey) => {
         const availableUrls = currentMovieData?.videoUrls || {};
         let hasAnyUrl = false;
@@ -291,7 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
          updateSkipIntroButtonVisibility();
     };
 
-    // --- localStorage Functions ---
     const saveVersionPreference = (movieId, versionKey) => {
         if (!movieId || !versionKey) return;
         try { localStorage.setItem(`moviePref_${movieId}_version`, versionKey); }
@@ -303,7 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
         catch (e) { console.error("Lỗi tải lựa chọn từ localStorage:", e); return null; }
     };
 
-    // --- Prepare Video Playback (No Auto-Play) ---
     const prepareVideoPlayback = (versionKey) => {
         if (!currentMovieData) return;
         const url = currentMovieData.videoUrls?.[versionKey];
@@ -319,7 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Event Handlers ---
     const handleVersionClick = (event) => {
         const button = event.target.closest('.version-button');
         if (!button || button.disabled || !currentMovieData) return;
@@ -330,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const displayError = (message = "Rất tiếc, đã xảy ra lỗi.") => {
         if(loadingMessage) loadingMessage.classList.add('hidden');
-        if(movieDetailsSkeleton) movieDetailsSkeleton.classList.add('hidden');
+        if(movieDetailsSkeleton) movieDetailsSkeleton.classList.add('hidden'); // Hide skeleton on error
         if(movieDetailsContent) movieDetailsContent.classList.add('hidden');
         if(errorMessageContainer) errorMessageContainer.classList.remove('hidden');
         if (errorTextElement) errorTextElement.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> ${message}`;
@@ -348,98 +358,114 @@ document.addEventListener('DOMContentLoaded', () => {
         return strData.split(separator).map(s => s.trim()).filter(Boolean).slice(0, limit).join(separator);
     };
 
-    /**
-     * Creates the HTML for a related content card (movie, series, or anime).
-     * Tạo HTML cho thẻ nội dung liên quan (phim, series, hoặc anime).
-     * @param {object} item - Data object. Đối tượng dữ liệu.
-     * @param {string} type - 'movies', 'series', 'anime-movie', 'anime-series'. Loại.
-     * @returns {string} HTML string for the card. Chuỗi HTML cho thẻ.
-     */
-    const createRelatedItemCard = (item, type) => {
-        // Determine detail page URL based on item type
-        // Xác định URL trang chi tiết dựa trên loại mục
+    const createRelatedItemCard = (item, itemType) => {
         let detailPageUrl = '#';
-        if (type === 'anime-series' || type === 'anime-movie') {
-            detailPageUrl = `animeDetails.html?id=${item.id}&type=${type}`;
-        } else if (type === 'series') {
+        if (itemType === 'anime-series' || itemType === 'anime-movie') {
+            detailPageUrl = `animeDetails.html?id=${item.id}&type=${itemType}`;
+        } else if (itemType === 'series') {
             detailPageUrl = `filmDetails_phimBo.html?id=${item.id}&type=series`;
-        } else { // movies
+        } else { 
             detailPageUrl = `filmDetail.html?id=${item.id}&type=movies`;
         }
 
-        const altText = `Poster ${type.includes('anime') ? 'Anime' : (type === 'movies' ? 'phim' : 'phim bộ')} liên quan: ${item.title || 'không có tiêu đề'}`;
-        let typeBadge = '';
-        if (type === 'anime-series' || type === 'series') {
-            typeBadge = `<span class="absolute top-1 right-1 bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded">Bộ</span>`;
-        } else if (type === 'anime-movie') {
-            typeBadge = `<span class="absolute top-1 right-1 bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded">Anime Movie</span>`;
-        }
+        const altText = `Poster ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} liên quan: ${item.title || 'không có tiêu đề'}`;
         const posterUrl = item.posterUrl || 'https://placehold.co/300x450/111111/eeeeee?text=No+Poster';
         const titleText = item.title || 'Không có tiêu đề';
         const yearText = item.releaseYear || 'N/A';
+        const ratingText = item.rating ? parseFloat(item.rating).toFixed(1) : 'N/A';
+        const format = item.format || [];
+        const isAnimeRelated = itemType.includes('anime');
+        
+        const cardClass = isAnimeRelated ? 'anime-card stagger-item' : 'movie-card stagger-item';
+
+        let badgesHTML = '';
+        if (itemType === 'series' || itemType === 'anime-series') {
+            badgesHTML += `<span class="card-badge card-badge-top-right badge-series">Bộ</span>`;
+        } else if (itemType === 'anime-movie') {
+            badgesHTML += `<span class="card-badge card-badge-top-right badge-anime">Anime</span>`;
+        } else if (itemType === 'movies') {
+             badgesHTML += `<span class="card-badge card-badge-top-right badge-movie">Lẻ</span>`;
+        }
+
+        if (format.includes("3D")) {
+            badgesHTML += `<span class="card-badge card-badge-top-left badge-3d">3D</span>`;
+        } else if (format.includes("2D")) {
+            badgesHTML += `<span class="card-badge card-badge-top-left badge-2d">2D</span>`;
+        } else if (format.includes("Animation") && !format.includes("2D") && !format.includes("3D") && !isAnimeRelated) {
+            badgesHTML += `<span class="card-badge card-badge-top-left badge-animation">Hoạt Hình</span>`;
+        }
+        
+        let episodesHTML = '';
+        if (itemType === 'series' || itemType === 'anime-series') {
+            let episodeCount = '?'; 
+            if (item.totalEpisodes) episodeCount = item.totalEpisodes;
+            else if (item.seasons && item.seasons[0] && typeof item.seasons[0].numberOfEpisodes === 'number') episodeCount = item.seasons[0].numberOfEpisodes;
+            else if (item.seasons && item.seasons[0] && Array.isArray(item.seasons[0].episodes)) episodeCount = item.seasons[0].episodes.length;
+            episodesHTML = `<div class="card-episodes"><i class="fas fa-list-ol"></i> ${episodeCount} tập</div>`;
+        }
 
         return `
-           <a href="${detailPageUrl}" class="related-movie-card bg-light-gray rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 cursor-pointer group relative block animate-on-scroll animate-slide-up" data-item-id="${item.id}" data-item-type="${type}" aria-label="Xem chi tiết ${titleText}">
-               <img src="${posterUrl}" alt="${altText}" class="w-full h-auto object-cover related-movie-poster" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/300x450/111111/eeeeee?text=Error'; this.alt='Lỗi tải ảnh poster liên quan ${titleText}';">
-               ${typeBadge}
-               <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100" aria-hidden="true">
-                   <i class="fas fa-play text-white text-3xl"></i>
-               </div>
-               <div class="p-2">
-                   <h4 class="font-semibold text-gray-200 text-xs md:text-sm truncate" title="${titleText}">${titleText}</h4>
-                   <p class="text-xs text-text-muted">${yearText}</p>
-               </div>
-           </a>
-       `;
+           <a href="${detailPageUrl}" class="${cardClass}" data-item-id="${item.id}" data-item-type="${itemType}" aria-label="Xem chi tiết ${isAnimeRelated ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${titleText}">
+                <div class="movie-card-poster-container relative overflow-hidden rounded-t-lg">
+                    <img src="${posterUrl}" alt="${altText}" loading="lazy" class="w-full h-auto aspect-[2/3] object-cover transition-transform duration-400" onerror="this.onerror=null; this.src='https://placehold.co/300x450/111111/eeeeee?text=Error'; this.alt='Lỗi tải ảnh poster ${titleText}';">
+                    ${badgesHTML}
+                    <div class="card-hover-overlay absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 transition-opacity duration-300 flex flex-col justify-center items-center">
+                        <div class="card-play-button bg-black/40 text-white text-3xl p-4 rounded-full border-2 border-white/70 hover:bg-primary hover:border-white hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="mt-3 text-white font-semibold text-lg text-center px-3">${titleText}</div>
+                    </div>
+                </div>
+                <div class="card-info p-3 border-t border-gray-700/20">
+                    <div>
+                        <h3 class="card-title font-semibold text-bright-color text-sm leading-tight mb-1 h-[2.5em] overflow-hidden" title="${titleText}">${titleText}</h3>
+                        <div class="card-meta flex justify-between items-center text-xs text-text-muted">
+                            <div class="card-year flex items-center"><i class="far fa-calendar-alt text-xs mr-1 opacity-70"></i> ${yearText}</div>
+                            <div class="card-rating flex items-center text-gold-accent"><i class="fas fa-star text-xs mr-1"></i> ${ratingText}</div>
+                        </div>
+                        ${episodesHTML} 
+                    </div>
+                </div>
+            </a>`;
     };
 
-    /**
-     * Loads and displays related content (movies, series, anime) based on genre similarity.
-     * Tải và hiển thị nội dung liên quan (phim, series, anime) dựa trên sự tương đồng về thể loại.
-     * @param {object} currentMovie - The data of the movie currently being viewed. Dữ liệu của phim đang được xem.
-     */
+
     const loadRelatedItems = (currentMovie) => {
         if (!currentMovie || !relatedMoviesContainer) {
-            if(relatedMoviesContainer) relatedMoviesContainer.innerHTML = '<p class="text-text-muted col-span-full">Không thể tải nội dung liên quan.</p>';
+            if(relatedMoviesContainer) relatedMoviesContainer.innerHTML = '<p class="text-text-muted col-span-full text-center py-4">Không thể tải nội dung liên quan.</p>';
             return;
         }
 
         const currentGenres = Array.isArray(currentMovie.genre) ? currentMovie.genre : (typeof currentMovie.genre === 'string' ? [currentMovie.genre] : []);
         const currentMovieId = currentMovie.id;
+        const currentItemType = currentMovie.itemType || 'movies'; // Fallback to 'movies' if itemType is missing
 
         if (observer) observer.disconnect();
-        if (currentGenres.length === 0) { relatedMoviesContainer.innerHTML = '<p class="text-text-muted col-span-full">Không có thông tin thể loại để tìm nội dung tương tự.</p>'; return; }
+        if (currentGenres.length === 0) { relatedMoviesContainer.innerHTML = '<p class="text-text-muted col-span-full text-center py-4">Không có thông tin thể loại để tìm nội dung tương tự.</p>'; return; }
 
-        // Combine all data types with their respective types
-        // Kết hợp tất cả các loại dữ liệu với loại tương ứng của chúng
         const allItems = [
-            ...allMoviesData.map(item => ({ ...item, itemType: 'movies' })),
-            ...allSeriesData.map(item => ({ ...item, itemType: 'series' })),
-            ...allAnimeData.map(item => ({ ...item, itemType: item.itemType || (item.episodes === null ? 'anime-movie' : 'anime-series') })) // Assign anime type
+            ...allMoviesData.map(item => ({ ...item, itemType: item.itemType || 'movies' })),
+            ...allSeriesData.map(item => ({ ...item, itemType: item.itemType || 'series' })),
+            ...allAnimeData.map(item => ({ ...item, itemType: item.itemType || (item.episodes === null || item.episodes === undefined ? 'anime-movie' : 'anime-series') }))
         ];
 
-        // Filter related items across all types
-        // Lọc các mục liên quan trên tất cả các loại
         const relatedItems = allItems.filter(item => {
-            // Exclude the current movie itself
-            // Loại trừ chính phim hiện tại
-            if (item.id === currentMovieId && item.itemType === 'movies') return false;
-
+            if (item.id === currentMovieId && item.itemType === currentItemType) return false; // Exclude self
             const itemGenres = Array.isArray(item.genre) ? item.genre : (typeof item.genre === 'string' ? [item.genre] : []);
             return itemGenres.some(g => currentGenres.includes(g));
         })
-        .sort(() => 0.5 - Math.random()) // Randomize
-        .slice(0, 6); // Limit
+        .sort(() => 0.5 - Math.random()) 
+        .slice(0, 6); 
 
         if (relatedItems.length > 0) {
             relatedMoviesContainer.innerHTML = relatedItems.map((itemData, index) => {
-                 const cardHTML = createRelatedItemCard(itemData, itemData.itemType); // Pass itemType
-                 const cardWithIndex = cardHTML.replace('<a ', `<a data-index="${index}" `);
+                 const cardHTML = createRelatedItemCard(itemData, itemData.itemType);
+                 const cardWithIndex = cardHTML.replace('<a ', `<a data-index="${index}" class="${cardHTML.includes('anime-card') ? 'anime-card' : 'movie-card'} stagger-item `); // Add stagger-item
                  return cardWithIndex;
             }).join('');
-            observeElements(relatedMoviesContainer.querySelectorAll('.related-movie-card.animate-on-scroll'));
+            observeElements(relatedMoviesContainer.querySelectorAll('.stagger-item'));
         } else {
-             relatedMoviesContainer.innerHTML = '<p class="text-text-muted col-span-full">Không tìm thấy nội dung nào tương tự.</p>';
+             relatedMoviesContainer.innerHTML = '<p class="text-text-muted col-span-full text-center py-4">Không tìm thấy nội dung nào tương tự.</p>';
         }
     };
 
@@ -448,25 +474,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const pageUrl = window.location.href;
         const movieTitleText = movie.title || 'Phim không có tiêu đề';
         const movieYearText = movie.releaseYear ? `(${movie.releaseYear})` : '';
-        const fullTitle = `Phim: ${movieTitleText} ${movieYearText} - Xem Online Vietsub, Thuyết Minh`;
-        let description = `Xem phim ${movieTitleText} ${movieYearText} online. `;
+        const fullTitle = `Phim: ${movieTitleText} ${movieYearText} - Xem Online Vietsub, Thuyết Minh | Flick Tale`;
+        let description = `Xem phim ${movieTitleText} ${movieYearText} online tại Flick Tale. `;
         if (movie.description) { const firstSentence = movie.description.split('.')[0]; description += (firstSentence.length < 120 ? firstSentence + '.' : movie.description.substring(0, 120) + '...'); }
-        else { description += `Thông tin chi tiết, diễn viên, đạo diễn, và các phiên bản Vietsub, Thuyết minh.`; }
+        else { description += `Thông tin chi tiết, diễn viên, đạo diễn, và các phiên bản Vietsub, Thuyết Minh.`; }
         description = description.substring(0, 160);
         const genresText = formatArrayData(movie.genre, ', ');
-        const keywords = `xem phim ${movieTitleText}, ${movieTitleText} online, ${movieTitleText} vietsub, ${movieTitleText} thuyết minh, ${genresText}, phim ${movie.releaseYear || ''}, ${movie.director || ''}, ${formatArrayData(movie.cast, ', ', 3)}`;
+        const keywords = `xem phim ${movieTitleText}, ${movieTitleText} online, ${movieTitleText} vietsub, ${movieTitleText} thuyết minh, ${genresText}, phim ${movie.releaseYear || ''}, ${movie.director || ''}, ${formatArrayData(movie.cast, ', ', 3)}, Flick Tale`;
 
         if (pageTitleElement) pageTitleElement.textContent = fullTitle; if (metaDescriptionTag) metaDescriptionTag.content = description; if (metaKeywordsTag) metaKeywordsTag.content = keywords;
         if (ogUrlTag) ogUrlTag.content = pageUrl; if (ogTitleTag) ogTitleTag.content = fullTitle; if (ogDescriptionTag) ogDescriptionTag.content = description;
         if (ogImageTag) ogImageTag.content = movie.posterUrl || 'https://placehold.co/1200x630/141414/ffffff?text=Movie+Poster'; if (ogTypeTag) ogTypeTag.content = 'video.movie';
+        if (ogSiteNameTag) ogSiteNameTag.content = "Flick Tale";
         if (ogVideoDirectorTag) ogVideoDirectorTag.content = movie.director || ''; if (ogVideoActorTag) ogVideoActorTag.content = formatArrayData(movie.cast, ', ', 4);
         if (ogVideoReleaseDateTag && movie.releaseYear) ogVideoReleaseDateTag.content = movie.releaseYear.toString();
+        if (twitterCardTag) twitterCardTag.content = "summary_large_image";
         if (twitterUrlTag) twitterUrlTag.content = pageUrl; if (twitterTitleTag) twitterTitleTag.content = fullTitle; if (twitterDescriptionTag) twitterDescriptionTag.content = description;
         if (twitterImageTag) twitterImageTag.content = movie.posterUrl || 'https://placehold.co/1200x630/141414/ffffff?text=Movie+Poster';
         console.log("Đã cập nhật thẻ meta cho phim:", movieTitleText);
     };
 
-    // --- Scroll & Lights Off ---
     const handleScroll = () => {
         if (!scrollToTopButton) return;
         const isVisible = window.scrollY > 300;
@@ -478,7 +505,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isLightsOff = document.body.classList.toggle('lights-off');
         if (toggleLightsButton) toggleLightsButton.setAttribute('aria-pressed', String(isLightsOff));
         if (toggleLightsText) toggleLightsText.textContent = isLightsOff ? 'Bật đèn' : 'Tắt đèn';
-        
         const icon = toggleLightsButton?.querySelector('i');
         if (icon) { 
             icon.classList.toggle('fa-lightbulb', !isLightsOff); 
@@ -486,23 +512,12 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.classList.toggle('fa-moon', isLightsOff); 
             icon.classList.toggle('fa-regular', isLightsOff); 
         }
-        
-        // Ensure player area is fully visible
-        const playerArea = document.querySelector('.player-area');
-        if (playerArea) {
-            if (isLightsOff) {
-                playerArea.style.opacity = '1';
-                playerArea.style.filter = 'none';
-            } else {
-                playerArea.style.opacity = '';
-                playerArea.style.filter = '';
-            }
-        }
+        const playerArea = document.querySelector('.player-area'); // Target player area
+        if (playerArea) { playerArea.style.opacity = isLightsOff ? '1' : ''; playerArea.style.filter = isLightsOff ? 'none' : '';}
     };
 
-    // --- Observer ---
     const initObserver = () => {
-        if (!('IntersectionObserver' in window)) { document.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('is-visible')); return; }
+        if (!('IntersectionObserver' in window)) { document.querySelectorAll('.stagger-item').forEach(el => el.classList.add('is-visible')); return; }
         const options = { root: null, rootMargin: '0px', threshold: 0.1 };
         observer = new IntersectionObserver((entries, observerInstance) => {
             entries.forEach((entry) => {
@@ -510,55 +525,50 @@ document.addEventListener('DOMContentLoaded', () => {
                     const delayIndex = parseInt(entry.target.dataset.index || '0', 10);
                     entry.target.style.animationDelay = `${delayIndex * 100}ms`;
                     entry.target.classList.add('is-visible');
-                    observerInstance.unobserve(entry.target);
+                    observerInstance.unobserve(entry.target); 
                 }
             });
         }, options);
-        observeElements(document.querySelectorAll('.animate-on-scroll'));
+        observeElements(document.querySelectorAll('.stagger-item'));
     };
-    const observeElements = (elements) => { if (!observer) return; elements.forEach((el) => { if (el.classList.contains('animate-on-scroll') && !el.classList.contains('is-visible')) observer.observe(el); }); };
+    const observeElements = (elements) => { if (!observer) return; elements.forEach((el) => { if (el.classList.contains('stagger-item') && !el.classList.contains('is-visible')) observer.observe(el); }); };
 
-    // --- Main Logic ---
+    // Main Logic
     const movieId = getQueryParam('id');
     const typeParam = getQueryParam('type');
 
-    // Redirect anime-movie to animeDetails.html
     if (typeParam === 'anime-movie') {
-        const movieId = getQueryParam('id');
         window.location.href = `animeDetails.html?id=${movieId}&type=anime-movie`;
-        return;
+        return; 
     }
 
-    if (!movieId || isNaN(parseInt(movieId)) || (typeParam && typeParam !== 'movies' && typeParam !== 'anime-movie')) { // Allow anime-movie here
+    if (!movieId || isNaN(parseInt(movieId)) || (typeParam && typeParam !== 'movies')) {
         let errorMsg = "ID phim không hợp lệ hoặc bị thiếu.";
-        if (typeParam && typeParam !== 'movies' && typeParam !== 'anime-movie') errorMsg = "Loại nội dung không hợp lệ cho trang này.";
+        if (typeParam && typeParam !== 'movies') errorMsg = "Loại nội dung không hợp lệ cho trang này.";
         console.error(errorMsg, "URL:", window.location.href);
         displayError(errorMsg);
+        if (movieDetailsSkeleton) movieDetailsSkeleton.classList.add('hidden');
+        if (loadingMessage) loadingMessage.classList.add('hidden');
         return;
     }
     const numericMovieId = parseInt(movieId);
-    if (loadingMessage) loadingMessage.classList.add('hidden');
+    if (loadingMessage) loadingMessage.classList.remove('hidden'); // Show loading
+    if (movieDetailsSkeleton) movieDetailsSkeleton.classList.remove('hidden'); // Show skeleton
+
     loadYouTubeApiScript();
 
-    // Fetch ALL data types
-    // Tải TẤT CẢ các loại dữ liệu
     Promise.all([
         fetch('../json/filmData.json').then(res => res.ok ? res.json() : Promise.reject(`HTTP error! status: ${res.status} fetching filmData.json`)),
-        fetch('../json/filmData_phimBo.json').then(res => res.ok ? res.json() : Promise.resolve([])), // Allow series fetch to fail gracefully
-        fetch('../json/animeData.json').then(res => res.ok ? res.json() : Promise.resolve([])) // Allow anime fetch to fail gracefully
+        fetch('../json/filmData_phimBo.json').then(res => res.ok ? res.json() : Promise.resolve([])), 
+        fetch('../json/animeData.json').then(res => res.ok ? res.json() : Promise.resolve([])) 
     ])
     .then(([movies, series, anime]) => {
         allMoviesData = movies || [];
         allSeriesData = series || [];
         allAnimeData = anime || [];
 
-        // Find the current movie (could be from filmData or animeData if it's an anime-movie)
-        // Tìm phim hiện tại (có thể từ filmData hoặc animeData nếu là anime-movie)
         currentMovieData = allMoviesData.find(m => m.id === numericMovieId);
-        if (!currentMovieData && typeParam === 'anime-movie') {
-            currentMovieData = allAnimeData.find(a => a.id === numericMovieId && a.itemType === 'anime-movie');
-        }
-
+        
         if (currentMovieData) {
             updateMetaTags(currentMovieData);
 
@@ -569,11 +579,25 @@ document.addEventListener('DOMContentLoaded', () => {
             if(movieDuration) movieDuration.textContent = currentMovieData.duration || 'N/A';
             if(movieRating) movieRating.textContent = currentMovieData.rating ? `${currentMovieData.rating}` : 'N/A';
             if(movieDescription) movieDescription.textContent = currentMovieData.description || 'Không có mô tả.';
-            if(movieDirector) movieDirector.textContent = currentMovieData.director || currentMovieData.studio || 'N/A'; // Use studio as fallback
-            if(movieCast) movieCast.textContent = formatArrayData(currentMovieData.cast || currentMovieData.seiyuu); // Use seiyuu as fallback
+            if(movieDirector) movieDirector.textContent = currentMovieData.director || 'N/A'; 
+            if(movieCast) movieCast.textContent = formatArrayData(currentMovieData.cast);
 
-            // Determine initial version
-            // Xác định phiên bản ban đầu
+            // Update data attributes for favorite/watchlist buttons
+            if (favoriteButton) {
+                favoriteButton.dataset.id = currentMovieData.id;
+                // favoriteButton.dataset.type will be set by HTML or could be 'movies'
+            }
+            if (watchlistButton) {
+                watchlistButton.dataset.id = currentMovieData.id;
+                // watchlistButton.dataset.type will be set by HTML or could be 'movies'
+            }
+            // Call to initialize button states from favorites.js if it's loaded
+            if (typeof initializeFavoriteButtons === 'function') {
+                initializeFavoriteButtons();
+                initializeWatchlistButtons(); // Assuming this function also exists in favorites.js
+            }
+
+
             let initialVersionKey = loadVersionPreference(numericMovieId);
             const availableUrls = currentMovieData.videoUrls || {};
             if (!initialVersionKey || !availableUrls[initialVersionKey]) {
@@ -583,18 +607,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!initialVersionKey) { for (const key in availableUrls) { if (availableUrls[key]) { initialVersionKey = key; break; } } }
             }
 
-            // Prepare initial version
-            // Chuẩn bị phiên bản ban đầu
             if(initialVersionKey) { prepareVideoPlayback(initialVersionKey); }
             else { updateVersionButtonStates(null); setPlayerPoster(); }
 
-            loadRelatedItems(currentMovieData); // Load related items from all data sources
+            loadRelatedItems(currentMovieData);
 
             setTimeout(() => {
+                if(loadingMessage) loadingMessage.classList.add('hidden');
                 if(movieDetailsSkeleton) movieDetailsSkeleton.classList.add('hidden');
                 if(errorMessageContainer) errorMessageContainer.classList.add('hidden');
                 if(movieDetailsContent) movieDetailsContent.classList.remove('hidden');
-            }, 150);
+            }, 200); // Slightly longer delay for perceived loading
             initObserver();
 
         } else {
@@ -604,22 +627,39 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => {
         console.error('Lỗi khi tải hoặc xử lý dữ liệu phim:', error);
         displayError(`Đã xảy ra lỗi khi tải dữ liệu: ${error.message || 'Lỗi không xác định'}`);
+         if(loadingMessage) loadingMessage.classList.add('hidden');
+         if(movieDetailsSkeleton) movieDetailsSkeleton.classList.add('hidden');
     });
 
-    // --- Event Listeners ---
+    // Event Listeners
     window.addEventListener('scroll', handleScroll);
     if (scrollToTopButton) scrollToTopButton.addEventListener('click', scrollToTop);
     if (versionSelectionContainer) versionSelectionContainer.addEventListener('click', handleVersionClick);
     if (toggleLightsButton) toggleLightsButton.addEventListener('click', toggleLights);
     const lightsOverlay = document.getElementById('lights-overlay');
     if (lightsOverlay) lightsOverlay.addEventListener('click', () => { if (document.body.classList.contains('lights-off')) toggleLights(); });
-    if (videoPosterOverlay) videoPosterOverlay.addEventListener('click', () => { if (currentVideoUrl) startVideoPlayback(currentVideoUrl, false); else showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Vui lòng chọn phiên bản video.`, false, true); });
-    if (videoPlayButton) videoPlayButton.addEventListener('click', (event) => { event.stopPropagation(); if (currentVideoUrl) startVideoPlayback(currentVideoUrl, false); else showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Vui lòng chọn phiên bản video.`, false, true); });
+    
+    const playFunction = (skipIntro = false) => {
+        if (currentVideoUrl) {
+            startVideoPlayback(currentVideoUrl, skipIntro);
+        } else {
+            showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Vui lòng chọn phiên bản video.`, false, true);
+        }
+    };
+
+    if (videoPosterOverlay) videoPosterOverlay.addEventListener('click', () => playFunction(false));
+    if (videoPlayButton) videoPlayButton.addEventListener('click', (event) => { event.stopPropagation(); playFunction(false); });
+    
     if (skipIntroButton) {
         skipIntroButton.addEventListener('click', () => {
-            if (currentVideoUrl && currentActiveVersion) { const isYouTube = !!getYouTubeVideoId(currentVideoUrl); if (isYouTube) startVideoPlayback(currentVideoUrl, true); else showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Bỏ qua giới thiệu chỉ khả dụng cho YouTube.`, false, true); }
-            else { showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Chọn phiên bản video trước.`, false, true); }
+            if (currentVideoUrl && currentActiveVersion) { 
+                const isYouTube = !!getYouTubeVideoId(currentVideoUrl); 
+                if (isYouTube) playFunction(true); 
+                else showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Bỏ qua giới thiệu chỉ khả dụng cho YouTube.`, false, true); 
+            } else { 
+                showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Chọn phiên bản video trước.`, false, true); 
+            }
         });
     }
-
-}); // End DOMContentLoaded
+    console.log("filmDetails.js loaded and initialized (v1.6)");
+});

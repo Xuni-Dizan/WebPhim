@@ -1,6 +1,6 @@
 // js/anime.js - JavaScript for Anime Page Functionality
 // Handles data loading, display, hero update, search, mobile interactions, and ANIME-SPECIFIC FILTERS.
-// v1.5: Updated detailPageUrl logic in createAnimeCard and createAnimeSuggestionItem to always point to animeDetails.html.
+// v1.7: Ensured hero button visibility by resetting and re-triggering animation after display style change.
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---
@@ -113,29 +113,25 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {string} HTML string for the card.
      */
     const createAnimeCard = (anime) => {
-        // *** CẬP NHẬT LOGIC LIÊN KẾT ANIME CARD ***
         // Luôn trỏ đến animeDetails.html cho cả anime-series và anime-movie
-        // Xác định itemType, mặc định là 'anime-series' nếu không có hoặc episodes không null
         const itemType = anime.itemType || (anime.episodes === null ? 'anime-movie' : 'anime-series');
         const detailPageUrl = `animeDetails.html?id=${anime.id}&type=${itemType}`;
-        // *** KẾT THÚC CẬP NHẬT LOGIC ***
 
         const posterUrl = anime.posterUrl || 'https://placehold.co/300x450/1f1f1f/888888?text=No+Poster';
         const title = anime.title || 'Không có tiêu đề';
         const rating = anime.rating ? anime.rating.toFixed(1) : 'N/A';
-        // Determine display text for episodes/movie
+        
         let episodesText = 'N/A';
-        if (itemType === 'anime-movie') { // Use determined itemType
+        if (itemType === 'anime-movie') {
             episodesText = 'Movie';
         } else if (anime.totalEpisodes) {
             episodesText = `${anime.totalEpisodes} Tập`;
         } else if (anime.seasons && anime.seasons[0] && anime.seasons[0].episodes) {
-            episodesText = `${anime.seasons[0].episodes.length} Tập`; // Fallback if totalEpisodes is missing
+            episodesText = `${anime.seasons[0].episodes.length} Tập`; 
         }
 
         const year = anime.releaseYear || 'N/A';
         const altText = `Poster Anime: ${title} (${year})`;
-        // Highlight search term if active
         const displayTitle = currentAnimeFilters.search ? highlightTerm(title, currentAnimeFilters.search) : title;
 
         return `
@@ -169,10 +165,10 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn("Anime grid element not found for population.");
             return;
         }
-        if (loadingIndicator) loadingIndicator.classList.add('hidden'); // Hide loading
+        if (loadingIndicator) loadingIndicator.classList.add('hidden'); 
 
         if (!animeList || animeList.length === 0) {
-            allAnimeGrid.innerHTML = ''; // Clear any skeletons
+            allAnimeGrid.innerHTML = ''; 
             if (noResultsIndicator) {
                  noResultsIndicator.textContent = currentAnimeFilters.search
                     ? `Không tìm thấy Anime nào cho "${currentAnimeFilters.search}".`
@@ -182,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if (noResultsIndicator) noResultsIndicator.classList.add('hidden'); // Hide no results message
+        if (noResultsIndicator) noResultsIndicator.classList.add('hidden'); 
         allAnimeGrid.innerHTML = animeList.map(createAnimeCard).join('');
     };
 
@@ -191,20 +187,17 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     const displayAnimeSkeletonLoaders = () => {
         if (!allAnimeGrid) return;
-        if (loadingIndicator) loadingIndicator.classList.remove('hidden'); // Hide text loading
-        if (noResultsIndicator) noResultsIndicator.classList.add('hidden'); // Hide no results
+        if (loadingIndicator) loadingIndicator.classList.remove('hidden'); 
+        if (noResultsIndicator) noResultsIndicator.classList.add('hidden');
 
-        const skeletonCount = 12; // Show more skeletons for the main grid
+        const skeletonCount = 12; 
         let skeletonsHTML = '';
         for (let i = 0; i < skeletonCount; i++) {
             let hiddenClasses = '';
             if (i >= 2 && i < 3) hiddenClasses = 'hidden sm:block';
             if (i >= 3 && i < 4) hiddenClasses = 'hidden md:block';
             if (i >= 4 && i < 5) hiddenClasses = 'hidden lg:block';
-            if (i >= 5 && i < 6) hiddenClasses = 'hidden xl:block'; // Ensure enough skeletons for xl
-            // Adjust logic to show more skeletons on larger screens if needed
-            // For example, keep showing them on xl beyond the 6th
-            if (i >= 6) hiddenClasses = 'hidden xl:block'; // Example: Hide extras on smaller screens
+            if (i >= 5) hiddenClasses = 'hidden xl:block';
 
             skeletonsHTML += `
                 <div class="skeleton-card ${hiddenClasses}">
@@ -221,69 +214,75 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {object} anime - The featured anime data object.
      */
     const updateAnimeHero = (anime) => {
+        const heroContentElement = document.querySelector('.hero-content-anime');
+
         if (!heroSection || !anime) {
-            // Set default/fallback state
             if (heroSection) heroSection.style.backgroundImage = `url('https://placehold.co/1920x700/1a1a1a/666666?text=Anime+Hero+Background')`;
             if (heroTitle) heroTitle.textContent = "Thế Giới Anime";
             if (heroGenresContainer) heroGenresContainer.innerHTML = '';
             if (heroDescription) heroDescription.textContent = "Khám phá bộ sưu tập Anime mới nhất và hay nhất.";
-            if (heroButton) heroButton.style.display = 'none';
+            if (heroButton) heroButton.style.display = 'none'; // Hide button if no data
             console.warn("updateAnimeHero: Missing hero section or anime data. Setting default.");
+            if (heroContentElement) heroContentElement.classList.remove('animate-fadeInUpDelayed'); // Remove animation class if no data
             return;
         }
 
-        // Set background image
         const heroImageUrl = anime.heroImage || anime.posterUrl || 'https://placehold.co/1920x700/1a1a1a/666666?text=No+Hero+Image';
         heroSection.style.backgroundImage = `url('${heroImageUrl}')`;
 
-        // Update text content
-        if (heroTitle) heroTitle.textContent = anime.title || 'Không có tiêu đề';
+        if (heroTitle) {
+            heroTitle.textContent = anime.title || 'Không có tiêu đề';
+            heroTitle.classList.remove('animate-heroTitleSlideIn');
+            void heroTitle.offsetWidth; // Force reflow
+            heroTitle.classList.add('animate-heroTitleSlideIn');
+        }
 
-        // Update genres
+
         if (heroGenresContainer && Array.isArray(anime.genre)) {
             heroGenresContainer.innerHTML = anime.genre.map(g =>
                 `<span class="px-2 py-1 rounded-full text-xs font-medium bg-white/10 backdrop-blur-sm border border-white/20">${g}</span>`
             ).join('');
+            heroGenresContainer.classList.remove('animate-heroGenresFadeIn');
+            void heroGenresContainer.offsetWidth; // Force reflow
+            heroGenresContainer.classList.add('animate-heroGenresFadeIn');
         } else if (heroGenresContainer) {
-            heroGenresContainer.innerHTML = ''; // Clear if no genres
+            heroGenresContainer.innerHTML = ''; 
         }
 
-        // Update description (truncated)
         if (heroDescription) {
             heroDescription.textContent = anime.description ? (anime.description.length > 180 ? anime.description.substring(0, 180) + '...' : anime.description) : 'Không có mô tả.';
+            heroDescription.classList.remove('animate-heroDescSlideIn');
+            void heroDescription.offsetWidth; // Force reflow
+            heroDescription.classList.add('animate-heroDescSlideIn');
         }
 
-        // Update hero button
         if (heroButton) {
-            heroButton.style.display = 'inline-flex'; // Show the button
-            // *** CẬP NHẬT LOGIC LIÊN KẾT NÚT HERO ***
-            // Luôn trỏ đến animeDetails.html
+            heroButton.style.display = 'inline-flex'; 
             const itemType = anime.itemType || (anime.episodes === null ? 'anime-movie' : 'anime-series');
             const detailPageUrl = `animeDetails.html?id=${anime.id}&type=${itemType}`;
-            // *** KẾT THÚC CẬP NHẬT LOGIC ***
-            heroButton.onclick = () => { window.location.href = detailPageUrl; }; // Set click action
-            heroButton.innerHTML = `<i class="fas fa-play"></i> Xem Ngay ${anime.title || ''}`; // Update text
+            heroButton.onclick = () => { window.location.href = detailPageUrl; }; 
+            heroButton.innerHTML = `<i class="fas fa-play"></i> Xem Ngay ${anime.title || ''}`; 
+            
+            // Reset and re-trigger animation for the button
+            heroButton.classList.remove('animate-fadeInUp', 'animate-heroButtonPulse');
+            void heroButton.offsetWidth; // Force reflow to restart animation
+            heroButton.classList.add('animate-fadeInUp', 'animate-heroButtonPulse');
         }
 
-        // Trigger fade-in animation for content
-        const heroContentElement = document.querySelector('.hero-content-anime');
+        // Trigger fade-in animation for the main hero content container
         if (heroContentElement) {
-            heroContentElement.classList.remove('animate-fade-in-up'); // Remove class to reset animation
-            void heroContentElement.offsetWidth; // Force reflow
-            heroContentElement.classList.add('animate-fade-in-up'); // Re-add class to trigger animation
+            heroContentElement.classList.remove('animate-fadeInUpDelayed'); 
+            void heroContentElement.offsetWidth; 
+            heroContentElement.classList.add('animate-fadeInUpDelayed'); 
         }
     };
 
 
     // --- ANIME FILTER Logic ---
 
-    /**
-     * Sets up the anime genre filter dropdown.
-     */
     const setupAnimeGenreFilter = () => {
         if (!animeGenreDropdown || !animeGenreFilterButton) return;
 
-        // Extract unique genres from allAnimeData
         const genres = new Set();
         allAnimeData.forEach(anime => {
             if (Array.isArray(anime.genre)) {
@@ -292,38 +291,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         uniqueAnimeGenres = Array.from(genres).sort();
 
-        animeGenreDropdown.innerHTML = ''; // Clear loading/previous
+        animeGenreDropdown.innerHTML = ''; 
         if (uniqueAnimeGenres.length === 0) {
             animeGenreDropdown.innerHTML = '<div class="p-3 text-sm text-text-muted italic">Không có thể loại nào.</div>';
             updateAnimeGenreButtonText();
             return;
         }
 
-        // Create checkboxes for each unique genre
         uniqueAnimeGenres.forEach(genre => {
             const label = document.createElement('label');
-            label.className = 'block px-3 py-1.5 hover:bg-gray-700 rounded cursor-pointer flex items-center text-sm'; // Adjusted styles
+            label.className = 'block px-3 py-1.5 hover:bg-gray-700 rounded cursor-pointer flex items-center text-sm'; 
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.value = genre;
-            checkbox.className = 'mr-2 accent-anime-accent'; // Use anime accent color
-            checkbox.checked = currentAnimeFilters.genres.includes(genre); // Check based on current filter state
-            checkbox.addEventListener('change', handleAnimeGenreChange); // Add listener
+            checkbox.className = 'mr-2 accent-anime-accent'; 
+            checkbox.checked = currentAnimeFilters.genres.includes(genre); 
+            checkbox.addEventListener('change', handleAnimeGenreChange); 
             label.appendChild(checkbox);
             label.appendChild(document.createTextNode(genre));
             animeGenreDropdown.appendChild(label);
         });
-        updateAnimeGenreButtonText(); // Update button text initially
+        updateAnimeGenreButtonText(); 
     };
 
-    /**
-     * Handles changes in the anime genre filter checkboxes.
-     * @param {Event} event - The change event object.
-     */
     const handleAnimeGenreChange = (event) => {
         const genre = event.target.value;
         const isChecked = event.target.checked;
-        // Add or remove genre from the filter state
         if (isChecked) {
             if (!currentAnimeFilters.genres.includes(genre)) {
                 currentAnimeFilters.genres.push(genre);
@@ -331,59 +324,40 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             currentAnimeFilters.genres = currentAnimeFilters.genres.filter(g => g !== genre);
         }
-        // Update UI
         updateAnimeGenreButtonText();
         updateAnimeFilterTags();
         applyAnimeFiltersAndRender();
-        // updateUrlParams(); // Optional: Add URL param update if needed for anime filters
     };
 
-    /**
-     * Updates the text displayed on the anime genre filter button.
-     */
     const updateAnimeGenreButtonText = () => {
         if (!animeGenreFilterButton) return;
         const buttonTextSpan = animeGenreFilterButton.querySelector('span');
         if (!buttonTextSpan) return;
         const count = currentAnimeFilters.genres.length;
-        // Set text based on selection count
         if (count === 0) buttonTextSpan.textContent = 'Chọn thể loại...';
         else if (count === 1) buttonTextSpan.textContent = currentAnimeFilters.genres[0];
         else buttonTextSpan.textContent = `${count} thể loại đã chọn`;
     };
 
-    /**
-     * Creates and displays filter tags for active anime filters.
-     */
     const updateAnimeFilterTags = () => {
         if (!animeFilterTagsContainer) return;
-        animeFilterTagsContainer.innerHTML = ''; // Clear existing tags
+        animeFilterTagsContainer.innerHTML = ''; 
 
-        // Genre Tags
         currentAnimeFilters.genres.forEach(genre => {
             createAnimeTag('genre', genre, genre);
         });
 
-        // Status Tag
         if (currentAnimeFilters.status !== 'all') {
             const statusOption = animeStatusFilter?.querySelector(`option[value="${currentAnimeFilters.status}"]`);
             const statusText = statusOption ? statusOption.textContent : currentAnimeFilters.status;
             createAnimeTag('status', currentAnimeFilters.status, `Trạng thái: ${statusText}`);
         }
 
-        // Update clear button visibility
         updateClearAnimeFiltersButtonVisibility();
     };
 
-    /**
-     * Helper function to create an anime filter tag button.
-     * @param {string} type - Filter type ('genre', 'status').
-     * @param {string} value - Filter value.
-     * @param {string} label - Display label for the tag.
-     */
     const createAnimeTag = (type, value, label) => {
         const tag = document.createElement('button');
-        // Use anime accent colors for tags on this page
         tag.className = 'filter-tag bg-purple-800 border-purple-600 hover:bg-purple-700';
         tag.dataset.filterType = type;
         tag.dataset.filterValue = value;
@@ -392,86 +366,62 @@ document.addEventListener('DOMContentLoaded', () => {
         animeFilterTagsContainer.appendChild(tag);
     };
 
-    /**
-     * Handles the removal of an anime filter tag.
-     * @param {Event} event - The click event object.
-     */
     const handleRemoveAnimeTag = (event) => {
         const tagButton = event.target.closest('.filter-tag');
-        if (!tagButton) return; // Ignore clicks not on a tag
+        if (!tagButton) return; 
         const filterType = tagButton.dataset.filterType;
         const filterValue = tagButton.dataset.filterValue;
 
-        // Update filter state based on the tag removed
         switch (filterType) {
             case 'genre':
                 currentAnimeFilters.genres = currentAnimeFilters.genres.filter(g => g !== filterValue);
-                // Uncheck the corresponding checkbox
                 const checkbox = animeGenreDropdown?.querySelector(`input[value="${filterValue}"]`);
                 if (checkbox) checkbox.checked = false;
                 updateAnimeGenreButtonText();
                 break;
             case 'status':
                 currentAnimeFilters.status = 'all';
-                if (animeStatusFilter) animeStatusFilter.value = 'all'; // Reset dropdown
+                if (animeStatusFilter) animeStatusFilter.value = 'all'; 
                 break;
         }
-        // Update UI
         updateAnimeFilterTags();
         applyAnimeFiltersAndRender();
-        // updateUrlParams(); // Optional
-        console.log("All anime filters cleared.");
+        console.log("Anime filter tag removed.");
     };
 
-    /**
-     * Updates the visibility of the "Clear Anime Filters" button.
-     */
     const updateClearAnimeFiltersButtonVisibility = () => {
         if (!clearAnimeFiltersButton) return;
-        // Check if any anime-specific filter is active
         const hasActiveFilters = currentAnimeFilters.genres.length > 0 ||
                                  currentAnimeFilters.status !== 'all' ||
                                  currentAnimeFilters.sort !== 'default' ||
-                                 currentAnimeFilters.search !== ''; // Include search
+                                 currentAnimeFilters.search !== ''; 
         clearAnimeFiltersButton.classList.toggle('hidden', !hasActiveFilters);
         clearAnimeFiltersButton.setAttribute('aria-hidden', String(!hasActiveFilters));
     };
 
-    /**
-     * Handles clearing all active anime filters.
-     */
     const handleClearAnimeFilters = () => {
-        // Reset filter state
         currentAnimeFilters = { genres: [], status: 'all', sort: 'default', search: '' };
 
-        // Reset filter UI controls
         animeGenreDropdown?.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
         updateAnimeGenreButtonText();
         if (animeStatusFilter) animeStatusFilter.value = 'all';
         if (animeSortFilter) animeSortFilter.value = 'default';
-        // Clear search inputs as well
         if (searchInputDesktop) searchInputDesktop.value = '';
         if (searchInputMobile) searchInputMobile.value = '';
-        window.currentAnimeSearchTerm = ''; // Clear global search term too
+        window.currentAnimeSearchTerm = ''; 
 
-        // Update UI
         updateAnimeFilterTags();
         applyAnimeFiltersAndRender();
-        // updateUrlParams(); // Optional
         console.log("All anime filters cleared.");
     };
 
 
-    /**
-     * Filters and renders anime based on the current filter state and search term.
-     */
     const applyAnimeFiltersAndRender = () => {
-        displayAnimeSkeletonLoaders(); // Show skeletons while filtering
+        displayAnimeSkeletonLoaders(); 
 
-        let itemsToDisplay = [...allAnimeData]; // Start with all anime
-        let filterDescriptions = []; // To build the subtitle
+        let itemsToDisplay = [...allAnimeData]; 
+        let filterDescriptions = []; 
 
-        // 1. Apply Search Filter
         if (currentAnimeFilters.search) {
             const searchTerm = currentAnimeFilters.search.toLowerCase();
             itemsToDisplay = itemsToDisplay.filter(anime =>
@@ -479,7 +429,6 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
 
-        // 2. Apply Genre Filter
         if (currentAnimeFilters.genres.length > 0) {
             itemsToDisplay = itemsToDisplay.filter(anime => {
                 const itemGenres = Array.isArray(anime.genre) ? anime.genre : [];
@@ -488,24 +437,20 @@ document.addEventListener('DOMContentLoaded', () => {
             filterDescriptions.push(`Thể loại: ${currentAnimeFilters.genres.join(', ')}`);
         }
 
-        // 3. Apply Status Filter
         if (currentAnimeFilters.status !== 'all') {
             itemsToDisplay = itemsToDisplay.filter(anime => anime.status === currentAnimeFilters.status);
              const statusOption = animeStatusFilter?.querySelector(`option[value="${currentAnimeFilters.status}"]`);
              if (statusOption) filterDescriptions.push(`Trạng thái: ${statusOption.textContent}`);
         }
 
-        // 4. Apply Sorting
         switch (currentAnimeFilters.sort) {
             case 'newest': itemsToDisplay.sort((a, b) => (b.releaseYear || 0) - (a.releaseYear || 0)); break;
             case 'rating_desc': itemsToDisplay.sort((a, b) => (b.rating || 0) - (a.rating || 0)); break;
             case 'rating_asc': itemsToDisplay.sort((a, b) => (a.rating || 0) - (b.rating || 0)); break;
             case 'title_asc': itemsToDisplay.sort((a, b) => (a.title || '').localeCompare(b.title || '')); break;
             case 'title_desc': itemsToDisplay.sort((a, b) => (b.title || '').localeCompare(a.title || '')); break;
-            // 'default' requires no additional sorting
         }
 
-        // 5. Update Grid Title
         if (animeGridTitle) {
             let titleText = currentAnimeFilters.search ? `Kết quả cho "${currentAnimeFilters.search}"` : "Tất Cả Anime";
             if (filterDescriptions.length > 0) {
@@ -514,30 +459,18 @@ document.addEventListener('DOMContentLoaded', () => {
             animeGridTitle.textContent = titleText;
         }
 
-        // 6. Render the filtered and sorted items
-        // Use a small delay to allow skeletons to show before rendering
         setTimeout(() => {
             populateAnimeGrid(itemsToDisplay);
-            updateClearAnimeFiltersButtonVisibility(); // Update clear button based on final filter state
-        }, 150); // Small delay
+            updateClearAnimeFiltersButtonVisibility(); 
+        }, 150); 
     };
 
 
     // --- Search Functionality ---
 
-    /**
-     * Creates HTML for a search suggestion item.
-     * @param {object} item The anime data object.
-     * @param {string} searchTerm The current search term for highlighting.
-     * @returns {string} HTML string for the suggestion item.
-     */
     const createAnimeSuggestionItem = (item, searchTerm) => {
-        // *** CẬP NHẬT LOGIC LIÊN KẾT GỢI Ý TÌM KIẾM ***
-        // Luôn trỏ đến animeDetails.html cho cả anime-series và anime-movie
-        // Xác định itemType, mặc định là 'anime-series' nếu không có hoặc episodes không null
         const itemType = item.itemType || (item.episodes === null ? 'anime-movie' : 'anime-series');
         const detailPageUrl = `animeDetails.html?id=${item.id}&type=${itemType}`;
-        // *** KẾT THÚC CẬP NHẬT LOGIC ***
 
         const altText = `Poster nhỏ của Anime ${item.title || 'không có tiêu đề'}`;
         const posterSrc = item.posterUrl || 'https://placehold.co/40x60/1f1f1f/888888?text=N/A';
@@ -554,12 +487,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    /**
-     * Displays search suggestions.
-     * @param {string} searchTerm The term entered by the user.
-     * @param {HTMLInputElement} inputElement The input element triggering the search.
-     * @param {HTMLElement} suggestionsContainer The container to display suggestions in.
-     */
     const displayAnimeSearchSuggestions = (searchTerm, inputElement, suggestionsContainer) => {
         if (!suggestionsContainer) {
             console.warn("Suggestions container not found for input:", inputElement.id);
@@ -567,24 +494,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const placeholder = suggestionsContainer.querySelector('.no-suggestions-placeholder');
 
-        // Hide suggestions if search term is empty
         if (!searchTerm) {
             suggestionsContainer.style.display = 'none';
             inputElement.setAttribute('aria-expanded', 'false');
-            if (placeholder) placeholder.textContent = 'Nhập để tìm kiếm...'; // Reset placeholder
+            if (placeholder) placeholder.textContent = 'Nhập để tìm kiếm...'; 
             return;
         }
 
-        // Show "Searching..." while filtering
         if (placeholder) placeholder.textContent = 'Đang tìm...';
-        suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+        suggestionsContainer.innerHTML = ''; 
 
-        // Filter anime data based on the search term
         const matchedAnime = allAnimeData
             .filter(anime => anime.title && anime.title.toLowerCase().includes(searchTerm))
-            .slice(0, 7); // Limit suggestions
+            .slice(0, 7); 
 
-        // Display results or "No results" message
         if (matchedAnime.length > 0) {
             suggestionsContainer.innerHTML = matchedAnime.map(anime => createAnimeSuggestionItem(anime, searchTerm)).join('');
             suggestionsContainer.style.display = 'block';
@@ -596,9 +519,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    /**
-     * Hides all search suggestion dropdowns.
-     */
     const hideAllAnimeSearchSuggestions = () => {
         if (suggestionsDesktop) {
             suggestionsDesktop.style.display = 'none';
@@ -609,68 +529,55 @@ document.addEventListener('DOMContentLoaded', () => {
             if(searchInputMobile) searchInputMobile.setAttribute('aria-expanded', 'false');
         }
     };
-
-    // Handle search functionality 
+ 
     const handleAnimeSearchInput = (event) => {
         const inputEl = event.target;
         const suggestionsEl = inputEl === searchInputDesktop ? suggestionsDesktop : suggestionsMobile;
         const term = inputEl.value.trim();
         
-        // Update global filter state
         currentAnimeFilters.search = term.toLowerCase();
         SearchUtils.debounce(() => applyAnimeFiltersAndRender(), 300)();
         
-        // Use unified search utility for suggestions
         SearchUtils.debounce(() => {
-            // Display search suggestions
             SearchUtils.displaySearchSuggestions(term, inputEl, suggestionsEl, allAnimeData, {
                 maxResults: 8
             });
         }, 150)();
     };
 
-    // Handle search form submission
     const handleAnimeSearchSubmit = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
             const searchTerm = event.target.value.trim();
             
-            // Update filter and apply
             currentAnimeFilters.search = searchTerm.toLowerCase();
             applyAnimeFiltersAndRender();
             
-            // Hide suggestions and blur input
             hideAllAnimeSearchSuggestions();
             event.target.blur();
         }
     };
 
-    // Attach input listeners
     searchInputDesktop?.addEventListener('input', handleAnimeSearchInput);
     searchInputMobile?.addEventListener('input', handleAnimeSearchInput);
     searchInputDesktop?.addEventListener('keydown', handleAnimeSearchSubmit);
     searchInputMobile?.addEventListener('keydown', handleAnimeSearchSubmit);
 
-    // Hide suggestions on click outside
     document.addEventListener('click', (event) => {
         const target = event.target;
-        // Check if click is inside search areas or filter dropdowns
         const isInsideDesktopSearch = searchInputDesktop?.contains(target) || suggestionsDesktop?.contains(target);
         const isInsideMobileSearch = searchInputMobile?.contains(target) || suggestionsMobile?.contains(target) || searchIconMobile?.contains(target) || mobileSearchContainer?.contains(target);
         const isInsideGenreFilter = animeGenreDropdown?.contains(target) || animeGenreFilterButton?.contains(target);
         const isInsideFilterControls = animeFilterSection?.contains(target);
         const isFilterIcon = filterIconButtonDesktop?.contains(target) || filterIconButtonMobile?.contains(target);
 
-        // Hide search suggestions if click is outside search areas
         if (!isInsideDesktopSearch && !isInsideMobileSearch) {
             hideAllAnimeSearchSuggestions();
         }
-        // Hide ANIME genre dropdown if click is outside its area
         if (!isInsideGenreFilter && animeGenreDropdown && !animeGenreDropdown.classList.contains('hidden')) {
             animeGenreDropdown.classList.add('hidden');
             animeGenreFilterButton?.setAttribute('aria-expanded', 'false');
         }
-        // Hide ANIME Filter Controls when clicking outside (unless it's the filter icon itself)
         if (animeFilterSection && !animeFilterSection.classList.contains('hidden') &&
             !isInsideFilterControls && !isFilterIcon) {
             animeFilterSection.classList.add('hidden');
@@ -696,19 +603,18 @@ document.addEventListener('DOMContentLoaded', () => {
     closeMobileMenuButton?.addEventListener('click', closeMobileMenu);
     mobileMenuOverlay?.addEventListener('click', closeMobileMenu);
 
-    // Mobile search toggle
     searchIconMobile?.addEventListener('click', () => {
         const isHidden = mobileSearchContainer?.classList.toggle('hidden');
         searchIconMobile.setAttribute('aria-expanded', String(!isHidden));
         if (!isHidden) searchInputMobile?.focus();
-        else hideAllAnimeSearchSuggestions(); // Hide suggestions when closing search
+        else hideAllAnimeSearchSuggestions(); 
     });
 
 
     // --- Scroll-to-Top Functionality ---
     const handleScroll = () => {
         if (!scrollToTopButton) return;
-        const isVisible = window.scrollY > 300; // Show after scrolling 300px
+        const isVisible = window.scrollY > 300; 
         scrollToTopButton.classList.toggle('visible', isVisible);
         scrollToTopButton.classList.toggle('hidden', !isVisible);
         scrollToTopButton.setAttribute('aria-hidden', String(!isVisible));
@@ -718,24 +624,22 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     window.addEventListener('scroll', handleScroll);
     scrollToTopButton?.addEventListener('click', scrollToTop);
-    handleScroll(); // Initial check
+    handleScroll(); 
 
     // --- ANIME FILTER TOGGLE ---
     const toggleAnimeFilterSection = (event) => {
-        event.preventDefault(); // Prevent default anchor jump if it's a link
+        event.preventDefault(); 
         if (animeFilterSection) {
             const isHidden = animeFilterSection.classList.toggle('hidden');
             console.log("Anime filter controls visibility toggled:", !isHidden);
-            // Optional: Scroll to the filter section when opening
             if (!isHidden) {
                 setTimeout(() => {
                     animeFilterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 50); // Small delay to allow display change
+                }, 50); 
             }
         } else {
             console.error("Anime filter section element not found.");
         }
-        // Close mobile menu if open and the mobile filter icon was clicked
         if (event.currentTarget === filterIconButtonMobile && mobileMenuPanel && !mobileMenuPanel.classList.contains('translate-x-full')) {
             closeMobileMenu();
         }
@@ -744,69 +648,74 @@ document.addEventListener('DOMContentLoaded', () => {
     filterIconButtonMobile?.addEventListener('click', toggleAnimeFilterSection);
 
     // --- Initial Load ---
-    /**
-     * Loads initial anime data from JSON and populates the UI.
-     */
     const loadInitialAnimeData = async () => {
-        displayAnimeSkeletonLoaders(); // Show skeletons initially
+        displayAnimeSkeletonLoaders(); 
 
         try {
-            // Fetch anime data
-            const response = await fetch('../json/animeData.json'); // Adjusted path
+            console.log("Attempting to fetch animeData.json...");
+            const response = await fetch('../json/animeData.json'); 
+            console.log("Fetch response status:", response.status);
+
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}, message: ${response.statusText}`);
             }
-            allAnimeData = await response.json();
-            filteredAnimeData = [...allAnimeData]; // Initialize filtered data
+            
+            const jsonData = await response.json();
+            console.log("Fetched JSON data:", jsonData);
 
-            console.log(`Fetched ${allAnimeData.length} anime items.`);
+            if (!Array.isArray(jsonData)) {
+                 console.error("Fetched data is not an array. Data type:", typeof jsonData, "Data:", jsonData);
+                 throw new Error("Dữ liệu Anime nhận được không hợp lệ (không phải là mảng).");
+            }
+            
+            allAnimeData = jsonData;
+            filteredAnimeData = [...allAnimeData]; 
 
-            // 1. Update Hero Section
-            // Find a trending or the first item for the hero
+            console.log(`Fetched ${allAnimeData.length} anime items successfully.`);
+
             const featuredAnime = allAnimeData.find(a => a.isTrending) || allAnimeData[0];
             updateAnimeHero(featuredAnime);
 
-            // 2. Setup Filters
-            setupAnimeGenreFilter(); // Populate genre filter dropdown
+            setupAnimeGenreFilter(); 
 
-            // 3. Add Filter Event Listeners
             animeStatusFilter?.addEventListener('change', (e) => { currentAnimeFilters.status = e.target.value; updateAnimeFilterTags(); applyAnimeFiltersAndRender(); });
             animeSortFilter?.addEventListener('change', (e) => { currentAnimeFilters.sort = e.target.value; updateAnimeFilterTags(); applyAnimeFiltersAndRender(); });
-            // Toggle genre dropdown visibility
             animeGenreFilterButton?.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent click from closing immediately
+                e.stopPropagation(); 
                 animeGenreDropdown?.classList.toggle('hidden');
                 animeGenreFilterButton.setAttribute('aria-expanded', String(!animeGenreDropdown?.classList.contains('hidden')));
             });
-            // Listener for removing tags
             animeFilterTagsContainer?.addEventListener('click', handleRemoveAnimeTag);
-            // Listener for clearing all filters
             clearAnimeFiltersButton?.addEventListener('click', handleClearAnimeFilters);
 
-            // 4. Initial Render (apply default filters which might be none)
             applyAnimeFiltersAndRender();
 
-            // Set footer year
             const footerYearSpan = document.getElementById('footer-year');
             if (footerYearSpan) {
                 footerYearSpan.textContent = new Date().getFullYear();
             }
 
         } catch (error) {
-            // Handle fetch or processing errors
-            console.error("Error loading anime data:", error);
-            if (allAnimeGrid) allAnimeGrid.innerHTML = '<p class="text-red-500 col-span-full text-center py-4">Lỗi tải dữ liệu Anime. Vui lòng thử lại sau.</p>';
-            if (noResultsIndicator) noResultsIndicator.classList.remove('hidden'); // Show error indicator
-            updateAnimeHero(null); // Set hero to default/error state
+            console.error("Error loading anime data:", error.message, error.stack);
+            if (allAnimeGrid) {
+                allAnimeGrid.innerHTML = `<p class="text-red-400 bg-red-900/30 border border-red-700 rounded-md p-6 col-span-full text-center py-4 text-lg">
+                                            <i class="fas fa-exclamation-triangle mr-2"></i>
+                                            Lỗi nghiêm trọng khi tải dữ liệu Anime. Vui lòng kiểm tra console (F12) để biết thêm chi tiết hoặc liên hệ quản trị viên.
+                                            <br><small class="text-sm text-red-300">Nguyên nhân có thể: Đường dẫn file JSON sai, file JSON lỗi, hoặc vấn đề mạng.</small>
+                                          </p>`;
+            }
+            if (noResultsIndicator) {
+                noResultsIndicator.textContent = "Lỗi tải dữ liệu Anime."; 
+                noResultsIndicator.classList.remove('hidden'); 
+            }
+            updateAnimeHero(null); 
         } finally {
-             // Always hide the text loading indicator when done
              if (loadingIndicator) loadingIndicator.classList.add('hidden');
         }
     };
 
-    // Load data when the page is ready
     loadInitialAnimeData();
 
-    console.log("Trang Anime đã được tải và JS đã cập nhật với bộ lọc và sửa lỗi liên kết (v1.5).");
+    console.log("Trang Anime đã được tải và JS đã cập nhật (v1.7).");
 
-}); // End DOMContentLoaded
+}); 

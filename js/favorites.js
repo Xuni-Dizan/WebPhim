@@ -1,49 +1,44 @@
 /**
  * favorites.js - Handles user favorites and watchlist functionality
  * This script manages saving/loading from localStorage, UI updates, and interactions
+ * v1.1: Updated selectors to use js-prefixed classes for buttons.
+ *       Ensured itemType is correctly handled when adding to library.
  */
 
 // Store favorites data in a structured way
 const userLibrary = {
     favorites: [],
     watchLater: [],
-    inProgress: [],
-    completed: []
+    inProgress: [], // Items user is currently watching
+    completed: []   // Items user has finished watching
 };
 
 // Initialize when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Load existing data from localStorage
     loadLibraryFromStorage();
-    
-    // Initialize UI components
     initializeFavoriteButtons();
     initializeWatchlistButtons();
-    
-    // Update UI based on current library
-    updateLibraryUI();
+    // updateLibraryUI(); // Call this if you have a UI element that shows counts immediately
 });
 
 /**
- * Load favorites and watchlist data from localStorage
+ * Load library data from localStorage
  */
 function loadLibraryFromStorage() {
     try {
-        // Get data from localStorage
-        const savedFavorites = localStorage.getItem('user_favorites');
-        const savedWatchlist = localStorage.getItem('user_watchlist');
-        const savedInProgress = localStorage.getItem('user_in_progress');
-        const savedCompleted = localStorage.getItem('user_completed');
+        const savedFavorites = localStorage.getItem('user_library_favorites');
+        const savedWatchLater = localStorage.getItem('user_library_watchLater');
+        const savedInProgress = localStorage.getItem('user_library_inProgress');
+        const savedCompleted = localStorage.getItem('user_library_completed');
         
-        // Parse and populate if data exists
         if (savedFavorites) userLibrary.favorites = JSON.parse(savedFavorites);
-        if (savedWatchlist) userLibrary.watchLater = JSON.parse(savedWatchlist);
+        if (savedWatchLater) userLibrary.watchLater = JSON.parse(savedWatchLater);
         if (savedInProgress) userLibrary.inProgress = JSON.parse(savedInProgress);
         if (savedCompleted) userLibrary.completed = JSON.parse(savedCompleted);
         
-        console.log('Library data loaded successfully');
+        console.log('User library loaded from storage:', userLibrary);
     } catch (error) {
-        console.error('Error loading library data:', error);
+        console.error('Error loading library data from localStorage:', error);
     }
 }
 
@@ -52,183 +47,167 @@ function loadLibraryFromStorage() {
  */
 function saveLibraryToStorage() {
     try {
-        localStorage.setItem('user_favorites', JSON.stringify(userLibrary.favorites));
-        localStorage.setItem('user_watchlist', JSON.stringify(userLibrary.watchLater));
-        localStorage.setItem('user_in_progress', JSON.stringify(userLibrary.inProgress));
-        localStorage.setItem('user_completed', JSON.stringify(userLibrary.completed));
-        
-        console.log('Library data saved successfully');
+        localStorage.setItem('user_library_favorites', JSON.stringify(userLibrary.favorites));
+        localStorage.setItem('user_library_watchLater', JSON.stringify(userLibrary.watchLater));
+        localStorage.setItem('user_library_inProgress', JSON.stringify(userLibrary.inProgress));
+        localStorage.setItem('user_library_completed', JSON.stringify(userLibrary.completed));
+        console.log('User library saved to storage.');
     } catch (error) {
-        console.error('Error saving library data:', error);
-        showNotification('Failed to save changes. Please try again.', 'error');
+        console.error('Error saving library data to localStorage:', error);
+        showNotification('Lỗi khi lưu thay đổi. Vui lòng thử lại.', 'error');
     }
 }
 
 /**
- * Initialize favorite button interactions
+ * Initialize favorite button interactions using a common class
  */
 function initializeFavoriteButtons() {
-    // Find all favorite buttons in the page
-    const favoriteButtons = document.querySelectorAll('.favorite-button, .action-button-anime[aria-label*="Yêu Thích"]');
+    const favoriteButtons = document.querySelectorAll('.js-favorite-btn'); // Use common JS class
     
     favoriteButtons.forEach(button => {
-        // Get item data
         const itemId = button.dataset.id;
-        const itemType = button.dataset.type;
+        const itemType = button.dataset.type; // Ensure this is set by detail page JS
         
-        if (!itemId || !itemType) return;
+        if (!itemId || !itemType) {
+            // console.warn('Favorite button missing data-id or data-type:', button);
+            return;
+        }
         
-        // Check if already in favorites
         const isFavorite = isItemInLibrary('favorites', itemId, itemType);
-        updateButtonState(button, isFavorite);
+        updateButtonState(button, isFavorite, 'Yêu Thích', 'Đã Thích', 'fa-heart');
         
-        // Add click handler
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            toggleFavoriteStatus(itemId, itemType, button);
-        });
+        button.removeEventListener('click', handleFavoriteClick); // Remove previous if any
+        button.addEventListener('click', handleFavoriteClick);
     });
 }
+// Expose for dynamic content loading (e.g., after detail page JS sets data-id)
+window.initializeFavoriteButtons = initializeFavoriteButtons;
+
+function handleFavoriteClick(e) {
+    e.preventDefault();
+    const button = e.currentTarget;
+    const itemId = button.dataset.id;
+    const itemType = button.dataset.type;
+    if (!itemId || !itemType) return;
+    toggleFavoriteStatus(itemId, itemType, button);
+}
+
 
 /**
- * Initialize watchlist button interactions
+ * Initialize watchlist button interactions using a common class
  */
 function initializeWatchlistButtons() {
-    // Find all watchlist buttons in the page
-    const watchlistButtons = document.querySelectorAll('.watchlist-button, .action-button-secondary[aria-label*="Xem Sau"]');
+    const watchlistButtons = document.querySelectorAll('.js-watchlist-btn'); // Use common JS class
     
     watchlistButtons.forEach(button => {
-        // Get item data
         const itemId = button.dataset.id;
-        const itemType = button.dataset.type;
+        const itemType = button.dataset.type; 
         
-        if (!itemId || !itemType) return;
+        if (!itemId || !itemType) {
+            // console.warn('Watchlist button missing data-id or data-type:', button);
+            return;
+        }
         
-        // Check if already in watchlist
         const isInWatchlist = isItemInLibrary('watchLater', itemId, itemType);
-        updateButtonState(button, isInWatchlist);
+        updateButtonState(button, isInWatchlist, 'Xem Sau', 'Đã Lưu', 'fa-bookmark');
         
-        // Add click handler
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            toggleWatchlistStatus(itemId, itemType, button);
-        });
+        button.removeEventListener('click', handleWatchlistClick); // Remove previous if any
+        button.addEventListener('click', handleWatchlistClick);
     });
 }
+window.initializeWatchlistButtons = initializeWatchlistButtons;
+
+function handleWatchlistClick(e) {
+    e.preventDefault();
+    const button = e.currentTarget;
+    const itemId = button.dataset.id;
+    const itemType = button.dataset.type;
+    if (!itemId || !itemType) return;
+    toggleWatchlistStatus(itemId, itemType, button);
+}
+
 
 /**
- * Update favorite status for an item
+ * Toggle favorite status for an item
  */
 function toggleFavoriteStatus(itemId, itemType, buttonElement) {
-    // Check if item is already in favorites
     const isFavorite = isItemInLibrary('favorites', itemId, itemType);
     
     if (isFavorite) {
-        // Remove from favorites
         removeFromLibrary('favorites', itemId, itemType);
-        updateButtonState(buttonElement, false);
-        showNotification('Removed from favorites', 'info');
+        updateButtonState(buttonElement, false, 'Yêu Thích', 'Đã Thích', 'fa-heart');
+        showNotification('Đã xóa khỏi danh sách Yêu thích', 'info');
     } else {
-        // Add to favorites
-        addToLibrary('favorites', itemId, itemType);
-        updateButtonState(buttonElement, true);
-        showNotification('Added to favorites', 'success');
-        
-        // Animate heart
+        const itemData = getItemDataFromPage(itemId, itemType); // Get title/poster
+        addToLibrary('favorites', itemId, itemType, itemData);
+        updateButtonState(buttonElement, true, 'Yêu Thích', 'Đã Thích', 'fa-heart');
+        showNotification('Đã thêm vào Yêu thích!', 'success');
         animateHeartIcon(buttonElement);
     }
-    
-    // Save changes
     saveLibraryToStorage();
-    
-    // Update any library UI that's showing
-    updateLibraryUI();
+    updateLibraryUI(); // Update any UI that displays counts, etc.
 }
 
 /**
- * Update watchlist status for an item
+ * Toggle watchlist status for an item
  */
 function toggleWatchlistStatus(itemId, itemType, buttonElement) {
-    // Check if item is already in watchlist
     const isInWatchlist = isItemInLibrary('watchLater', itemId, itemType);
     
     if (isInWatchlist) {
-        // Remove from watchlist
         removeFromLibrary('watchLater', itemId, itemType);
-        updateButtonState(buttonElement, false);
-        showNotification('Removed from Watch Later', 'info');
+        updateButtonState(buttonElement, false, 'Xem Sau', 'Đã Lưu', 'fa-bookmark');
+        showNotification('Đã xóa khỏi danh sách Xem Sau', 'info');
     } else {
-        // Add to watchlist
-        addToLibrary('watchLater', itemId, itemType);
-        updateButtonState(buttonElement, true);
-        showNotification('Added to Watch Later', 'success');
+        const itemData = getItemDataFromPage(itemId, itemType); // Get title/poster
+        addToLibrary('watchLater', itemId, itemType, itemData);
+        updateButtonState(buttonElement, true, 'Xem Sau', 'Đã Lưu', 'fa-bookmark');
+        showNotification('Đã thêm vào Xem Sau!', 'success');
     }
-    
-    // Save changes
     saveLibraryToStorage();
-    
-    // Update any library UI that's showing
     updateLibraryUI();
 }
 
 /**
- * Set watching progress
+ * Helper to get item title and poster from the current page (detail pages)
  */
-function setWatchingProgress(itemId, itemType, progress, episode = null) {
-    if (progress === 'in-progress') {
-        // Add to in-progress list
-        addToLibrary('inProgress', itemId, itemType, { lastEpisode: episode });
-        
-        // If was in completed, remove from there
-        if (isItemInLibrary('completed', itemId, itemType)) {
-            removeFromLibrary('completed', itemId, itemType);
-        }
-    } else if (progress === 'completed') {
-        // Add to completed list
-        addToLibrary('completed', itemId, itemType);
-        
-        // Remove from in-progress
-        if (isItemInLibrary('inProgress', itemId, itemType)) {
-            removeFromLibrary('inProgress', itemId, itemType);
-        }
+function getItemDataFromPage(itemId, itemType) {
+    const data = {};
+    let titleSelector, posterSelector;
+
+    if (itemType.includes('anime')) {
+        titleSelector = '#anime-main-title';
+        posterSelector = '#anime-poster';
+    } else if (itemType === 'series') {
+        titleSelector = '#series-main-title';
+        posterSelector = '#series-poster';
+    } else { // movies
+        titleSelector = '#movie-title'; // Assuming movie details page has this ID for main title
+        posterSelector = '#movie-poster';
     }
+
+    const titleElement = document.querySelector(titleSelector);
+    const posterElement = document.querySelector(posterSelector);
+
+    if (titleElement) data.title = titleElement.textContent.trim();
+    if (posterElement) data.posterUrl = posterElement.src;
     
-    // Save changes
-    saveLibraryToStorage();
-    
-    // Update any progress UI
-    updateProgressUI(itemId, itemType, progress);
+    return data;
 }
+
 
 /**
  * Add item to a library category
  */
 function addToLibrary(category, itemId, itemType, additionalData = {}) {
-    // Make sure this category exists
-    if (!userLibrary[category]) {
-        userLibrary[category] = [];
-    }
-    
-    // Check if item already exists to avoid duplicates
+    if (!userLibrary[category]) userLibrary[category] = [];
     if (!isItemInLibrary(category, itemId, itemType)) {
-        const item = {
+        userLibrary[category].push({
             id: itemId,
-            type: itemType,
+            type: itemType, // e.g., "movies", "series", "anime-movie", "anime-series"
             dateAdded: new Date().toISOString(),
-            ...additionalData
-        };
-        
-        // Attempt to add title and poster if we can find it in the DOM
-        const detailsSection = document.querySelector('#movie-details-content, #anime-details-content');
-        if (detailsSection) {
-            const titleElement = document.querySelector('#movie-main-title, #anime-main-title');
-            const posterElement = document.querySelector('#movie-poster, #anime-poster');
-            
-            if (titleElement) item.title = titleElement.textContent;
-            if (posterElement && posterElement.src) item.posterUrl = posterElement.src;
-        }
-        
-        userLibrary[category].push(item);
+            ...additionalData // This will include title and posterUrl if fetched
+        });
     }
 }
 
@@ -237,9 +216,8 @@ function addToLibrary(category, itemId, itemType, additionalData = {}) {
  */
 function removeFromLibrary(category, itemId, itemType) {
     if (!userLibrary[category]) return;
-    
     userLibrary[category] = userLibrary[category].filter(item => 
-        !(item.id === itemId && item.type === itemType)
+        !(String(item.id) === String(itemId) && item.type === itemType) // Ensure ID comparison is robust
     );
 }
 
@@ -248,291 +226,199 @@ function removeFromLibrary(category, itemId, itemType) {
  */
 function isItemInLibrary(category, itemId, itemType) {
     if (!userLibrary[category]) return false;
-    
     return userLibrary[category].some(item => 
-        item.id === itemId && item.type === itemType
+        String(item.id) === String(itemId) && item.type === itemType
     );
 }
 
 /**
- * Update button appearance based on state
+ * Update button appearance and ARIA attributes based on state
  */
-function updateButtonState(buttonElement, isActive) {
+function updateButtonState(buttonElement, isActive, inactiveText, activeText, iconBaseClass) {
     if (!buttonElement) return;
     
+    const icon = buttonElement.querySelector('i.fas, i.far'); // Select Font Awesome solid or regular icons
+    const textSpan = buttonElement.childNodes[1] && buttonElement.childNodes[1].nodeType === Node.TEXT_NODE 
+                     ? buttonElement.childNodes[1] // Text node directly after icon
+                     : (buttonElement.querySelector('span') || buttonElement); // Or find a span or use button itself
+
     if (isActive) {
-        buttonElement.classList.add('active');
-        
-        // Update icon if it exists
-        const icon = buttonElement.querySelector('i');
-        if (icon && icon.classList.contains('fa-heart-o')) {
-            icon.classList.remove('fa-heart-o');
-            icon.classList.add('fa-heart');
-        } else if (icon && icon.classList.contains('fa-bookmark-o')) {
-            icon.classList.remove('fa-bookmark-o');
-            icon.classList.add('fa-bookmark');
+        buttonElement.classList.add('active'); // General active class for potential global styling
+        buttonElement.setAttribute('aria-pressed', 'true');
+        if (textSpan && activeText) {
+            // If textSpan is the button itself and contains an icon, we need to be careful
+            if (textSpan === buttonElement && icon) {
+                 buttonElement.innerHTML = `<i class="fas ${iconBaseClass} mr-1"></i> ${activeText}`;
+            } else if (textSpan.nodeType === Node.TEXT_NODE) {
+                 textSpan.textContent = ` ${activeText}`; // Add space if it's a direct text node
+            } else {
+                textSpan.textContent = activeText;
+            }
         }
-        
-        // Update text if needed
-        if (buttonElement.dataset.activeText) {
-            const textSpan = buttonElement.querySelector('span');
-            if (textSpan) textSpan.textContent = buttonElement.dataset.activeText;
+        if (icon) {
+            icon.classList.remove(`fa-regular`, `far`); // Remove regular/outline style
+            icon.classList.add(`fa-solid`, `fas`);   // Add solid style
+            // Specific class changes for heart/bookmark
+            if (iconBaseClass === 'fa-heart') icon.classList.replace('fa-heart-o', 'fa-heart'); // Deprecated -o
+            if (iconBaseClass === 'fa-bookmark') icon.classList.replace('fa-bookmark-o', 'fa-bookmark'); // Deprecated -o
         }
+        // For primary buttons, toggle between primary and a "deactivated" or secondary style
+        if (buttonElement.classList.contains('button-primary') || buttonElement.classList.contains('action-button-anime')) {
+            buttonElement.classList.remove('button-primary', 'action-button-anime');
+            buttonElement.classList.add('button-secondary'); // Or a specific "active-favorite" class
+        }
+
     } else {
         buttonElement.classList.remove('active');
-        
-        // Update icon if it exists
-        const icon = buttonElement.querySelector('i');
-        if (icon && icon.classList.contains('fa-heart')) {
-            icon.classList.remove('fa-heart');
-            icon.classList.add('fa-heart-o');
-        } else if (icon && icon.classList.contains('fa-bookmark')) {
-            icon.classList.remove('fa-bookmark');
-            icon.classList.add('fa-bookmark-o');
+        buttonElement.setAttribute('aria-pressed', 'false');
+        if (textSpan && inactiveText) {
+             if (textSpan === buttonElement && icon) {
+                 buttonElement.innerHTML = `<i class="far ${iconBaseClass} mr-1"></i> ${inactiveText}`;
+             } else if (textSpan.nodeType === Node.TEXT_NODE) {
+                 textSpan.textContent = ` ${inactiveText}`;
+             } else {
+                textSpan.textContent = inactiveText;
+            }
         }
-        
-        // Update text if needed
-        if (buttonElement.dataset.inactiveText) {
-            const textSpan = buttonElement.querySelector('span');
-            if (textSpan) textSpan.textContent = buttonElement.dataset.inactiveText;
+        if (icon) {
+            icon.classList.remove(`fa-solid`, `fas`);
+            icon.classList.add(`fa-regular`, `far`);
+             if (iconBaseClass === 'fa-heart') icon.classList.replace('fa-heart', 'fa-heart-o');
+             if (iconBaseClass === 'fa-bookmark') icon.classList.replace('fa-bookmark', 'fa-bookmark-o');
+        }
+        // Revert to primary style if it was changed
+        if (buttonElement.classList.contains('button-secondary') && 
+            (buttonElement.classList.contains('js-favorite-btn'))) { // Check if it should be primary
+            buttonElement.classList.remove('button-secondary');
+            // Add back original primary class (e.g. 'button-primary' or 'action-button-anime')
+            // This part needs to know the original primary class. A data attribute could store it.
+            // For now, assuming 'button-primary' as a default if it's not an anime button
+            if (buttonElement.classList.contains('favorite-button') && !buttonElement.classList.contains('action-button-anime')) {
+                 buttonElement.classList.add('button-primary');
+            } else if (buttonElement.classList.contains('favorite-button') && buttonElement.classList.contains('action-button-anime')) {
+                 buttonElement.classList.add('action-button-anime');
+            }
         }
     }
 }
 
+
 /**
- * Update any UI components showing the library items
+ * Update any UI components showing the library items (e.g., counts)
  */
 function updateLibraryUI() {
-    // Update favorites count if exists
     const favCountElements = document.querySelectorAll('.favorites-count');
     favCountElements.forEach(element => {
         element.textContent = userLibrary.favorites.length;
     });
     
-    // Update watchlist count if exists
     const watchCountElements = document.querySelectorAll('.watchlist-count');
     watchCountElements.forEach(element => {
         element.textContent = userLibrary.watchLater.length;
     });
     
-    // If we're on the library page, update content
-    if (window.location.pathname.includes('my-library.html')) {
-        renderLibraryPage();
-    }
-}
-
-/**
- * Update progress indication UI
- */
-function updateProgressUI(itemId, itemType, progressStatus) {
-    // Find progress indicators for this item
-    const progressIndicators = document.querySelectorAll(`.progress-indicator[data-id="${itemId}"][data-type="${itemType}"]`);
-    
-    progressIndicators.forEach(indicator => {
-        // Clear existing status classes
-        indicator.classList.remove('status-not-started', 'status-in-progress', 'status-completed');
-        
-        // Add new status class
-        if (progressStatus === 'in-progress') {
-            indicator.classList.add('status-in-progress');
-            indicator.title = 'Đang xem';
-        } else if (progressStatus === 'completed') {
-            indicator.classList.add('status-completed');
-            indicator.title = 'Đã xem xong';
-        } else {
-            indicator.classList.add('status-not-started');
-            indicator.title = 'Chưa xem';
-        }
-    });
-}
-
-/**
- * Render content on the library page
- */
-function renderLibraryPage() {
-    // Favorites section
-    renderLibrarySection('favorites-grid', userLibrary.favorites, 'Bạn chưa thêm mục yêu thích nào.');
-    
-    // Watch Later section
-    renderLibrarySection('watchlist-grid', userLibrary.watchLater, 'Bạn chưa thêm mục nào vào danh sách Xem Sau.');
-    
-    // In Progress section
-    renderLibrarySection('in-progress-grid', userLibrary.inProgress, 'Không có nội dung nào đang xem.');
-    
-    // Completed section
-    renderLibrarySection('completed-grid', userLibrary.completed, 'Không có nội dung nào đã xem xong.');
-}
-
-/**
- * Render a specific library section
- */
-function renderLibrarySection(containerId, items, emptyMessage) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    
-    if (items.length === 0) {
-        container.innerHTML = `<div class="empty-list-message">${emptyMessage}</div>`;
-        return;
-    }
-    
-    // Generate HTML for items
-    let html = '';
-    items.forEach(item => {
-        const detailUrl = getDetailPageUrl(item.type, item.id);
-        const posterUrl = item.posterUrl || 'https://placehold.co/300x450/1f1f1f/888888?text=No+Poster';
-        const itemClass = item.type.includes('anime') ? 'anime-card' : 'movie-card';
-        
-        html += `
-        <div class="${itemClass} library-item" data-id="${item.id}" data-type="${item.type}">
-            <div class="movie-card-poster-container">
-                <img src="${posterUrl}" alt="${item.title || 'No title'}" loading="lazy">
-                <div class="card-overlay">
-                    <div class="card-play-button">
-                        <i class="fas fa-play"></i>
-                    </div>
-                </div>
-                <div class="library-item-actions">
-                    <button class="library-remove-btn" onclick="removeLibraryItem('${containerId}', '${item.id}', '${item.type}')">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="card-info">
-                <div>
-                    <h3 class="card-title" title="${item.title || 'No title'}">${item.title || 'No title'}</h3>
-                    <div class="card-meta">
-                        <div class="card-type">
-                            <i class="${item.type.includes('series') ? 'fas fa-tv' : 'fas fa-film'}"></i>
-                            ${item.type.includes('anime') ? 'Anime' : (item.type.includes('series') ? 'Series' : 'Movie')}
-                        </div>
-                    </div>
-                </div>
-                <a href="${detailUrl}" class="view-details-link">Xem chi tiết</a>
-            </div>
-        </div>
-        `;
-    });
-    
-    container.innerHTML = html;
-}
-
-/**
- * Get the correct detail page URL based on item type
- */
-function getDetailPageUrl(itemType, itemId) {
-    if (itemType.includes('anime')) {
-        return `pages/animeDetails.html?id=${itemId}&type=${itemType}`;
-    } else if (itemType.includes('series')) {
-        return `pages/filmDetails_phimBo.html?id=${itemId}&type=${itemType}`;
-    } else {
-        return `pages/filmDetail.html?id=${itemId}&type=${itemType}`;
-    }
-}
-
-/**
- * Remove item from library section
- * This function is called directly from onclick in the rendered HTML
- */
-function removeLibraryItem(sectionId, itemId, itemType) {
-    // Determine which category based on section ID
-    let category;
-    if (sectionId === 'favorites-grid') category = 'favorites';
-    else if (sectionId === 'watchlist-grid') category = 'watchLater';
-    else if (sectionId === 'in-progress-grid') category = 'inProgress';
-    else if (sectionId === 'completed-grid') category = 'completed';
-    
-    if (!category) return;
-    
-    // Remove item
-    removeFromLibrary(category, itemId, itemType);
-    
-    // Save changes
-    saveLibraryToStorage();
-    
-    // Re-render the section
-    renderLibrarySection(sectionId, userLibrary[category], getEmptyMessageForCategory(category));
-    
-    // Show notification
-    showNotification(`Removed from ${category}`, 'info');
-    
-    // Update counts
-    updateLibraryUI();
-}
-
-/**
- * Get appropriate empty message for a category
- */
-function getEmptyMessageForCategory(category) {
-    switch(category) {
-        case 'favorites': return 'Bạn chưa thêm mục yêu thích nào.';
-        case 'watchLater': return 'Bạn chưa thêm mục nào vào danh sách Xem Sau.';
-        case 'inProgress': return 'Không có nội dung nào đang xem.';
-        case 'completed': return 'Không có nội dung nào đã xem xong.';
-        default: return 'Không có nội dung nào.';
-    }
+    // If on a dedicated library page, re-render it
+    // Example: if (document.getElementById('my-library-page-container')) renderMyLibraryPage();
 }
 
 /**
  * Show notification to the user
  */
-function showNotification(message, type = 'info') {
-    // Check if notification container exists, create if not
-    let notificationContainer = document.getElementById('notification-container');
+function showNotification(message, type = 'info') { // success, error, info
+    let notificationContainer = document.getElementById('flick-notification-container');
     if (!notificationContainer) {
         notificationContainer = document.createElement('div');
-        notificationContainer.id = 'notification-container';
+        notificationContainer.id = 'flick-notification-container';
+        // Style the container (append to body or a specific wrapper)
         notificationContainer.style.position = 'fixed';
         notificationContainer.style.bottom = '20px';
         notificationContainer.style.right = '20px';
-        notificationContainer.style.zIndex = '9999';
+        notificationContainer.style.zIndex = '10000'; // High z-index
+        notificationContainer.style.display = 'flex';
+        notificationContainer.style.flexDirection = 'column';
+        notificationContainer.style.gap = '10px';
         document.body.appendChild(notificationContainer);
     }
-    
-    // Create notification element
+
     const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
+    notification.className = `flick-notification flick-notification-${type}`;
+    
+    let iconClass = 'fa-info-circle';
+    if (type === 'success') iconClass = 'fa-check-circle';
+    else if (type === 'error') iconClass = 'fa-exclamation-triangle';
+
     notification.innerHTML = `
-        <div class="notification-icon">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
-        </div>
-        <div class="notification-message">${message}</div>
+        <i class="fas ${iconClass} notification-icon"></i>
+        <span class="notification-message">${message}</span>
+        <button class="notification-close-btn">×</button>
     `;
     
-    // Add to container
-    notificationContainer.appendChild(notification);
+    // Basic styling for notification (can be moved to CSS)
+    notification.style.padding = '12px 18px';
+    notification.style.borderRadius = 'var(--border-radius-md, 8px)';
+    notification.style.color = 'white';
+    notification.style.display = 'flex';
+    notification.style.alignItems = 'center';
+    notification.style.gap = '10px';
+    notification.style.boxShadow = '0 4px 15px rgba(0,0,0,0.2)';
+    notification.style.opacity = '0';
+    notification.style.transform = 'translateX(100%)';
+    notification.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
     
+    if (type === 'success') notification.style.backgroundColor = 'rgba(76, 175, 80, 0.9)'; // Green
+    else if (type === 'error') notification.style.backgroundColor = 'rgba(244, 67, 54, 0.9)'; // Red
+    else notification.style.backgroundColor = 'rgba(33, 150, 243, 0.9)'; // Blue for info
+
+    notification.querySelector('.notification-icon').style.fontSize = '1.2em';
+    notification.querySelector('.notification-close-btn').style.background = 'none';
+    notification.querySelector('.notification-close-btn').style.border = 'none';
+    notification.querySelector('.notification-close-btn').style.color = 'white';
+    notification.querySelector('.notification-close-btn').style.marginLeft = 'auto';
+    notification.querySelector('.notification-close-btn').style.fontSize = '1.2em';
+    notification.querySelector('.notification-close-btn').style.cursor = 'pointer';
+    notification.querySelector('.notification-close-btn').style.lineHeight = '1';
+
+
+    notification.querySelector('.notification-close-btn').onclick = () => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    };
+
+    notificationContainer.appendChild(notification);
+
     // Animate in
     setTimeout(() => {
-        notification.classList.add('show');
+        notification.style.opacity = '1';
+        notification.style.transform = 'translateX(0)';
     }, 10);
-    
-    // Remove after delay
+
+    // Auto-dismiss
     setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            notification.remove();
-        }, 300);
-    }, 3000);
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, 3500); // Dismiss after 3.5 seconds
 }
+
 
 /**
  * Animate heart icon when adding to favorites
  */
 function animateHeartIcon(buttonElement) {
-    const icon = buttonElement.querySelector('i.fa-heart');
+    const icon = buttonElement.querySelector('i.fas.fa-heart'); // Target solid heart
     if (!icon) return;
     
-    // Add animation class
-    icon.classList.add('heart-pulse');
+    icon.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    icon.style.transform = 'scale(1.3)';
     
-    // Remove class after animation is done
     setTimeout(() => {
-        icon.classList.remove('heart-pulse');
-    }, 600);
+        icon.style.transform = 'scale(1)';
+    }, 300);
 }
 
-// Expose functions that need to be called from HTML
-window.removeLibraryItem = removeLibraryItem;
-window.toggleFavoriteStatus = toggleFavoriteStatus;
-window.toggleWatchlistStatus = toggleWatchlistStatus;
-window.setWatchingProgress = setWatchingProgress; 
+// Expose functions to be callable from HTML (e.g., if dynamically adding buttons)
+// window.toggleFavoriteStatus = toggleFavoriteStatus;
+// window.toggleWatchlistStatus = toggleWatchlistStatus;
+
+console.log("favorites.js loaded (v1.1)");

@@ -17,33 +17,45 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css"> <script>
+    <link rel="stylesheet" href="css/style.css"> 
+    <script>
         tailwind.config = {
-            // No dark mode class needed if always dark
             theme: {
                 extend: {
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
+                        'heading': ['Montserrat', 'sans-serif'], // Added heading font
                     },
                     colors: {
-                        // Colors from the main theme
-                        'primary': '#e50914', // Netflix Red
-                        'primary-hover': '#f40612', // Brighter Red
-                        'secondary': '#141414', // Main Dark Background
-                        'light-gray': '#222222', // Lighter gray elements on dark bg
-                        'dark-gray': '#181818', // Even darker gray (e.g., footer)
-                        'text-color': '#e0e0e0', // Main text color (light)
-                        'text-muted': '#8c8c8c', // Muted text color
-                        'border-color': '#333333', // Subtle border color
-                        // Added blues/purples for potential accents if needed, but prioritize main theme
-                        'blue-600': '#2563eb',
-                        'blue-400': '#60a5fa',
-                        'purple-600': '#9333ea',
-                        'pink-500': '#ec4899',
+                        'primary': 'var(--primary-color)', 
+                        'primary-hover': 'var(--primary-hover-color)', 
+                        'secondary': 'var(--secondary-color)', 
+                        'light-gray': 'var(--light-gray-color)', 
+                        'dark-gray': 'var(--dark-gray-color)', 
+                        'darker-gray': 'var(--darker-gray-color)', // For footer if needed
+                        'text-color': 'var(--text-color)', 
+                        'text-muted': 'var(--text-muted-color)',
+                        'text-bright': 'var(--text-bright-color)', // For bright text on dark bg
+                        'border-color': 'var(--border-color)', 
                         'white': '#ffffff',
                         'black': '#000000',
+                        // Specific colors for this page if they differ from global theme
+                        'about-hero-gradient-start': 'var(--secondary-color)', // Example
+                        'about-hero-gradient-mid': 'rgba(20, 20, 20, 0.5)',
+                        'about-hero-gradient-end': 'var(--secondary-color)',
+                        'cta-gradient-start': 'var(--primary-color)',
+                        'cta-gradient-end': '#a3070c', // Darker red for CTA gradient end
+                    },
+                    animation: { // Animations from style.css
+                        'pageFadeIn': 'pageFadeIn var(--animation-duration) var(--animation-timing) forwards',
+                        'fadeInUp': 'fadeInUp var(--animation-duration) var(--animation-timing) forwards',
+                        // Add other animations if used specifically on this page
+                    },
+                    keyframes: { // Keyframes from style.css
+                        pageFadeIn: { from: { opacity: '0' }, to: { opacity: '1' } },
+                        fadeInUp: { from: { opacity: '0', transform: 'translateY(20px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
                     }
                 }
             }
@@ -51,118 +63,150 @@
     </script>
 
     <style>
-        /* Custom styles for About Us page (Dark Theme) */
+        /* Custom styles for About Us page (Dark Theme) - Leverages global vars from style.css */
         html { scroll-behavior: smooth; }
 
         body {
-            @apply bg-secondary text-text-color; /* Apply dark theme */
-            font-family: 'Inter', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            font-family: var(--body-font);
         }
 
-        /* Header Styling */
-        header {
-            @apply fixed top-0 w-full bg-secondary/80 backdrop-blur-md shadow-sm z-50 transition-colors duration-300;
-            border-bottom: 1px solid theme('colors.border-color');
+        /* Header Styling from style.css will apply */
+        /* Ensure specific active link for "Giới Thiệu" */
+        header nav a[href="#about"].active-nav-link, /* If using this class via JS */
+        header nav a[href="about.html"].active-nav-link /* Or direct match */ {
+            color: var(--primary-color); /* Or var(--text-bright-color) if preferred */
+            font-weight: 600;
         }
-        header .header-logo-link { @apply text-white; } /* Ensure logo text is light */
-        header nav a {
-            @apply text-text-muted hover:text-white transition-colors;
+        header nav a[href="#about"].active-nav-link::after,
+        header nav a[href="about.html"].active-nav-link::after {
+            width: 100%;
+            background-color: var(--primary-color);
         }
-        /* Removed dark mode toggle button styles */
+
 
         /* Hero Section Styling */
         .hero-section {
-            background-attachment: fixed;
+            background-attachment: fixed; /* Keep parallax effect */
         }
         .hero-gradient {
-            background: linear-gradient(to top, theme('colors.secondary') 10%, rgba(20, 20, 20, 0.5) 50%, theme('colors.secondary') 90%); /* Dark gradient */
+            /* Use Tailwind defined colors or direct var if preferred */
+            background: linear-gradient(to top, theme('colors.about-hero-gradient-start', var(--secondary-color)) 10%, theme('colors.about-hero-gradient-mid', rgba(20,20,20,0.5)) 50%, theme('colors.about-hero-gradient-end', var(--secondary-color)) 90%);
         }
         .hero-section h1, .hero-section p {
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.6); /* Slightly stronger shadow */
+        }
+        .hero-section h1 {
+            font-family: var(--heading-font);
         }
 
         /* Stats Section */
         .stats-section {
-            @apply bg-light-gray; /* Use light-gray from theme */
+            background-color: var(--light-gray-color);
         }
         .stat-item h3 {
-            @apply text-4xl font-bold text-white; /* Light text */
+            color: var(--text-bright-color);
+            font-family: var(--heading-font);
         }
         .stat-item p {
-            @apply text-text-muted mt-2;
+            color: var(--text-muted-color);
         }
 
         /* Testimonials Section */
         .testimonial-item {
-            @apply border-l-4 border-primary pl-6 italic text-text-color; /* Use primary red for border */
+            border-left: 4px solid var(--primary-color);
+            color: var(--text-color);
         }
         .testimonial-item footer {
-            @apply mt-2 text-right font-semibold text-text-muted;
+            color: var(--text-muted-color);
         }
+        .section-title { /* General section title */
+            font-family: var(--heading-font);
+            color: var(--text-bright-color);
+        }
+
 
         /* Team Section */
         .team-section {
-             background-color: theme('colors.dark-gray'); /* Use darker gray */
+             background-color: var(--dark-gray-color);
         }
         .team-member-card {
-            @apply relative rounded-2xl overflow-hidden shadow-lg transition-transform duration-300 bg-light-gray; /* Card background */
+            background-color: var(--light-gray-color); /* Card background */
         }
-        .team-member-card:hover {
-            transform: scale(1.03);
+        .team-member-overlay h3 {
+            font-family: var(--heading-font);
         }
-        .team-member-overlay {
-            @apply absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent transition-opacity duration-300 flex flex-col justify-end p-6 opacity-0 hover:opacity-100;
-        }
+
 
         /* CTA Section */
         .cta-section {
-            background: linear-gradient(to right, theme('colors.primary'), #a3070c); /* Red gradient */
+            background: linear-gradient(to right, theme('colors.cta-gradient-start', var(--primary-color)), theme('colors.cta-gradient-end', '#a3070c'));
+        }
+        .cta-section h2 {
+            font-family: var(--heading-font);
         }
         .cta-button {
-             @apply bg-white text-primary hover:bg-gray-200 transition-colors font-semibold;
+             background-color: var(--text-bright-color); /* White button */
+             color: var(--primary-color); /* Red text */
+        }
+        .cta-button:hover {
+             background-color: #f0f0f0; /* Slightly off-white hover */
         }
 
         /* Newsletter Section */
         .newsletter-section {
-             @apply bg-light-gray; /* Match stats section */
+             background-color: var(--light-gray-color);
+        }
+        .newsletter-section h2 {
+            font-family: var(--heading-font);
         }
         .newsletter-section input {
-             @apply px-4 py-2 rounded-full border border-border-color bg-dark-gray text-text-color focus:ring-2 focus:ring-primary focus:border-transparent outline-none placeholder-text-muted;
+             background-color: var(--dark-gray-color);
+             border-color: var(--border-color);
+             color: var(--text-color);
+        }
+        .newsletter-section input::placeholder {
+            color: var(--text-muted-color);
+        }
+        .newsletter-section input:focus {
+             ring-color: var(--primary-color);
+             border-color: transparent;
         }
         .newsletter-button {
-            @apply bg-primary hover:bg-primary-hover text-white transition-colors font-semibold;
+            background-color: var(--primary-color);
+            color: var(--text-bright-color);
+        }
+        .newsletter-button:hover {
+            background-color: var(--primary-hover-color);
         }
 
-        /* Footer */
-        footer {
-            @apply bg-dark-gray text-text-muted; /* Use darker gray */
-            border-top: 1px solid theme('colors.border-color');
-        }
-        footer a:hover {
-            color: theme('colors.white');
-        }
-        footer h3 { @apply text-white; } /* Footer headings light */
+        /* Footer from style.css will apply */
+        /* Ensure footer headings are bright */
+        footer h3 { color: var(--text-bright-color); font-family: var(--heading-font); }
 
-        /* Basic Animation Fallback */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; } /* Start hidden */
-        .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; } /* Start hidden */
+
+        /* Animations - ensure they use global settings */
+        .fade-in { animation: fadeIn var(--animation-duration) ease-out forwards; opacity: 0; }
+        .fade-in-up { animation: fadeInUp var(--animation-duration) ease-out forwards; opacity: 0; }
 
     </style>
 </head>
 <body class="antialiased">
 
-    <header id="main-header">
-        <div class="max-w-6xl mx-auto flex items-center justify-between p-4">
-            <a href="index.html" class="header-logo-link text-2xl font-bold">Flick Tale</a>
+    <header id="main-header"> <!-- Classes from style.css will apply -->
+        <div class="container mx-auto flex items-center justify-between p-4 max-w-6xl">
+            <a href="index.html" class="header-logo-link text-2xl font-bold font-heading">Flick Tale</a>
             <nav class="space-x-6 hidden md:flex text-sm font-medium">
                 <a href="index.html">Trang Chủ</a>
-                <a href="#about">Giới Thiệu</a>
-                <a href="index.html#tabs-section">Phim</a>
-                <a href="#contact">Liên Hệ</a>
+                <a href="#about" class="active-nav-link">Giới Thiệu</a> <!-- Add active-nav-link or similar for JS highlighting -->
+                <a href="index.html#tabs-section">Phim</a> <!-- Link to section in index -->
+                <a href="#contact" class="nav-link">Liên Hệ</a> <!-- Generic nav-link class for consistency -->
             </nav>
-            <a href="#" class="p-2 rounded-full hover:bg-light-gray" aria-label="Tài khoản"> <i class="fas fa-user text-text-muted hover:text-white"></i> </a> </div>
+            <a href="#" class="p-2 rounded-full hover:bg-light-gray" aria-label="Tài khoản"> 
+                <i class="fas fa-user text-text-muted hover:text-white"></i> 
+            </a> 
+        </div>
     </header>
 
     <main class="pt-16 space-y-24 md:space-y-32">
@@ -174,7 +218,7 @@
             <div class="hero-gradient absolute inset-0"></div>
             <div class="relative text-center px-6 fade-in-up">
                 <h1 class="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">Về Chúng Tôi</h1>
-                <p class="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
+                <p class="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed text-text-color opacity-90">
                     Flick Tale - Kết nối cảm xúc qua từng khung hình, mang giải trí đỉnh cao đến mọi nhà.
                 </p>
             </div>
@@ -183,86 +227,88 @@
         <section class="stats-section py-16">
             <div class="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 text-center px-6">
                 <div class="stat-item p-6 fade-in" style="animation-delay: 0.1s;">
-                    <h3 id="stat-users">0</h3>
-                    <p>Người Dùng Hoạt Động</p>
+                    <h3 id="stat-users" class="text-4xl font-bold">0</h3>
+                    <p class="mt-2">Người Dùng Hoạt Động</p>
                 </div>
                 <div class="stat-item p-6 fade-in" style="animation-delay: 0.2s;">
-                    <h3 id="stat-movies">0</h3>
-                    <p>Phim & Chương Trình</p>
+                    <h3 id="stat-movies" class="text-4xl font-bold">0</h3>
+                    <p class="mt-2">Phim & Chương Trình</p>
                 </div>
                 <div class="stat-item p-6 fade-in" style="animation-delay: 0.3s;">
-                    <h3 id="stat-rating">0%</h3>
-                    <p>Đánh Giá Hài Lòng</p>
+                    <h3 id="stat-rating" class="text-4xl font-bold">0%</h3>
+                    <p class="mt-2">Đánh Giá Hài Lòng</p>
                 </div>
             </div>
         </section>
 
         <section class="py-16">
-            <h2 class="text-3xl font-semibold text-center mb-12 text-text-color">Phản Hồi Từ Khách Hàng</h2>
+            <h2 class="section-title text-3xl font-semibold text-center mb-12">Phản Hồi Từ Khách Hàng</h2>
             <div class="max-w-4xl mx-auto px-6 space-y-10">
-                <blockquote class="testimonial-item fade-in-up" style="animation-delay: 0.1s;">
+                <blockquote class="testimonial-item fade-in-up p-6 bg-dark-gray rounded-lg shadow-md" style="animation-delay: 0.1s;">
                     <p class="text-lg">"Flick Tale đã thay đổi cách tôi xem phim. Giao diện mượt mà và thư viện phim vô tận!"</p>
-                    <footer>- Khách Hàng A</footer>
+                    <footer class="mt-4 text-right font-semibold">- Khách Hàng A</footer>
                 </blockquote>
-                <blockquote class="testimonial-item fade-in-up" style="animation-delay: 0.3s;">
+                <blockquote class="testimonial-item fade-in-up p-6 bg-dark-gray rounded-lg shadow-md" style="animation-delay: 0.3s;">
                     <p class="text-lg">"Trải nghiệm cá nhân hóa tuyệt vời. Tôi tìm được nhiều phim yêu thích một cách nhanh chóng."</p>
-                    <footer>- Khách Hàng B</footer>
+                    <footer class="mt-4 text-right font-semibold">- Khách Hàng B</footer>
                 </blockquote>
-                <blockquote class="testimonial-item fade-in-up" style="animation-delay: 0.5s;">
+                <blockquote class="testimonial-item fade-in-up p-6 bg-dark-gray rounded-lg shadow-md" style="animation-delay: 0.5s;">
                     <p class="text-lg">"Hỗ trợ khách hàng rất nhanh và nhiệt tình. Thực sự là một nền tảng đẳng cấp."</p>
-                    <footer>- Khách Hàng C</footer>
+                    <footer class="mt-4 text-right font-semibold">- Khách Hàng C</footer>
                 </blockquote>
             </div>
         </section>
 
         <section class="team-section py-20">
-            <h2 class="text-3xl font-semibold text-center mb-12 text-text-color">Đội Ngũ Của Chúng Tôi</h2>
-            <div class="max-w-6xl mx-auto grid gap-10 px-6"> 
-                <!-- grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 -->
+            <h2 class="section-title text-3xl font-semibold text-center mb-12">Đội Ngũ Của Chúng Tôi</h2>
+            <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 px-6"> 
+                <!-- Changed to 4 columns for better spacing if more members are added -->
                 <div class="team-member-card fade-in-up" style="animation-delay: 0.1s;">
-                    <img src="access/img/logo.png" alt="Nguyễn Xuân Đại" class="w-full h-64 object-cover">
-                    <div class="team-member-overlay text-center">
-                        <h3 class="text-white text-xl font-bold">Nguyễn Xuân Đại</h3>
-                        <p class="text-gray-400 mt-1">Giám đốc Điều hành</p>
+                    <img src="access/img/logo.png" alt="Nguyễn Xuân Đại" class="w-full h-72 object-cover"> <!-- Increased height -->
+                    <div class="p-6 text-center bg-light-gray"> <!-- Info below image for clarity -->
+                        <h3 class="text-white text-xl font-bold font-heading">Nguyễn Xuân Đại</h3>
+                        <p class="text-text-muted mt-1">Giám đốc Điều hành</p>
                     </div>
+                    <!-- Overlay can be re-added if preferred, current style moves info below -->
                 </div>
-                <!-- <div class="team-member-card fade-in-up" style="animation-delay: 0.2s;">
-                    <img src="https://placehold.co/400x400/222222/8c8c8c?text=Team+B" alt="Trần Thị B" class="w-full h-64 object-cover">
-                    <div class="team-member-overlay">
-                        <h3 class="text-white text-xl font-bold">Trần Thị B</h3>
-                        <p class="text-gray-300 mt-1">Trưởng Bộ phận Sản phẩm</p>
+                <!-- Add more team members here with similar structure -->
+                 <div class="team-member-card fade-in-up" style="animation-delay: 0.2s;">
+                    <img src="https://placehold.co/400x400/1f1f1f/8c8c8c?text=Team+B" alt="Thành viên B" class="w-full h-72 object-cover">
+                    <div class="p-6 text-center bg-light-gray">
+                        <h3 class="text-white text-xl font-bold font-heading">Trần Thị B</h3>
+                        <p class="text-text-muted mt-1">Trưởng Phòng Sản Phẩm</p>
                     </div>
                 </div>
                 <div class="team-member-card fade-in-up" style="animation-delay: 0.3s;">
-                    <img src="https://placehold.co/400x400/222222/8c8c8c?text=Team+C" alt="Lê Văn C" class="w-full h-64 object-cover">
-                    <div class="team-member-overlay">
-                        <h3 class="text-white text-xl font-bold">Lê Văn C</h3>
-                        <p class="text-gray-300 mt-1">Trưởng Bộ phận Công nghệ</p>
+                    <img src="https://placehold.co/400x400/181818/e0e0e0?text=Team+C" alt="Thành viên C" class="w-full h-72 object-cover">
+                     <div class="p-6 text-center bg-light-gray">
+                        <h3 class="text-white text-xl font-bold font-heading">Lê Văn C</h3>
+                        <p class="text-text-muted mt-1">Giám Đốc Công Nghệ</p>
                     </div>
                 </div>
-                <div class="team-member-card fade-in-up" style="animation-delay: 0.4s;">
-                    <img src="https://placehold.co/400x400/222222/8c8c8c?text=Team+D" alt="Phạm Thị D" class="w-full h-64 object-cover">
-                    <div class="team-member-overlay">
-                        <h3 class="text-white text-xl font-bold">Phạm Thị D</h3>
-                        <p class="text-gray-300 mt-1">Trưởng Bộ phận Trải nghiệm</p>
+                 <div class="team-member-card fade-in-up" style="animation-delay: 0.4s;">
+                    <img src="https://placehold.co/400x400/222222/f40612?text=Team+D" alt="Thành viên D" class="w-full h-72 object-cover">
+                     <div class="p-6 text-center bg-light-gray">
+                        <h3 class="text-white text-xl font-bold font-heading">Phạm Thị D</h3>
+                        <p class="text-text-muted mt-1">Trưởng Phòng Marketing</p>
                     </div>
-                </div> -->
+                </div>
             </div>
         </section>
 
-        <section id="contact" class="cta-section text-white py-16 text-center px-6">
-            <h2 class="text-3xl font-semibold mb-4">Tham Gia Cùng Chúng Tôi Ngay Hôm Nay</h2>
-            <p class="mb-6 max-w-xl mx-auto">Khám phá thế giới phim độc đáo và trải nghiệm cá nhân hóa tuyệt vời chỉ có tại Flick Tale.</p>
-            <a href="index.html" class="cta-button inline-block px-8 py-3 rounded-full text-lg shadow-md">
+        <section id="contact" class="cta-section text-white py-20 text-center px-6"> <!-- Increased padding -->
+            <h2 class="text-4xl font-extrabold mb-6">Tham Gia Cùng Chúng Tôi Ngay Hôm Nay</h2>
+            <p class="mb-8 max-w-xl mx-auto text-lg opacity-90">Khám phá thế giới phim độc đáo và trải nghiệm cá nhân hóa tuyệt vời chỉ có tại Flick Tale.</p>
+            <a href="index.html" class="cta-button inline-block px-10 py-4 rounded-full text-lg shadow-xl hover:shadow-2xl transform hover:scale-105">
                 Bắt Đầu Khám Phá
             </a>
         </section>
 
-        <section class="newsletter-section py-16">
+        <section class="newsletter-section py-20">
             <div class="max-w-3xl mx-auto text-center space-y-6 px-4">
-                <h2 class="text-3xl font-semibold text-text-color">Đăng Ký Nhận Tin Tức</h2>
+                <h2 class="text-3xl font-semibold">Đăng Ký Nhận Tin Tức</h2>
                 <p class="text-text-muted">Mở khóa ưu đãi đặc biệt và cập nhật phim mới nhất hàng tuần qua email.</p>
-                <form class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                <form class="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto mt-4">
                     <input
                         type="email"
                         placeholder="Nhập email của bạn"
@@ -270,21 +316,21 @@
                         class="flex-grow"
                         aria-label="Địa chỉ email"
                     />
-                    <button type="submit" class="newsletter-button rounded-full px-8 py-2">
+                    <button type="submit" class="newsletter-button rounded-full px-8 py-3">
                         Đăng Ký
                     </button>
                 </form>
             </div>
         </section>
 
-        <footer class="py-8">
+        <footer class="py-10"> <!-- Increased padding -->
             <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center px-6 text-sm">
                 <p>© <span id="footer-year">2025</span> Flick Tale. Mọi quyền được bảo lưu.</p>
                 <div class="flex space-x-6 mt-4 md:mt-0">
-                    <a href="#" aria-label="Facebook" class="hover:text-white"><i class="fab fa-facebook-f fa-lg"></i></a>
-                    <a href="#" aria-label="Twitter" class="hover:text-white"><i class="fab fa-twitter fa-lg"></i></a>
-                    <a href="#" aria-label="Instagram" class="hover:text-white"><i class="fab fa-instagram fa-lg"></i></a>
-                    <a href="#" aria-label="Youtube" class="hover:text-white"><i class="fab fa-youtube fa-lg"></i></a>
+                    <a href="#" aria-label="Facebook" class="hover:text-white transition-colors"><i class="fab fa-facebook-f fa-lg"></i></a>
+                    <a href="#" aria-label="Twitter" class="hover:text-white transition-colors"><i class="fab fa-twitter fa-lg"></i></a>
+                    <a href="#" aria-label="Instagram" class="hover:text-white transition-colors"><i class="fab fa-instagram fa-lg"></i></a>
+                    <a href="#" aria-label="Youtube" class="hover:text-white transition-colors"><i class="fab fa-youtube fa-lg"></i></a>
                 </div>
             </div>
         </footer>
@@ -292,8 +338,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Removed Dark Mode Logic
-
             // Footer Year
             const footerYearSpan = document.getElementById('footer-year');
             if (footerYearSpan) {
@@ -322,51 +366,65 @@
             let statsAnimated = false;
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    // Start animation when element is intersecting and hasn't been animated yet
                     if (entry.isIntersecting && !statsAnimated) {
                         animateValue(document.getElementById('stat-users'), 0, 5000000, 2000);
                         animateValue(document.getElementById('stat-movies'), 0, 10000, 2000);
                         animateValue(document.getElementById('stat-rating'), 0, 98, 1800, '%');
-                        statsAnimated = true; // Mark as animated
-                        observer.unobserve(entry.target); // Optional: stop observing after animation
+                        statsAnimated = true; 
+                        observer.unobserve(entry.target); 
                     }
                 });
-            }, { threshold: 0.5 }); // Trigger when 50% of the element is visible
+            }, { threshold: 0.5 }); 
 
             if (statsSection) {
                 observer.observe(statsSection);
             } else {
-                // Fallback if observer fails or section not found: animate immediately
                 console.warn("Stats section not found for observer, animating immediately.");
                 animateValue(document.getElementById('stat-users'), 0, 5000000, 2000);
                 animateValue(document.getElementById('stat-movies'), 0, 10000, 2000);
                 animateValue(document.getElementById('stat-rating'), 0, 98, 1800, '%');
             }
 
-            // Simple fade-in animation trigger (alternative to complex libraries)
+            // Fade-in animation trigger with IntersectionObserver
             const fadeElements = document.querySelectorAll('.fade-in, .fade-in-up');
-            const fadeObserver = new IntersectionObserver((entries) => {
+            const fadeObserver = new IntersectionObserver((entries, fadeObs) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
+                        // Apply animation directly via class if CSS animations are preferred
+                        // entry.target.classList.add('is-visible'); // Or trigger JS animation
+
+                        // For JS-controlled opacity/transform:
                         entry.target.style.opacity = 1;
-                        entry.target.style.transform = 'translateY(0)';
-                        fadeObserver.unobserve(entry.target);
+                        if(entry.target.classList.contains('fade-in-up')) {
+                           entry.target.style.transform = 'translateY(0)';
+                        }
+                        fadeObs.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.1 }); // Trigger earlier
+            }, { threshold: 0.15 }); // Trigger when 15% of the element is visible
 
             fadeElements.forEach(el => {
-                 // Initialize styles for animation
-                 el.style.opacity = 0;
+                 el.style.opacity = 0; // Start hidden for JS animation
                  if(el.classList.contains('fade-in-up')) {
                     el.style.transform = 'translateY(20px)';
                  }
-                 el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
+                 // Use CSS transitions if preferred (add to <style> block)
+                 el.style.transition = 'opacity var(--animation-duration) ease-out, transform var(--animation-duration) ease-out';
                  // Apply animation delay from inline style if present
                  el.style.transitionDelay = el.style.animationDelay || '0s';
                  fadeObserver.observe(el);
             });
 
+            // Add active class to nav link (example for this page)
+            const navLinks = document.querySelectorAll('header nav a');
+            navLinks.forEach(link => {
+                // Simplified: if link's href matches a part of the current page's URL or #about
+                if (window.location.href.includes(link.getAttribute('href')) || (link.getAttribute('href') === '#about' && window.location.pathname.includes('about.html'))) {
+                    link.classList.add('active-nav-link'); // Ensure this class is styled in <style> or style.css
+                } else {
+                    link.classList.remove('active-nav-link');
+                }
+            });
 
         });
     </script>

@@ -1,8 +1,9 @@
 // filmDetails_phimBo.js - Handles Series Details Page Logic
 // v1.4: Updated to fetch all data types (movies, series, anime) for comprehensive related content.
+// v1.5: Ensured favorite/watchlist buttons have correct data attributes.
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DOM Elements ---
+    // DOM Elements
     const seriesDetailsContent = document.getElementById('series-details-content');
     const seriesDetailsSkeleton = document.getElementById('series-details-skeleton');
     const loadingMessage = document.getElementById('loading-message');
@@ -28,30 +29,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const versionButtons = versionSelectionContainer ? versionSelectionContainer.querySelectorAll('.version-button') : [];
     const toggleLightsButton = document.getElementById('toggle-lights-button');
     const toggleLightsText = document.getElementById('toggle-lights-text');
-    const playerSection = document.getElementById('player-section');
-    const relatedContentSection = document.querySelector('#related-content-heading')?.closest('section');
 
-    // --- Series Specific Elements ---
-    const seriesContentSection = document.getElementById('series-content-section'); // Container for season/episode selectors
+    // Series Specific Elements
+    const seriesContentSection = document.getElementById('series-content-section');
     const seasonSelectorContainer = document.getElementById('season-selector-container');
-    const episodeSelectorContainer = document.getElementById('episode-selector-container'); // Optional dropdown
-    const episodeListContainer = document.getElementById('episode-list-container'); // Container for episode buttons
+    const episodeSelectorContainer = document.getElementById('episode-selector-container');
+    const episodeListContainer = document.getElementById('episode-list-container');
     const seasonSelect = document.getElementById('season-select');
-    const episodeSelect = document.getElementById('episode-select'); // Optional dropdown
-    const seriesSpecificInfo = document.getElementById('series-specific-info'); // Div containing season/episode counts
+    const episodeSelect = document.getElementById('episode-select');
+    const seriesSpecificInfo = document.getElementById('series-specific-info');
 
-
-    // --- Player Elements ---
+    // Player Elements
     const videoPosterImage = document.getElementById('video-poster-image');
     const videoPosterOverlay = document.getElementById('video-poster-overlay');
     const videoPlayButton = document.getElementById('video-play-button');
     const videoIframePlaceholder = document.getElementById('video-iframe-placeholder');
     const youtubePlayerDivId = 'youtube-player';
 
-    // --- Skip Intro Button Element ---
+    // Skip Intro Button Element
     const skipIntroButton = document.getElementById('skip-intro-button');
+    
+    // Favorite/Watchlist buttons
+    const favoriteButton = document.querySelector('.favorite-button');
+    const watchlistButton = document.querySelector('.watchlist-button');
 
-    // --- Meta Tag Elements (Keep as before) ---
+    // Meta Tag Elements
     const pageTitleElement = document.querySelector('title');
     const metaDescriptionTag = document.querySelector('meta[name="description"]');
     const metaKeywordsTag = document.querySelector('meta[name="keywords"]');
@@ -70,11 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const twitterDescriptionTag = document.querySelector('meta[property="twitter:description"]');
     const twitterImageTag = document.querySelector('meta[property="twitter:image"]');
 
-    // --- State Variables ---
-    let allMoviesData = []; // Stores fetched movie data
-    let allSeriesData = []; // Stores fetched series data
-    let allAnimeData = []; // Stores fetched anime data
-    let currentSeriesData = null; // Data for the current series being viewed
+    // State Variables
+    let allMoviesData = [];
+    let allSeriesData = [];
+    let allAnimeData = [];
+    let currentSeriesData = null;
     let currentSelectedSeasonIndex = 0;
     let currentSelectedEpisodeIndex = 0;
     let currentActiveVersion = null;
@@ -83,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let youtubePlayer = null;
     let ytApiReady = false;
 
-    // --- Helper Functions ---
+    // Helper Functions
     const getQueryParam = (param) => {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
@@ -134,8 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const setPlayerPoster = (episode = null) => {
         const episodeThumbnail = episode?.thumbnailUrl;
         const seriesHeroImage = currentSeriesData?.heroImage;
-        const seriesPosterUrl = currentSeriesData?.posterUrl;
-        const posterSrc = episodeThumbnail || seriesHeroImage || seriesPosterUrl || 'https://placehold.co/1280x720/000000/333333?text=No+Poster';
+        const seriesPosterUrl = currentSeriesData?.posterUrl; // This could be an array too
+        const actualSeriesPoster = Array.isArray(seriesPosterUrl) ? seriesPosterUrl[0] : seriesPosterUrl;
+        
+        const posterSrc = episodeThumbnail || seriesHeroImage || actualSeriesPoster || 'https://placehold.co/1280x720/000000/333333?text=No+Poster';
 
         if (videoPosterImage) {
             videoPosterImage.src = posterSrc;
@@ -149,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- YouTube API Functions ---
+    // YouTube API Functions
     function loadYouTubeApiScript() {
         if (window.YT && window.YT.Player) { ytApiReady = true; return; }
         if (document.getElementById('youtube-api-script')) return;
@@ -197,9 +201,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         hideVideoMessage(); if (videoIframePlaceholder) videoIframePlaceholder.classList.add('active');
         if (youtubePlayer) { try { youtubePlayer.destroy(); } catch (e) {} youtubePlayer = null; }
-        const playerDivTarget = document.getElementById(youtubePlayerDivId);
-        if (!playerDivTarget) { if (videoIframePlaceholder) videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; else { showVideoMessage("Lỗi: Không thể tạo vùng chứa trình phát.", true); return; } }
-        else { playerDivTarget.innerHTML = ''; }
+        let playerDivTarget = document.getElementById(youtubePlayerDivId);
+        if (!playerDivTarget) { 
+            if (videoIframePlaceholder) {
+                videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; 
+                playerDivTarget = document.getElementById(youtubePlayerDivId);
+            }
+            if (!playerDivTarget) { 
+                showVideoMessage("Lỗi: Không thể tạo vùng chứa trình phát.", true); 
+                return; 
+            }
+        } else { 
+            playerDivTarget.innerHTML = ''; 
+        }
         try {
             youtubePlayer = new YT.Player(youtubePlayerDivId, {
                 height: '100%', width: '100%', videoId: videoId,
@@ -218,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
                          }
                          showVideoMessage(`<i class="fas fa-exclamation-circle mr-2"></i> ${errorMsg}`, true);
                          if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing');
-                         if (youtubePlayer) { try { youtubePlayer.destroy(); } catch(e) {} youtubePlayer = null; }
+                         if (youtubePlayer) { try { youtubePlayer.destroy(); } catch(e){} youtubePlayer = null; }
                          const playerDiv = document.getElementById(youtubePlayerDivId); if(playerDiv) playerDiv.innerHTML = '';
                          if (videoIframePlaceholder) videoIframePlaceholder.classList.remove('active');
                     }
@@ -233,12 +247,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Updated startVideoPlayback ---
     const startVideoPlayback = (urlToPlay, shouldSkipIntro = false) => {
         console.log(`startVideoPlayback (Series): Yêu cầu phát: ${urlToPlay}, Bỏ qua Intro: ${shouldSkipIntro}`);
         if (youtubePlayer) { try { youtubePlayer.destroy(); } catch(e) {} youtubePlayer = null; }
         if (videoIframePlaceholder) { videoIframePlaceholder.innerHTML = `<div id="${youtubePlayerDivId}"></div>`; videoIframePlaceholder.classList.remove('active'); }
-        else { return; }
+        else { console.error("Video iframe placeholder not found."); return; }
         if (!urlToPlay) { showVideoMessage(`<i class="fas fa-exclamation-circle mr-2"></i>Không có URL video hợp lệ.`, true); if (videoPlayerContainer) videoPlayerContainer.classList.remove('playing'); return; }
 
         hideVideoMessage();
@@ -257,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadYouTubePlayer(youtubeId, effectiveStartSeconds);
         } else if (googleDriveEmbedUrl) {
             if (videoIframePlaceholder) {
-                 videoIframePlaceholder.innerHTML = `<iframe src="${googleDriveEmbedUrl}" frameborder="0" allow="autoplay; fullscreen" title="Trình phát video Google Drive cho ${playerTitleText}"></iframe>`;
+                 videoIframePlaceholder.innerHTML = `<iframe src="${googleDriveEmbedUrl}" class="w-full h-full" frameborder="0" allow="autoplay; fullscreen" allowfullscreen title="Trình phát video Google Drive cho ${playerTitleText}"></iframe>`;
                  videoIframePlaceholder.classList.add('active');
                  if (videoPlayerContainer) videoPlayerContainer.classList.add('playing');
                  showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Đang tải video từ Google Drive...`, false, true);
@@ -269,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Skip Intro Button Visibility ---
     const updateSkipIntroButtonVisibility = () => {
         if (!skipIntroButton || !currentSeriesData || currentActiveVersion === null) {
             if (skipIntroButton) skipIntroButton.classList.add('hidden');
@@ -288,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Version Button State Update ---
     const updateVersionButtonStates = (availableUrls, activeVersionKey) => {
         availableUrls = availableUrls || {};
         let hasAnyUrl = false;
@@ -315,7 +326,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSkipIntroButtonVisibility();
     };
 
-    // --- localStorage Functions ---
     const saveVersionPreference = (seriesId, versionKey) => {
         if (!seriesId || !versionKey) return;
         try { localStorage.setItem(`seriesPref_${seriesId}_version`, versionKey); }
@@ -327,7 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
         catch (e) { console.error("Lỗi tải lựa chọn từ localStorage (phim bộ):", e); return null; }
     };
 
-    // --- Prepare Video Playback (No Auto-Play) ---
     const prepareVideoPlayback = (versionKey) => {
         if (!currentSeriesData) return;
         const season = currentSeriesData.seasons?.[currentSelectedSeasonIndex];
@@ -349,7 +358,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Event Handlers ---
     const handleVersionClick = (event) => {
         const button = event.target.closest('.version-button');
         if (!button || button.disabled || !currentSeriesData) return;
@@ -378,98 +386,114 @@ document.addEventListener('DOMContentLoaded', () => {
         return strData.split(separator).map(s => s.trim()).filter(Boolean).slice(0, limit).join(separator);
     };
 
-    /**
-     * Creates the HTML for a related content card (movie, series, or anime).
-     * Tạo HTML cho thẻ nội dung liên quan (phim, series, hoặc anime).
-     * @param {object} item - Data object. Đối tượng dữ liệu.
-     * @param {string} type - 'movies', 'series', 'anime-movie', 'anime-series'. Loại.
-     * @returns {string} HTML string for the card. Chuỗi HTML cho thẻ.
-     */
-    const createRelatedItemCard = (item, type) => {
-        // Determine detail page URL based on item type
-        // Xác định URL trang chi tiết dựa trên loại mục
+    const createRelatedItemCard = (item, itemType) => {
         let detailPageUrl = '#';
-        if (type === 'anime-series' || type === 'anime-movie') {
-            detailPageUrl = `animeDetails.html?id=${item.id}&type=${type}`;
-        } else if (type === 'series') {
+        if (itemType === 'anime-series' || itemType === 'anime-movie') {
+            detailPageUrl = `animeDetails.html?id=${item.id}&type=${itemType}`;
+        } else if (itemType === 'series') {
             detailPageUrl = `filmDetails_phimBo.html?id=${item.id}&type=series`;
-        } else { // movies
+        } else { 
             detailPageUrl = `filmDetail.html?id=${item.id}&type=movies`;
         }
 
-        const altText = `Poster ${type.includes('anime') ? 'Anime' : (type === 'movies' ? 'phim' : 'phim bộ')} liên quan: ${item.title || 'không có tiêu đề'}`;
-        let typeBadge = '';
-        if (type === 'anime-series' || type === 'series') {
-            typeBadge = `<span class="absolute top-1 right-1 bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded">Bộ</span>`;
-        } else if (type === 'anime-movie') {
-            typeBadge = `<span class="absolute top-1 right-1 bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded">Anime Movie</span>`;
-        }
-        const posterUrl = item.posterUrl || 'https://placehold.co/300x450/111111/eeeeee?text=No+Poster';
+        const altText = `Poster ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} liên quan: ${item.title || 'không có tiêu đề'}`;
+        const posterUrl = (Array.isArray(item.posterUrl) ? item.posterUrl[0] : item.posterUrl) || 'https://placehold.co/300x450/111111/eeeeee?text=No+Poster';
         const titleText = item.title || 'Không có tiêu đề';
         const yearText = item.releaseYear || 'N/A';
+        const ratingText = item.rating ? parseFloat(item.rating).toFixed(1) : 'N/A';
+        const format = item.format || [];
+        const isAnimeRelated = itemType.includes('anime');
+        
+        const cardClass = isAnimeRelated ? 'anime-card stagger-item' : 'movie-card stagger-item';
+
+        let badgesHTML = '';
+        if (itemType === 'series' || itemType === 'anime-series') {
+            badgesHTML += `<span class="card-badge card-badge-top-right badge-series">Bộ</span>`;
+        } else if (itemType === 'anime-movie') {
+            badgesHTML += `<span class="card-badge card-badge-top-right badge-anime">Anime</span>`;
+        } else if (itemType === 'movies') {
+             badgesHTML += `<span class="card-badge card-badge-top-right badge-movie">Lẻ</span>`;
+        }
+
+        if (format.includes("3D")) {
+            badgesHTML += `<span class="card-badge card-badge-top-left badge-3d">3D</span>`;
+        } else if (format.includes("2D")) {
+            badgesHTML += `<span class="card-badge card-badge-top-left badge-2d">2D</span>`;
+        } else if (format.includes("Animation") && !format.includes("2D") && !format.includes("3D") && !isAnimeRelated) {
+            badgesHTML += `<span class="card-badge card-badge-top-left badge-animation">Hoạt Hình</span>`;
+        }
+        
+        let episodesHTML = '';
+        if (itemType === 'series' || itemType === 'anime-series') {
+            let episodeCount = '?'; 
+            if (item.totalEpisodes) episodeCount = item.totalEpisodes;
+            else if (item.seasons && item.seasons[0] && typeof item.seasons[0].numberOfEpisodes === 'number') episodeCount = item.seasons[0].numberOfEpisodes;
+            else if (item.seasons && item.seasons[0] && Array.isArray(item.seasons[0].episodes)) episodeCount = item.seasons[0].episodes.length;
+            episodesHTML = `<div class="card-episodes"><i class="fas fa-list-ol"></i> ${episodeCount} tập</div>`;
+        }
 
         return `
-           <a href="${detailPageUrl}" class="related-movie-card bg-light-gray rounded-lg overflow-hidden shadow-lg transform hover:scale-105 transition duration-300 cursor-pointer group relative block animate-on-scroll animate-slide-up" data-item-id="${item.id}" data-item-type="${type}" aria-label="Xem chi tiết ${titleText}">
-               <img src="${posterUrl}" alt="${altText}" class="w-full h-auto object-cover related-movie-poster" loading="lazy" onerror="this.onerror=null; this.src='https://placehold.co/300x450/111111/eeeeee?text=Error'; this.alt='Lỗi tải ảnh poster liên quan ${titleText}';">
-               ${typeBadge}
-               <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100" aria-hidden="true">
-                   <i class="fas fa-play text-white text-3xl"></i>
-               </div>
-               <div class="p-2">
-                   <h4 class="font-semibold text-gray-200 text-xs md:text-sm truncate" title="${titleText}">${titleText}</h4>
-                   <p class="text-xs text-text-muted">${yearText}</p>
-               </div>
-           </a>
-       `;
+           <a href="${detailPageUrl}" class="${cardClass}" data-item-id="${item.id}" data-item-type="${itemType}" aria-label="Xem chi tiết ${isAnimeRelated ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${titleText}">
+                <div class="movie-card-poster-container relative overflow-hidden rounded-t-lg">
+                    <img src="${posterUrl}" alt="${altText}" loading="lazy" class="w-full h-auto aspect-[2/3] object-cover transition-transform duration-400" onerror="this.onerror=null; this.src='https://placehold.co/300x450/111111/eeeeee?text=Error'; this.alt='Lỗi tải ảnh poster ${titleText}';">
+                    ${badgesHTML}
+                    <div class="card-hover-overlay absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 transition-opacity duration-300 flex flex-col justify-center items-center">
+                        <div class="card-play-button bg-black/40 text-white text-3xl p-4 rounded-full border-2 border-white/70 hover:bg-primary hover:border-white hover:scale-110 transition-all duration-300 flex items-center justify-center">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="mt-3 text-white font-semibold text-lg text-center px-3">${titleText}</div>
+                    </div>
+                </div>
+                <div class="card-info p-3 border-t border-gray-700/20">
+                    <div>
+                        <h3 class="card-title font-semibold text-bright-color text-sm leading-tight mb-1 h-[2.5em] overflow-hidden" title="${titleText}">${titleText}</h3>
+                        <div class="card-meta flex justify-between items-center text-xs text-text-muted">
+                            <div class="card-year flex items-center"><i class="far fa-calendar-alt text-xs mr-1 opacity-70"></i> ${yearText}</div>
+                            <div class="card-rating flex items-center text-gold-accent"><i class="fas fa-star text-xs mr-1"></i> ${ratingText}</div>
+                        </div>
+                        ${episodesHTML} 
+                    </div>
+                </div>
+            </a>`;
     };
 
-    /**
-     * Loads and displays related content (movies, series, anime) based on genre similarity.
-     * Tải và hiển thị nội dung liên quan (phim, series, anime) dựa trên sự tương đồng về thể loại.
-     * @param {object} currentSeries - The data of the series currently being viewed. Dữ liệu của phim bộ đang được xem.
-     */
+
     const loadRelatedItems = (currentSeries) => {
         if (!currentSeries || !relatedContentGrid) {
-            if(relatedContentGrid) relatedContentGrid.innerHTML = '<p class="text-text-muted col-span-full">Không thể tải nội dung liên quan.</p>';
+            if(relatedContentGrid) relatedContentGrid.innerHTML = '<p class="text-text-muted col-span-full text-center py-4">Không thể tải nội dung liên quan.</p>';
             return;
         }
 
         const currentGenres = Array.isArray(currentSeries.genre) ? currentSeries.genre : (typeof currentSeries.genre === 'string' ? [currentSeries.genre] : []);
         const currentSeriesId = currentSeries.id;
+        const currentItemType = currentSeries.itemType || 'series';
 
         if (observer) observer.disconnect();
-        if (currentGenres.length === 0) { relatedContentGrid.innerHTML = '<p class="text-text-muted col-span-full">Không có thông tin thể loại để tìm nội dung tương tự.</p>'; return; }
+        if (currentGenres.length === 0) { relatedContentGrid.innerHTML = '<p class="text-text-muted col-span-full text-center py-4">Không có thông tin thể loại để tìm nội dung tương tự.</p>'; return; }
 
-        // Combine all data types with their respective types
-        // Kết hợp tất cả các loại dữ liệu với loại tương ứng của chúng
         const allItems = [
-            ...allMoviesData.map(item => ({ ...item, itemType: 'movies' })),
-            ...allSeriesData.map(item => ({ ...item, itemType: 'series' })),
-            ...allAnimeData.map(item => ({ ...item, itemType: item.itemType || (item.episodes === null ? 'anime-movie' : 'anime-series') })) // Assign anime type
+            ...allMoviesData.map(item => ({ ...item, itemType: item.itemType || 'movies' })),
+            ...allSeriesData.map(item => ({ ...item, itemType: item.itemType || 'series' })),
+            ...allAnimeData.map(item => ({ ...item, itemType: item.itemType || (item.episodes === null || item.episodes === undefined ? 'anime-movie' : 'anime-series') }))
         ];
 
-        // Filter related items across all types
-        // Lọc các mục liên quan trên tất cả các loại
         const relatedItems = allItems.filter(item => {
-            // Exclude the current series itself
-            // Loại trừ chính phim bộ hiện tại
-            if (item.id === currentSeriesId && item.itemType === 'series') return false;
-
+            if (item.id === currentSeriesId && item.itemType === currentItemType) return false; 
             const itemGenres = Array.isArray(item.genre) ? item.genre : (typeof item.genre === 'string' ? [item.genre] : []);
             return itemGenres.some(g => currentGenres.includes(g));
         })
-        .sort(() => 0.5 - Math.random()) // Randomize
-        .slice(0, 6); // Limit
+        .sort(() => 0.5 - Math.random()) 
+        .slice(0, 6); 
 
         if (relatedItems.length > 0) {
             relatedContentGrid.innerHTML = relatedItems.map((itemData, index) => {
-                 const cardHTML = createRelatedItemCard(itemData, itemData.itemType); // Pass itemType
-                 const cardWithIndex = cardHTML.replace('<a ', `<a data-index="${index}" `);
-                 return cardWithIndex;
+                 const cardHTML = createRelatedItemCard(itemData, itemData.itemType);
+                 // Add stagger-item class directly in createRelatedItemCard
+                 return cardHTML.replace('<a ', `<a data-index="${index}" `);
             }).join('');
-            observeElements(relatedContentGrid.querySelectorAll('.related-movie-card.animate-on-scroll')); // Use updated class
+            observeElements(relatedContentGrid.querySelectorAll('.stagger-item'));
         } else {
-             relatedContentGrid.innerHTML = '<p class="text-text-muted col-span-full">Không tìm thấy nội dung nào tương tự.</p>';
+             relatedContentGrid.innerHTML = '<p class="text-text-muted col-span-full text-center py-4">Không tìm thấy nội dung nào tương tự.</p>';
         }
     };
 
@@ -477,28 +501,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const pageUrl = window.location.href;
         const seriesTitleText = series.title || 'Phim bộ không có tiêu đề';
         const seriesYearText = series.releaseYear ? `(${series.releaseYear})` : '';
-        const fullTitle = `Phim Bộ: ${seriesTitleText} ${seriesYearText} - Xem Online Vietsub, Thuyết Minh`;
-        let description = `Xem phim bộ ${seriesTitleText} ${seriesYearText} online. `;
+        const fullTitle = `Phim Bộ: ${seriesTitleText} ${seriesYearText} - Xem Online Vietsub, Thuyết Minh | Flick Tale`;
+        let description = `Xem phim bộ ${seriesTitleText} ${seriesYearText} online tại Flick Tale. `;
         if (series.description) { const firstSentence = series.description.split('.')[0]; description += (firstSentence.length < 120 ? firstSentence + '.' : series.description.substring(0, 120) + '...'); }
         else { description += `Thông tin chi tiết, các mùa, tập, diễn viên, đạo diễn, và các phiên bản Vietsub, Thuyết Minh.`; }
         description = description.substring(0, 160);
         const genresText = formatArrayData(series.genre, ', ');
-        const keywords = `xem phim bộ ${seriesTitleText}, ${seriesTitleText} online, ${seriesTitleText} vietsub, ${seriesTitleText} thuyết minh, ${genresText}, phim bộ ${series.releaseYear || ''}, ${series.director || ''}, ${formatArrayData(series.cast, ', ', 3)}`;
+        const keywords = `xem phim bộ ${seriesTitleText}, ${seriesTitleText} online, ${seriesTitleText} vietsub, ${seriesTitleText} thuyết minh, ${genresText}, phim bộ ${series.releaseYear || ''}, ${series.director || ''}, ${formatArrayData(series.cast, ', ', 3)}, Flick Tale`;
 
         if (pageTitleElement) pageTitleElement.textContent = fullTitle; if (metaDescriptionTag) metaDescriptionTag.content = description; if (metaKeywordsTag) metaKeywordsTag.content = keywords;
         if (ogUrlTag) ogUrlTag.content = pageUrl; if (ogTitleTag) ogTitleTag.content = fullTitle; if (ogDescriptionTag) ogDescriptionTag.content = description;
-        if (ogImageTag) ogImageTag.content = series.posterUrl || 'https://placehold.co/1200x630/141414/ffffff?text=Series+Poster'; if (ogTypeTag) ogTypeTag.content = 'video.tv_show';
+        if (ogImageTag) ogImageTag.content = (Array.isArray(series.posterUrl) ? series.posterUrl[0] : series.posterUrl) || 'https://placehold.co/1200x630/141414/ffffff?text=Series+Poster'; if (ogTypeTag) ogTypeTag.content = 'video.tv_show';
+        if (ogSiteNameTag) ogSiteNameTag.content = "Flick Tale";
         if (ogVideoDirectorTag) ogVideoDirectorTag.content = series.director || ''; if (ogVideoActorTag) ogVideoActorTag.content = formatArrayData(series.cast, ', ', 4);
         if (ogVideoReleaseDateTag && series.releaseYear) ogVideoReleaseDateTag.content = series.releaseYear.toString();
+        if (twitterCardTag) twitterCardTag.content = "summary_large_image";
         if (twitterUrlTag) twitterUrlTag.content = pageUrl; if (twitterTitleTag) twitterTitleTag.content = fullTitle; if (twitterDescriptionTag) twitterDescriptionTag.content = description;
-        if (twitterImageTag) twitterImageTag.content = series.posterUrl || 'https://placehold.co/1200x630/141414/ffffff?text=Series+Poster';
+        if (twitterImageTag) twitterImageTag.content = (Array.isArray(series.posterUrl) ? series.posterUrl[0] : series.posterUrl) || 'https://placehold.co/1200x630/141414/ffffff?text=Series+Poster';
         console.log("Đã cập nhật thẻ meta cho phim bộ:", seriesTitleText);
     };
 
-    // --- Series Specific Functions ---
     const populateSeasonSelector = (seasons) => {
-        if (!seasonSelect || !seasons || seasons.length === 0) { if (seasonSelectorContainer) seasonSelectorContainer.classList.add('hidden'); return; }
+        if (!seasonSelect || !seasons || seasons.length === 0) { 
+            if (seasonSelectorContainer) seasonSelectorContainer.classList.add('hidden'); 
+            if (seriesContentSection) seriesContentSection.classList.add('hidden'); // Hide the whole section
+            return; 
+        }
         if (seasonSelectorContainer) seasonSelectorContainer.classList.remove('hidden');
+        if (seriesContentSection) seriesContentSection.classList.remove('hidden'); // Show the section
+
         seasonSelect.innerHTML = '';
         seasons.forEach((season, index) => {
             const option = document.createElement('option'); option.value = index.toString(); option.textContent = `Mùa ${season.seasonNumber}`;
@@ -509,7 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const populateEpisodeSelector = (episodes) => {
         if (!episodeSelect || !episodes || episodes.length === 0) { if (episodeSelectorContainer) episodeSelectorContainer.classList.add('hidden'); return; }
-        // Keep hidden: if (episodeSelectorContainer) episodeSelectorContainer.classList.remove('hidden');
+        // episodeSelectorContainer.classList.remove('hidden'); // Keep hidden for now, use buttons
         episodeSelect.innerHTML = '';
         episodes.forEach((episode, index) => {
             const option = document.createElement('option'); option.value = index.toString(); option.textContent = `Tập ${episode.episodeNumber}: ${episode.title || 'Chưa có tên'}`;
@@ -519,8 +550,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const displayEpisodeButtons = (episodes) => {
         if (!episodeListContainer) return;
-        if (!episodes || episodes.length === 0) { episodeListContainer.innerHTML = '<p class="text-text-muted text-sm italic col-span-full">Không có tập nào cho mùa này.</p>'; episodeListContainer.className = 'flex flex-wrap gap-2'; return; }
-        episodeListContainer.className = 'flex flex-wrap gap-2';
+        if (!episodes || episodes.length === 0) { 
+            episodeListContainer.innerHTML = '<p class="text-text-muted text-sm italic col-span-full">Không có tập nào cho mùa này.</p>'; 
+            return; 
+        }
         episodeListContainer.innerHTML = episodes.map((episode, index) => {
             const isActive = index === currentSelectedEpisodeIndex; const activeClass = isActive ? 'active' : ''; const episodeNumber = episode.episodeNumber || (index + 1);
             return `<button class="episode-button ${activeClass}" data-episode-index="${index}" aria-current="${isActive ? 'true' : 'false'}" aria-label="Chọn Tập ${episodeNumber}" title="Xem Tập ${episodeNumber}${episode.title ? ': ' + episode.title : ''}">${episodeNumber}</button>`;
@@ -535,7 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (season) { populateEpisodeSelector(season.episodes); displayEpisodeButtons(season.episodes); loadEpisodeDataAndUpdateUI(currentSelectedEpisodeIndex); }
         else {
             if (episodeSelectorContainer) episodeSelectorContainer.classList.add('hidden');
-            if (episodeListContainer) { episodeListContainer.innerHTML = '<p class="text-text-muted text-sm italic col-span-full">Lỗi tải dữ liệu mùa.</p>'; episodeListContainer.className = 'flex flex-wrap gap-2'; }
+            if (episodeListContainer) { episodeListContainer.innerHTML = '<p class="text-text-muted text-sm italic col-span-full">Lỗi tải dữ liệu mùa.</p>';}
             setPlayerPoster(); updateVersionButtonStates({}, null); currentVideoUrl = null; updateSkipIntroButtonVisibility();
         }
     };
@@ -567,7 +600,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`loadEpisodeDataAndUpdateUI: Đã tải UI cho Mùa ${season?.seasonNumber || '?'} - Tập ${episode.episodeNumber}. Phiên bản chuẩn bị: ${currentActiveVersion || 'None'}.`);
     };
 
-    // --- Scroll & Lights Off ---
     const handleScroll = () => {
         if (!scrollToTopButton) return;
         const isVisible = window.scrollY > 300;
@@ -579,7 +611,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isLightsOff = document.body.classList.toggle('lights-off');
         if (toggleLightsButton) toggleLightsButton.setAttribute('aria-pressed', String(isLightsOff));
         if (toggleLightsText) toggleLightsText.textContent = isLightsOff ? 'Bật đèn' : 'Tắt đèn';
-        
         const icon = toggleLightsButton?.querySelector('i');
         if (icon) { 
             icon.classList.toggle('fa-lightbulb', !isLightsOff); 
@@ -587,23 +618,12 @@ document.addEventListener('DOMContentLoaded', () => {
             icon.classList.toggle('fa-moon', isLightsOff); 
             icon.classList.toggle('fa-regular', isLightsOff); 
         }
-        
-        // Ensure player area is fully visible
-        const playerArea = document.querySelector('.player-area');
-        if (playerArea) {
-            if (isLightsOff) {
-                playerArea.style.opacity = '1';
-                playerArea.style.filter = 'none';
-            } else {
-                playerArea.style.opacity = '';
-                playerArea.style.filter = '';
-            }
-        }
+        const playerArea = document.querySelector('.player-area'); 
+        if (playerArea) { playerArea.style.opacity = isLightsOff ? '1' : ''; playerArea.style.filter = isLightsOff ? 'none' : '';}
     };
 
-    // --- Observer ---
     const initObserver = () => {
-        if (!('IntersectionObserver' in window)) { document.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('is-visible')); return; }
+        if (!('IntersectionObserver' in window)) { document.querySelectorAll('.stagger-item').forEach(el => el.classList.add('is-visible')); return; }
         const options = { root: null, rootMargin: '0px', threshold: 0.1 };
         observer = new IntersectionObserver((entries, observerInstance) => {
             entries.forEach((entry) => {
@@ -611,28 +631,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     const delayIndex = parseInt(entry.target.dataset.index || '0', 10);
                     entry.target.style.animationDelay = `${delayIndex * 100}ms`;
                     entry.target.classList.add('is-visible');
-                    observerInstance.unobserve(entry.target);
+                    observerInstance.unobserve(entry.target); 
                 }
             });
         }, options);
-        observeElements(document.querySelectorAll('.animate-on-scroll'));
+        observeElements(document.querySelectorAll('.stagger-item'));
     };
-    const observeElements = (elements) => { if (!observer) return; elements.forEach((el) => { if (el.classList.contains('animate-on-scroll') && !el.classList.contains('is-visible')) observer.observe(el); }); };
+    const observeElements = (elements) => { if (!observer) return; elements.forEach((el) => { if (el.classList.contains('stagger-item') && !el.classList.contains('is-visible')) observer.observe(el); }); };
 
-    // --- Main Initialization Logic ---
+    // Main Initialization Logic
     const seriesId = getQueryParam('id');
     const typeParam = getQueryParam('type');
 
     if (!seriesId || isNaN(parseInt(seriesId)) || typeParam !== 'series') {
         displayError("ID phim bộ không hợp lệ, bị thiếu hoặc loại nội dung không đúng.");
+        if (seriesDetailsSkeleton) seriesDetailsSkeleton.classList.add('hidden');
+        if (loadingMessage) loadingMessage.classList.add('hidden');
         return;
     }
     const numericSeriesId = parseInt(seriesId);
-    if (loadingMessage) loadingMessage.classList.add('hidden');
+    if (loadingMessage) loadingMessage.classList.remove('hidden');
+    if (seriesDetailsSkeleton) seriesDetailsSkeleton.classList.remove('hidden');
     loadYouTubeApiScript();
 
-    // Fetch ALL data types
-    // Tải TẤT CẢ các loại dữ liệu
     Promise.all([
         fetch('../json/filmData.json').then(res => res.ok ? res.json() : Promise.resolve([])),
         fetch('../json/filmData_phimBo.json').then(res => {
@@ -646,16 +667,13 @@ document.addEventListener('DOMContentLoaded', () => {
         allSeriesData = series || [];
         allAnimeData = anime || [];
 
-        // Find the current series
-        // Tìm phim bộ hiện tại
         currentSeriesData = allSeriesData.find(s => s.id === numericSeriesId);
-        // Note: We don't check animeData here because the typeParam is strictly 'series' for this page.
-        // Lưu ý: Chúng ta không kiểm tra animeData ở đây vì typeParam là 'series' cho trang này.
-
+        
         if (currentSeriesData) {
             updateMetaTags(currentSeriesData);
+            const actualPosterUrl = Array.isArray(currentSeriesData.posterUrl) ? currentSeriesData.posterUrl[0] : currentSeriesData.posterUrl;
 
-            if (seriesPoster) { seriesPoster.src = currentSeriesData.posterUrl || 'https://placehold.co/400x600/222222/555555?text=No+Poster'; seriesPoster.alt = `Poster phim bộ ${currentSeriesData.title || 'không có tiêu đề'}`; }
+            if (seriesPoster) { seriesPoster.src = actualPosterUrl || 'https://placehold.co/400x600/222222/555555?text=No+Poster'; seriesPoster.alt = `Poster phim bộ ${currentSeriesData.title || 'không có tiêu đề'}`; }
             if (seriesMainTitle) seriesMainTitle.textContent = currentSeriesData.title || 'Không có tiêu đề';
             if(seriesYear) seriesYear.textContent = currentSeriesData.releaseYear || 'N/A';
             if(seriesGenre) seriesGenre.textContent = formatArrayData(currentSeriesData.genre);
@@ -667,19 +685,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if(seriesSeasonsCount) seriesSeasonsCount.textContent = currentSeriesData.numberOfSeasons || 'N/A';
             if(seriesEpisodesCount) seriesEpisodesCount.textContent = currentSeriesData.totalEpisodes || 'N/A';
 
-            // Populate season selector (triggers episode load and player prep)
-            // Điền bộ chọn mùa (kích hoạt tải tập và chuẩn bị trình phát)
-            populateSeasonSelector(currentSeriesData.seasons);
+            // Update data attributes for favorite/watchlist buttons
+            if (favoriteButton) {
+                favoriteButton.dataset.id = currentSeriesData.id;
+            }
+            if (watchlistButton) {
+                watchlistButton.dataset.id = currentSeriesData.id;
+            }
+             // Call to initialize button states from favorites.js if it's loaded
+            if (typeof initializeFavoriteButtons === 'function') { // Check if function exists
+                initializeFavoriteButtons();
+                initializeWatchlistButtons(); 
+            }
 
-            // Load related content from all sources
-            // Tải nội dung liên quan từ tất cả các nguồn
+
+            populateSeasonSelector(currentSeriesData.seasons);
             loadRelatedItems(currentSeriesData);
 
             setTimeout(() => {
+                if (loadingMessage) loadingMessage.classList.add('hidden');
                 if (seriesDetailsSkeleton) seriesDetailsSkeleton.classList.add('hidden');
                 if (errorMessageContainer) errorMessageContainer.classList.add('hidden');
                 if (seriesDetailsContent) seriesDetailsContent.classList.remove('hidden');
-            }, 150);
+            }, 200);
             initObserver();
 
         } else {
@@ -689,24 +717,41 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => {
         console.error('Lỗi khi tải hoặc xử lý dữ liệu:', error);
         displayError(`Đã xảy ra lỗi khi tải dữ liệu: ${error.message || error}`);
+        if (loadingMessage) loadingMessage.classList.add('hidden');
+        if (seriesDetailsSkeleton) seriesDetailsSkeleton.classList.add('hidden');
     });
 
-    // --- Event Listeners Setup ---
+    // Event Listeners Setup
     window.addEventListener('scroll', handleScroll);
     if (scrollToTopButton) scrollToTopButton.addEventListener('click', scrollToTop);
     if (versionSelectionContainer) versionSelectionContainer.addEventListener('click', handleVersionClick);
     if (toggleLightsButton) toggleLightsButton.addEventListener('click', toggleLights);
     if (seasonSelect) seasonSelect.addEventListener('change', handleSeasonChange);
-    // Episode button listeners added dynamically
+    
     const lightsOverlay = document.getElementById('lights-overlay');
     if (lightsOverlay) lightsOverlay.addEventListener('click', () => { if (document.body.classList.contains('lights-off')) toggleLights(); });
-    if (videoPosterOverlay) videoPosterOverlay.addEventListener('click', () => { if (currentVideoUrl) startVideoPlayback(currentVideoUrl, false); else showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Vui lòng chọn tập và phiên bản video.`, false, true); });
-    if (videoPlayButton) videoPlayButton.addEventListener('click', (event) => { event.stopPropagation(); if (currentVideoUrl) startVideoPlayback(currentVideoUrl, false); else showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Vui lòng chọn tập và phiên bản video.`, false, true); });
+    
+    const playFunction = (skipIntro = false) => {
+        if (currentVideoUrl) {
+            startVideoPlayback(currentVideoUrl, skipIntro);
+        } else {
+            showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Vui lòng chọn tập và phiên bản video.`, false, true);
+        }
+    };
+
+    if (videoPosterOverlay) videoPosterOverlay.addEventListener('click', () => playFunction(false));
+    if (videoPlayButton) videoPlayButton.addEventListener('click', (event) => { event.stopPropagation(); playFunction(false); });
+    
     if (skipIntroButton) {
         skipIntroButton.addEventListener('click', () => {
-            if (currentVideoUrl && currentActiveVersion) { const isYouTube = !!getYouTubeVideoId(currentVideoUrl); if (isYouTube) startVideoPlayback(currentVideoUrl, true); else showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Bỏ qua giới thiệu chỉ khả dụng cho YouTube.`, false, true); }
-            else { showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Vui lòng chọn tập và phiên bản video trước.`, false, true); }
+            if (currentVideoUrl && currentActiveVersion) { 
+                const isYouTube = !!getYouTubeVideoId(currentVideoUrl); 
+                if (isYouTube) playFunction(true); 
+                else showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Bỏ qua giới thiệu chỉ khả dụng cho YouTube.`, false, true); 
+            } else { 
+                showVideoMessage(`<i class="fas fa-info-circle mr-2"></i> Vui lòng chọn tập và phiên bản video trước.`, false, true); 
+            }
         });
     }
-
-}); // End DOMContentLoaded
+    console.log("filmDetails_phimBo.js loaded and initialized (v1.5)");
+});

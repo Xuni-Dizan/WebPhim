@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chính Sách Bảo Mật - Flick Take</title>
-    <meta name="description" content="Tìm hiểu cách Flick Take thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn khi sử dụng dịch vụ xem phim của chúng tôi.">
-    <meta name="keywords" content="chính sách bảo mật, flick take, quyền riêng tư, bảo mật dữ liệu, thông tin cá nhân">
+    <title>Chính Sách Bảo Mật - Flick Tale</title> <!-- Updated -->
+    <meta name="description" content="Tìm hiểu cách Flick Tale thu thập, sử dụng và bảo vệ thông tin cá nhân của bạn khi sử dụng dịch vụ xem phim của chúng tôi.">
+    <meta name="keywords" content="chính sách bảo mật, flick tale, quyền riêng tư, bảo mật dữ liệu, thông tin cá nhân">
 
     <link rel="icon" href="../../favicon.ico" sizes="any">
     <link rel="icon" href="../../access/img/FlickTale.jpg" type="image/jpeg">
@@ -17,7 +17,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../../css/style.css">
 
@@ -27,20 +27,24 @@
                 extend: {
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
+                        'heading': ['Montserrat', 'sans-serif'],
                     },
+                    // Copied from dieu_khoan_su_dung.html (Light Theme Palette)
                     colors: {
-                        // Consistent colors with Terms page (Light Theme Focus)
-                        'primary': '#e50914',
-                        'primary-hover': '#f40612',
-                        'secondary': '#141414', // Keep for footer consistency
-                        'light-gray': '#f9fafb', // gray-50 (Used for subtle backgrounds if needed)
-                        'medium-gray': '#e5e7eb', // gray-200 (Borders, progress bg)
-                        'dark-gray': '#1f2937', // gray-800 (Headings)
-                        'text-color': '#111827', // gray-900 (Main text)
-                        'text-muted': '#6b7280', // gray-500 (Muted text)
-                        'border-color': '#d1d5db', // gray-300
-                        'accent-blue': '#4f46e5', // indigo-600 (Accent color)
-                        'accent-blue-darker': '#4338ca', // indigo-700 (Hover)
+                        'primary': 'var(--primary-color)', 
+                        'primary-hover': 'var(--primary-hover-color)',
+                        'secondary': '#ffffff', 
+                        'light-gray': '#f3f4f6', 
+                        'medium-gray': '#e5e7eb', 
+                        'dark-gray': '#1f2937',   
+                        'text-color': '#111827',  
+                        'text-muted': '#6b7280',  
+                        'border-color': '#d1d5db',
+                        'accent-blue': '#4f46e5', 
+                        'accent-blue-darker': '#4338ca', 
+                        'footer-bg': '#111827',      
+                        'footer-text': '#9ca3af',    
+                        'footer-link-hover': '#ffffff',
                         'white': '#ffffff',
                         'black': '#000000',
                     }
@@ -54,9 +58,9 @@
         html { scroll-behavior: smooth; }
 
         body {
-            background-color: #ffffff; /* Set body background to white */
+            background-color: theme('colors.light-gray'); 
             color: theme('colors.text-color');
-            font-family: 'Inter', sans-serif;
+            font-family: var(--body-font);
         }
 
         /* Progress Bar */
@@ -78,7 +82,7 @@
 
         /* Header */
         header {
-            background-color: theme('colors.white'); /* White header */
+            background-color: theme('colors.white'); 
             box-shadow: 0 1px 3px rgba(0,0,0,0.07);
             position: sticky;
             top: 4px;
@@ -122,7 +126,7 @@
             top: 80px;
             border: 1px solid theme('colors.medium-gray');
         }
-        aside h3 { color: theme('colors.text-color'); font-weight: 600; }
+        aside h3 { color: theme('colors.text-color'); font-weight: 600; font-family: var(--heading-font); }
         aside a {
             color: theme('colors.text-muted');
             transition: color 0.2s ease, padding-left 0.2s ease, border-color 0.2s ease;
@@ -131,7 +135,7 @@
             border-left: 3px solid transparent;
             border-radius: 0.25rem;
         }
-        aside a:hover {
+        aside a:hover, aside a.active-toc { /* Added .active-toc for JS highlighting */
             color: theme('colors.accent-blue');
             padding-left: 0.75rem;
             border-left-color: theme('colors.accent-blue');
@@ -141,6 +145,7 @@
         /* Section Styling */
         section { margin-bottom: 2.5rem; scroll-margin-top: 90px; }
         section h2 {
+            font-family: var(--heading-font);
             font-size: 1.25rem;
             font-weight: 600;
             color: theme('colors.dark-gray');
@@ -198,7 +203,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         #thank-you-message.visible > div { transform: scale(1); }
-        #thank-you-message h2 { color: theme('colors.dark-gray'); }
+        #thank-you-message h2 { color: theme('colors.dark-gray'); font-family: var(--heading-font); }
         #thank-you-message p { color: theme('colors.text-muted'); }
 
         /* Scroll-to-top button */
@@ -216,13 +221,13 @@
 
         /* Footer */
         footer {
-            background-color: #111827; /* gray-900 */
-            color: #9ca3af; /* gray-400 */
-            border-top: 1px solid #374151; /* gray-700 */
+            background-color: theme('colors.footer-bg'); 
+            color: theme('colors.footer-text'); 
+            border-top: 1px solid #374151; 
         }
-        footer a { color: #9ca3af; }
-        footer a:hover { color: theme('colors.white'); }
-        footer h3 { color: theme('colors.white'); }
+        footer a { color: theme('colors.footer-text'); }
+        footer a:hover { color: theme('colors.footer-link-hover'); }
+        footer h3 { color: theme('colors.footer-link-hover'); font-family: var(--heading-font); }
 
     </style>
 </head>
@@ -234,14 +239,14 @@
 
     <header class="py-3 px-4 sm:px-6 md:px-10">
         <div class="container mx-auto flex justify-between items-center max-w-screen-xl">
-            <a href="../../index.html" class="header-logo-link" aria-label="Về trang chủ Flick Take">
-                <img src="../../access/img/logo.png" alt="Logo Flick Take" class="header-logo"> </a>
+            <a href="../../index.html" class="header-logo-link" aria-label="Về trang chủ Flick Tale">
+                <img src="../../access/img/FlickTale.jpg" alt="Logo Flick Tale" class="header-logo"> </a>
             <div>
-                <a href="../../index.html" class="hover:text-gray-900 transition duration-300 mr-2 sm:mr-4 inline-flex items-center p-2 rounded" aria-label="Quay lại trang chủ">
+                <a href="../../index.html" class="hover:text-accent-blue transition duration-300 mr-2 sm:mr-4 inline-flex items-center p-2 rounded" aria-label="Quay lại trang chủ">
                     <i class="fas fa-arrow-left mr-0 sm:mr-1" aria-hidden="true"></i>
                     <span class="hidden sm:inline">Trang Chủ</span>
                 </a>
-                 <button class="hover:text-gray-900 transition duration-300 p-2 rounded-full" aria-label="Tài khoản người dùng">
+                 <button class="hover:text-accent-blue transition duration-300 p-2 rounded-full" aria-label="Tài khoản người dùng">
                     <i class="fas fa-user text-lg sm:text-xl" aria-hidden="true"></i>
                 </button>
             </div>
@@ -253,15 +258,16 @@
             <aside class="hidden lg:block">
                 <h3 class="text-lg font-semibold mb-4">Mục lục</h3>
                 <nav id="toc-nav-privacy" class="space-y-1">
-                    <p class="text-sm text-gray-900">Đang tải mục lục...</p>
+                    <p class="text-sm text-gray-500">Đang tải mục lục...</p>
                 </nav>
             </aside>
 
             <div class="lg:col-span-3 flex flex-col">
-                <h1 class="text-3xl font-bold mb-8 text-gray-900">Chính Sách Bảo Mật Flick Take</h1>
+                <h1 class="text-3xl font-bold mb-8 text-dark-gray font-heading">Chính Sách Bảo Mật Flick Tale</h1>
                 <div class="content-card flex-grow flex flex-col">
                     <div id="policy-content-area" class="content-scroll-area flex-grow">
-                        <p id="loading-policy" class="text-center text-gray-500 py-10">Đang tải chính sách...</p>
+                        <p id="loading-policy" class="text-center text-text-muted py-10">Đang tải chính sách...</p>
+                        <!-- Policy sections will be populated by JS -->
                         </div>
                 </div>
 
@@ -277,8 +283,8 @@
     <footer class="py-12 px-4 sm:px-6 lg:px-8 mt-16" role="contentinfo">
         <div class="container mx-auto max-w-screen-xl grid grid-cols-1 md:grid-cols-3 gap-8">
              <div class="space-y-4">
-                <a href="../../index.html" class="inline-block mb-2" aria-label="Trang chủ Flick Take">
-                    <span class="text-xl font-bold text-white">Flick Tale</span>
+                <a href="../../index.html" class="header-logo-link inline-block mb-2" aria-label="Trang chủ Flick Tale">
+                     <img src="../../access/img/FlickTale.jpg" alt="Logo Flick Tale" class="h-10 hover:opacity-80 transition-opacity duration-300">
                 </a>
                 <p class="text-sm pr-4">
                     Khám phá thế giới điện ảnh với hàng ngàn phim lẻ và phim bộ hấp dẫn. Cập nhật liên tục, chất lượng cao.
@@ -287,20 +293,21 @@
             <div>
                 <h3 class="text-lg font-semibold mb-4">Liên Kết Nhanh</h3>
                 <nav class="space-y-2" aria-label="Liên kết phụ">
-                    <a href="#" class="block hover:text-white hover:underline transition duration-300 text-sm">Về Chúng Tôi</a>
-                    <a href="dieu_khoan_su_dung.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
-                    <a href="chinh_sach_bao_mat.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Chính Sách Bảo Mật</a>
-                    <a href="#" class="block hover:text-white hover:underline transition duration-300 text-sm">Liên Hệ Hỗ Trợ</a>
-                    <a href="../hoat_hinh_2D_3D.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Phim 2D/3D</a>
+                    <a href="../../about.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Về Chúng Tôi</a>
+                    <a href="dieu_khoan_su_dung.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
+                    <a href="chinh_sach_bao_mat.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Chính Sách Bảo Mật</a>
+                    <a href="lien_he_ho_tro.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Liên Hệ Hỗ Trợ</a>
+                    <a href="../hoat_hinh_2D_3D.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Phim 2D/3D</a>
+                    <a href="../anime.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Anime</a>
                 </nav>
             </div>
             <div>
                 <h3 class="text-lg font-semibold mb-4">Theo Dõi Chúng Tôi</h3>
                 <div class="flex space-x-4 mb-4" aria-label="Liên kết mạng xã hội">
-                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="hover:text-footer-link-hover transition duration-300 text-xl" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="hover:text-footer-link-hover transition duration-300 text-xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-footer-link-hover transition duration-300 text-xl" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-footer-link-hover transition duration-300 text-xl" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
                 </div>
                  <h3 class="text-lg font-semibold mb-2 mt-6">Thông Tin Liên Hệ</h3>
                  <p class="text-sm">Email: support@flicktale.com</p>
@@ -308,7 +315,7 @@
             </div>
         </div>
         <div class="mt-10 pt-8 border-t border-gray-700 text-center">
-            <p class="text-sm">© <span id="footer-year">2025</span> Flick Take. Mọi quyền được bảo lưu.</p>
+            <p class="text-sm">© <span id="footer-year">2025</span> Flick Tale. Mọi quyền được bảo lưu.</p>
             <p class="text-xs mt-2 opacity-70">
                 Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn và học tập.
             </p>
@@ -316,33 +323,35 @@
     </footer>
 
     <button id="scroll-to-top" class="hidden fixed bottom-6 right-6 p-3 rounded-full z-50" aria-label="Cuộn lên đầu trang">
-        <i class="fas fa-arrow-up"></i>
+        <i class="fas fa-arrow-up text-lg"></i>
     </button>
 
     <div id="thank-you-message">
         <div>
-            <h2 class="text-2xl font-bold mb-4 text-gray-900">Cảm ơn bạn!</h2>
-            <p class="text-base mb-6 text-gray-700">Bạn đã đọc Chính Sách Bảo Mật.</p>
+            <h2 class="text-2xl font-bold mb-4">Cảm ơn bạn!</h2>
+            <p class="text-base mb-6">Bạn đã đọc Chính Sách Bảo Mật của chúng tôi.</p>
             <p class="text-sm text-gray-500">Đang chuyển hướng về trang chủ...</p>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Data for sections (unchanged)
+            // Updated sectionsData for Privacy Policy
             const sectionsData = [
-                 { id: 'collection', title: '1. Thu Thập Thông Tin', icon: 'fa-users', content: '<ul class="list-disc list-inside space-y-1"><li>Thông tin cá nhân khi đăng ký (tên, email).</li><li>Dữ liệu hoạt động (lịch sử xem, đánh giá).</li><li>Chi tiết thiết bị và trình duyệt.</li></ul>' },
-                 { id: 'usage', title: '2. Sử Dụng Thông Tin', icon: 'fa-info-circle', content: '<ul class="list-disc list-inside space-y-1"><li>Cá nhân hóa gợi ý phim và danh sách phát.</li><li>Thông báo cập nhật, sự kiện và khuyến mãi.</li><li>Phân tích dữ liệu để cải thiện dịch vụ.</li></ul>' },
-                 { id: 'cookies', title: '3. Cookies & Công Nghệ', icon: 'fa-cookie-bite', content: '<p>Chúng tôi sử dụng cookies và công nghệ tương tự để lưu tuỳ chọn, phân tích và cá nhân hoá trải nghiệm. Bạn có thể quản lý hoặc từ chối qua cài đặt trình duyệt.</p>' },
-                 { id: 'security', title: '4. Bảo Mật Dữ Liệu', icon: 'fa-shield-alt', content: '<p>Chúng tôi áp dụng mã hoá SSL, kiểm soát truy cập nghiêm ngặt và đánh giá bảo mật định kỳ để bảo vệ dữ liệu của bạn.</p>' },
-                 { id: 'thirdparty', title: '5. Chia Sẻ Với Bên Thứ Ba', icon: 'fa-share-alt', content: '<p>Chỉ chia sẻ với đối tác thanh toán, phân tích hoặc khi pháp luật yêu cầu. Chúng tôi tuyệt đối không bán dữ liệu.</p>' },
-                 { id: 'changes', title: '6. Cập Nhật Chính Sách', icon: 'fa-calendar-alt', content: '<p>Mọi thay đổi sẽ được cập nhật ngay tại trang này, kèm ngày hiệu lực rõ ràng.</p>' },
-                 { id: 'contact', title: '7. Liên Hệ', icon: 'fa-envelope', content: '<p>Mọi thắc mắc xin gửi về <a href="mailto:support@flicktale.com" class="text-accent-blue underline hover:text-accent-blue-darker font-medium">support@flicktale.com</a>.</p>' }
+                 { id: 'collection', title: '1. Thu Thập Thông Tin', icon: 'fa-user-check', content: '<p>Chúng tôi thu thập thông tin bạn cung cấp trực tiếp (tên, email khi đăng ký), thông tin tự động (địa chỉ IP, loại thiết bị, lịch sử xem), và thông tin từ cookie để cải thiện trải nghiệm.</p><ul class="list-disc list-inside space-y-1 mt-2"><li><strong>Thông tin cá nhân:</strong> Tên, email, thông tin thanh toán (nếu có).</li><li><strong>Dữ liệu sử dụng:</strong> Lịch sử xem, sở thích, đánh giá, tìm kiếm.</li><li><strong>Thông tin kỹ thuật:</strong> Địa chỉ IP, loại trình duyệt, hệ điều hành, thông tin thiết bị.</li></ul>' },
+                 { id: 'usage', title: '2. Mục Đích Sử Dụng', icon: 'fa-tasks', content: '<p>Thông tin của bạn được sử dụng để:</p><ul class="list-disc list-inside space-y-1 mt-2"><li>Cung cấp và cá nhân hóa dịch vụ (gợi ý phim, thông báo).</li><li>Xử lý thanh toán và quản lý tài khoản.</li><li>Phân tích và cải thiện chất lượng dịch vụ, giao diện người dùng.</li><li>Ngăn chặn gian lận và đảm bảo an ninh.</li><li>Tuân thủ các yêu cầu pháp lý.</li></ul>' },
+                 { id: 'cookies', title: '3. Cookies & Công Nghệ Theo Dõi', icon: 'fa-cookie-bite', content: '<p>Chúng tôi sử dụng cookies và các công nghệ tương tự (pixel tags, web beacons) để thu thập thông tin về cách bạn tương tác với Dịch vụ, lưu trữ tùy chọn của bạn, và hiển thị quảng cáo phù hợp (nếu có). Bạn có thể quản lý cookies thông qua cài đặt trình duyệt của mình, tuy nhiên việc từ chối cookies có thể ảnh hưởng đến một số tính năng.</p>' },
+                 { id: 'security', title: '4. Bảo Mật Dữ Liệu', icon: 'fa-shield-alt', content: '<p>Chúng tôi cam kết bảo vệ thông tin cá nhân của bạn bằng các biện pháp kỹ thuật và tổ chức phù hợp, bao gồm mã hóa dữ liệu (SSL/TLS), kiểm soát truy cập, tường lửa, và các quy trình bảo mật nội bộ. Tuy nhiên, không có phương thức truyền tải qua Internet hoặc lưu trữ điện tử nào là an toàn 100%.</p>' },
+                 { id: 'thirdparty', title: '5. Chia Sẻ Với Bên Thứ Ba', icon: 'fa-users-cog', content: '<p>Chúng tôi có thể chia sẻ thông tin của bạn với các đối tác cung cấp dịch vụ (thanh toán, phân tích dữ liệu, marketing) trong phạm vi cần thiết để họ thực hiện dịch vụ cho chúng tôi. Chúng tôi yêu cầu các đối tác này tuân thủ các tiêu chuẩn bảo mật tương đương. Chúng tôi không bán thông tin cá nhân của bạn cho bên thứ ba. Thông tin có thể được tiết lộ nếu pháp luật yêu cầu hoặc để bảo vệ quyền lợi hợp pháp của chúng tôi.</p>' },
+                 { id: 'retention', title: '6. Lưu Trữ Dữ Liệu', icon: 'fa-hourglass-half', content: '<p>Chúng tôi lưu trữ thông tin cá nhân của bạn trong khoảng thời gian cần thiết để hoàn thành các mục đích được nêu trong chính sách này, hoặc theo yêu cầu của pháp luật. Sau đó, thông tin sẽ được xóa hoặc ẩn danh một cách an toàn.</p>' },
+                 { id: 'userRights', title: '7. Quyền Của Bạn', icon: 'fa-user-edit', content: '<p>Bạn có quyền truy cập, sửa đổi, xóa thông tin cá nhân của mình, hoặc yêu cầu hạn chế xử lý dữ liệu. Bạn cũng có quyền phản đối việc xử lý dữ liệu cho mục đích marketing trực tiếp. Vui lòng liên hệ chúng tôi qua thông tin bên dưới để thực hiện các quyền này.</p>' },
+                 { id: 'childrenPrivacy', title: '8. Quyền Riêng Tư Của Trẻ Em', icon: 'fa-child', content: '<p>Dịch vụ của chúng tôi không dành cho trẻ em dưới 13 tuổi (hoặc độ tuổi tối thiểu theo quy định của pháp luật địa phương). Chúng tôi không cố ý thu thập thông tin cá nhân từ trẻ em. Nếu bạn tin rằng chúng tôi đã vô tình thu thập thông tin từ trẻ em, vui lòng liên hệ để chúng tôi xóa thông tin đó.</p>' },
+                 { id: 'changes', title: '9. Cập Nhật Chính Sách', icon: 'fa-sync-alt', content: '<p>Chính sách này có thể được cập nhật theo thời gian. Mọi thay đổi sẽ được thông báo trên trang web này hoặc qua email. Việc bạn tiếp tục sử dụng Dịch vụ sau khi có thay đổi đồng nghĩa với việc bạn chấp nhận chính sách mới.</p>' },
+                 { id: 'contact', title: '10. Liên Hệ Chúng Tôi', icon: 'fa-headset', content: '<p>Nếu bạn có bất kỳ câu hỏi hoặc quan ngại nào về Chính Sách Bảo Mật này, vui lòng liên hệ với chúng tôi qua email: <a href="mailto:privacy@flicktale.com" class="text-accent-blue underline hover:text-accent-blue-darker font-medium">privacy@flicktale.com</a> hoặc các kênh hỗ trợ khác được cung cấp trên trang web.</p>' }
             ];
 
-            // DOM Elements
             const policyContentArea = document.getElementById('policy-content-area');
-            const tocNav = document.getElementById('toc-nav-privacy');
+            const tocNav = document.getElementById('toc-nav-privacy'); // Ensure this ID matches
             const loadingPolicy = document.getElementById('loading-policy');
             const progressBar = document.getElementById('progress-bar');
             const ackButton = document.getElementById('ack-button');
@@ -350,36 +359,19 @@
             const scrollToTopBtn = document.getElementById('scroll-to-top');
             const footerYear = document.getElementById('footer-year');
 
-            // Set footer year
-            if (footerYear) {
-                footerYear.textContent = new Date().getFullYear();
-            }
+            if (footerYear) footerYear.textContent = new Date().getFullYear();
 
-            // Generate Policy Content and Table of Contents
-            let policyHTML = '';
-            let tocHTML = '';
+            let policyHTML = ''; let tocHTML = '';
             if (policyContentArea && tocNav && loadingPolicy) {
                 sectionsData.forEach(sec => {
-                    const updatedContent = sec.content.replace('class="text-accent-blue', 'class="text-accent-blue font-medium');
-                    policyHTML += `
-                        <section id="${sec.id}">
-                            <h2><i class="fas ${sec.icon}"></i> ${sec.title}</h2>
-                            <div>${updatedContent}</div>
-                        </section>
-                    `;
-                    tocHTML += `
-                        <a href="#${sec.id}" class="block text-sm hover:text-accent-blue">${sec.title.substring(3)}</a>
-                    `;
+                    const updatedContent = sec.content.replace(/class="text-accent-blue/g, 'class="text-accent-blue font-medium');
+                    policyHTML += `<section id="${sec.id}"><h2 class="flex items-center"><i class="fas ${sec.icon} mr-2.5 text-accent-blue text-base"></i>${sec.title.substring(sec.title.indexOf('.') + 2)}</h2><div>${updatedContent}</div></section>`;
+                    tocHTML += `<a href="#${sec.id}" class="block text-sm hover:text-accent-blue">${sec.title.substring(sec.title.indexOf('.') + 2)}</a>`;
                 });
-                policyContentArea.innerHTML = policyHTML;
-                tocNav.innerHTML = tocHTML;
+                policyContentArea.innerHTML = policyHTML; tocNav.innerHTML = tocHTML;
                 loadingPolicy.style.display = 'none';
-            } else {
-                console.error("Could not find necessary elements for policy content or TOC.");
-                if(loadingPolicy) loadingPolicy.textContent = "Lỗi tải nội dung.";
-            }
+            } else { if(loadingPolicy) loadingPolicy.textContent = "Lỗi tải nội dung."; }
 
-            // Progress Bar Logic - Based on content scroll area
             const contentScrollArea = document.querySelector('.content-scroll-area');
             const updateProgressBar = () => {
                 if (!contentScrollArea || !progressBar) return;
@@ -391,9 +383,8 @@
 
              if (contentScrollArea) {
                  contentScrollArea.addEventListener('scroll', updateProgressBar);
-                 updateProgressBar();
+                 updateProgressBar(); 
              } else {
-                 // Fallback: Use window scroll if content area isn't the primary scroller
                  const updateProgressBarWindow = () => {
                      if (!progressBar) return;
                      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -404,39 +395,42 @@
                  updateProgressBarWindow();
              }
 
-            // Acknowledge Button Logic - Redirect like Terms page
             const handleAcknowledge = () => {
                  if (thankYouMessage) {
                     thankYouMessage.classList.add('visible');
                     if (ackButton) ackButton.disabled = true;
-                    setTimeout(() => {
-                        window.location.href = '../../index.html';
-                    }, 5000);
+                    setTimeout(() => { window.location.href = '../../index.html'; }, 3000);
                 }
             };
+            if (ackButton) ackButton.addEventListener('click', handleAcknowledge);
 
-            if (ackButton) {
-                ackButton.addEventListener('click', handleAcknowledge);
-            }
-
-            // Scroll-to-top Button Logic
             const handleScroll = () => {
                 if (!scrollToTopBtn) return;
                 const isVisible = window.scrollY > 200;
                 scrollToTopBtn.classList.toggle('visible', isVisible);
                 scrollToTopBtn.classList.toggle('hidden', !isVisible);
-            };
 
-            const scrollToTopFunc = () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                let currentSectionId = '';
+                sectionsData.forEach(secData => {
+                    const sectionEl = document.getElementById(secData.id);
+                    if (sectionEl) {
+                        const rect = sectionEl.getBoundingClientRect();
+                        if (rect.top <= 100 && rect.bottom >= 100) {
+                            currentSectionId = secData.id;
+                        }
+                    }
+                });
+                tocNav.querySelectorAll('a').forEach(link => {
+                    link.classList.remove('active-toc');
+                    if (link.getAttribute('href') === `#${currentSectionId}`) {
+                        link.classList.add('active-toc');
+                    }
+                });
             };
-
+            const scrollToTopFunc = () => window.scrollTo({ top: 0, behavior: 'smooth' });
             window.addEventListener('scroll', handleScroll);
-            if (scrollToTopBtn) {
-                scrollToTopBtn.addEventListener('click', scrollToTopFunc);
-            }
+            if (scrollToTopBtn) scrollToTopBtn.addEventListener('click', scrollToTopFunc);
             handleScroll();
-
         });
     </script>
 

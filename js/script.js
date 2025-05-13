@@ -89,44 +89,43 @@ document.addEventListener('DOMContentLoaded', function() {
             detailPageUrl = `pages/filmDetail.html?id=${item.id}&type=movies`;
         }
 
-        const altText = `Poster ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${item.title || 'không có tiêu đề'}`;
+        const altText = `Poster ${itemType.includes('anime') ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${item.title || 'không có tiêu đề'}, năm ${item.releaseYear || 'không rõ'}`;
         const posterUrl = item.posterUrl || 'https://placehold.co/300x450/111111/eeeeee?text=No+Poster';
         const titleText = item.title || 'Không có tiêu đề';
         const yearText = item.releaseYear || 'N/A';
         const ratingText = item.rating ? parseFloat(item.rating).toFixed(1) : 'N/A';
         const displayTitle = window.currentFilters.search && typeof SearchUtils !== 'undefined' ? SearchUtils.highlightTerm(titleText, window.currentFilters.search) : titleText;
-        const format = item.format || [];
+        const format = item.format || []; 
         const isAnime = itemType.includes('anime');
         
-        const cardClass = isAnime ? 'anime-card stagger-item' : 'movie-card stagger-item';
+        const cardClass = isAnime ? 'anime-card stagger-item' : 'movie-card stagger-item'; // Use stagger-item for potential future animation
         
         let badgesHTML = '';
         if (itemType === 'series' || itemType === 'anime-series') {
             badgesHTML += `<span class="card-badge card-badge-top-right badge-series">Bộ</span>`;
         } else if (itemType === 'anime-movie') {
-            badgesHTML += `<span class="card-badge card-badge-top-right badge-anime">Anime</span>`;
+            badgesHTML += `<span class="card-badge card-badge-top-right badge-anime">Anime</span>`; // Specific for Anime Movie
         } else if (itemType === 'movies') {
-            badgesHTML += `<span class="card-badge card-badge-top-right badge-movie">Lẻ</span>`;
+             badgesHTML += `<span class="card-badge card-badge-top-right badge-movie">Lẻ</span>`;
         }
 
         if (format.includes("3D")) {
             badgesHTML += `<span class="card-badge card-badge-top-left badge-3d">3D</span>`;
         } else if (format.includes("2D")) {
             badgesHTML += `<span class="card-badge card-badge-top-left badge-2d">2D</span>`;
-        } else if (format.includes("Animation") && !format.includes("2D") && !format.includes("3D")) {
+        } else if (format.includes("Animation") && !format.includes("2D") && !format.includes("3D") && !isAnime) { // Avoid double "Animation" if it's Anime
             badgesHTML += `<span class="card-badge card-badge-top-left badge-animation">Hoạt Hình</span>`;
         }
         
-        // --- START: UPDATE FOR EPISODE COUNT ---
         let episodesHTML = '';
         if (itemType === 'series' || itemType === 'anime-series') {
-            let episodeCount = '?'; // Default if no info
+            let episodeCount = '?'; 
             if (item.totalEpisodes) {
                 episodeCount = item.totalEpisodes;
             } else if (item.seasons && item.seasons[0] && typeof item.seasons[0].numberOfEpisodes === 'number') {
-                episodeCount = item.seasons[0].numberOfEpisodes; // Fallback to first season's episode count
+                episodeCount = item.seasons[0].numberOfEpisodes; 
             } else if (item.seasons && item.seasons[0] && Array.isArray(item.seasons[0].episodes)) {
-                episodeCount = item.seasons[0].episodes.length; // Fallback to length of episodes array
+                episodeCount = item.seasons[0].episodes.length; 
             }
             
             episodesHTML = `
@@ -134,10 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <i class="fas fa-list-ol"></i> ${episodeCount} tập 
                 </div> 
             `; 
-            // Changed icon to fa-list-ol for "ordered list" / episode count
-            // You can use fa-film if you prefer, or fa-tv for series.
         }
-        // --- END: UPDATE FOR EPISODE COUNT ---
 
         return `
             <a href="${detailPageUrl}" class="${cardClass}" data-item-id="${item.id}" data-item-type="${itemType}" aria-label="Xem chi tiết ${isAnime ? 'Anime' : (itemType === 'movies' ? 'phim' : 'phim bộ')} ${titleText}">
@@ -186,10 +182,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (noMoviesFound) noMoviesFound.classList.add('hidden');
             movieGrid.innerHTML = items.map((item, index) => {
                 const cardHTML = createItemCard(item, item.itemType || type);
-                 const cardWithIndex = cardHTML.replace('<a ', `<a data-index="${index}" `);
+                 const cardWithIndex = cardHTML.replace('<a ', `<a data-index="${index}" `); // For stagger animation
                  return cardWithIndex;
             }).join('');
-            observeElements(movieGrid.querySelectorAll('.animate-on-scroll'));
+            observeElements(movieGrid.querySelectorAll('.stagger-item')); // Observe new items
         }
     };
 
@@ -214,17 +210,18 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const updateHeroUI = (item) => {
-        if (!heroSection || !item) { // Added !item check
-             // Fallback if heroSection or item is not available
-            if(heroSection) heroSection.style.backgroundImage = `url('https://placehold.co/1920x1080/000000/333333?text=No+Hero+Image')`;
-            const heroTitleEl = document.getElementById('hero-title');
-            const heroDescEl = document.getElementById('hero-description');
-            const heroPlayBtnEl = document.getElementById('hero-play-button');
-            const heroDetailBtnEl = document.getElementById('hero-detail-button');
-            const heroYearEl = document.getElementById('hero-year');
-            const heroTypeEl = document.getElementById('hero-type');
-            const heroRatingEl = document.getElementById('hero-rating');
+        const heroTitleEl = document.getElementById('hero-title');
+        const heroDescEl = document.getElementById('hero-description');
+        const heroPlayBtnEl = document.getElementById('hero-play-button');
+        const heroDetailBtnEl = document.getElementById('hero-detail-button');
+        const heroYearEl = document.getElementById('hero-year');
+        const heroTypeEl = document.getElementById('hero-type');
+        const heroRatingEl = document.getElementById('hero-rating');
+        const heroBadgesContainer = heroSection?.querySelector('.hero-content .flex.flex-wrap.mb-3');
 
+
+        if (!heroSection || !item) { 
+            if(heroSection) heroSection.style.backgroundImage = `url('https://placehold.co/1920x1080/000000/333333?text=No+Hero+Image')`;
             if(heroTitleEl) heroTitleEl.textContent = "Khám Phá Phim Hay";
             if(heroDescEl) heroDescEl.textContent = "Duyệt qua bộ sưu tập phim lẻ và phim bộ mới nhất của chúng tôi.";
             if(heroPlayBtnEl) heroPlayBtnEl.style.display = 'none';
@@ -232,6 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if(heroYearEl) heroYearEl.textContent = new Date().getFullYear();
             if(heroTypeEl) heroTypeEl.textContent = "Đa dạng";
             if(heroRatingEl) heroRatingEl.textContent = "N/A";
+            if(heroBadgesContainer) heroBadgesContainer.innerHTML = '';
             return;
         }
         
@@ -250,20 +248,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 ? `pages/filmDetails_phimBo.html?id=${item.id}&type=${itemType}` 
                 : `pages/filmDetail.html?id=${item.id}&type=${itemType}`);
         
-        // Update existing hero elements if they are structured as per original HTML
-        const heroTitleEl = document.getElementById('hero-title');
-        const heroDescEl = document.getElementById('hero-description');
-        const heroPlayBtnEl = document.getElementById('hero-play-button');
-        const heroDetailBtnEl = document.getElementById('hero-detail-button');
-        const heroYearEl = document.getElementById('hero-year');
-        const heroTypeEl = document.getElementById('hero-type'); // Assuming this ID exists for type display
-        const heroRatingEl = document.getElementById('hero-rating'); // Assuming this ID exists
-
         heroSection.style.backgroundImage = `url('${backgroundUrl}')`;
         heroSection.setAttribute('aria-label', `Phim nổi bật: ${title}`);
 
         if(heroTitleEl) heroTitleEl.textContent = title;
-        if(heroDescEl) heroDescEl.textContent = description.length > 200 ? description.substring(0, 200) + '...' : description;
+        if(heroDescEl) heroDescEl.textContent = description.length > 180 ? description.substring(0, 180) + '...' : description; // Truncate description
         
         if(heroYearEl) heroYearEl.textContent = year;
         if(heroTypeEl) heroTypeEl.textContent = typeDisplay;
@@ -271,42 +260,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if(heroPlayBtnEl) {
             heroPlayBtnEl.style.display = 'inline-flex';
-            heroPlayBtnEl.onclick = () => window.location.href = detailUrl; // Direct navigation
+            heroPlayBtnEl.onclick = () => window.location.href = detailUrl; 
         }
         if(heroDetailBtnEl) {
             heroDetailBtnEl.style.display = 'inline-flex';
             heroDetailBtnEl.onclick = () => window.location.href = detailUrl;
         }
         
-        // If you still want to use the dynamic creation for some parts (like badges):
-        const heroContentDiv = heroSection.querySelector('.hero-content'); // Find the content container
-        if(heroContentDiv) {
-            const badgesContainer = heroContentDiv.querySelector('.flex.flex-wrap.mb-3'); // Find badge container
-            if(badgesContainer) {
-                badgesContainer.innerHTML = ''; // Clear old badges
-                const genres = item.genre || [];
-                if (genres.length > 0) {
-                    genres.slice(0, 2).forEach(genre => {
-                        const badgeSpan = document.createElement('span');
-                        badgeSpan.className = 'hero-badge hero-badge-tertiary mr-2 mb-2';
-                        badgeSpan.innerHTML = `<i class="fas fa-tag mr-1"></i> ${genre}`;
-                        badgesContainer.appendChild(badgeSpan);
-                    });
-                } else {
-                    const defaultBadge = document.createElement('span');
-                    defaultBadge.className = 'hero-badge hero-badge-primary mr-2 mb-2';
-                    defaultBadge.innerHTML = `<i class="fas fa-star mr-1"></i> Đề Xuất`;
-                    badgesContainer.appendChild(defaultBadge);
-                }
-                const statusBadge = document.createElement('span');
-                statusBadge.className = 'hero-badge hero-badge-tertiary';
-                statusBadge.innerHTML = `<i class="fas fa-certificate mr-1"></i> ${item.isNew ? 'Mới' : (item.isTrending ? 'Thịnh hành' : (item.isHot ? 'Hot' : 'Phổ biến'))}`;
-                badgesContainer.appendChild(statusBadge);
+        if(heroBadgesContainer) {
+            heroBadgesContainer.innerHTML = ''; // Clear old badges
+            const genres = item.genre || [];
+            if (genres.length > 0) {
+                genres.slice(0, 2).forEach(genre => { // Show max 2 genres
+                    const badgeSpan = document.createElement('span');
+                    badgeSpan.className = 'hero-badge hero-badge-tertiary mr-2 mb-2';
+                    badgeSpan.innerHTML = `<i class="fas fa-tag mr-1"></i> ${genre}`;
+                    heroBadgesContainer.appendChild(badgeSpan);
+                });
+            } else {
+                const defaultBadge = document.createElement('span');
+                defaultBadge.className = 'hero-badge hero-badge-primary mr-2 mb-2';
+                defaultBadge.innerHTML = `<i class="fas fa-star mr-1"></i> Đề Xuất`;
+                heroBadgesContainer.appendChild(defaultBadge);
             }
+            const statusBadge = document.createElement('span');
+            statusBadge.className = 'hero-badge hero-badge-tertiary';
+            statusBadge.innerHTML = `<i class="fas fa-certificate mr-1"></i> ${item.isNew ? 'Mới' : (item.isTrending ? 'Thịnh hành' : (item.isHot ? 'Hot' : 'Phổ biến'))}`;
+            heroBadgesContainer.appendChild(statusBadge);
         }
 
-
-        // Re-trigger animation for content
         const heroContentAnimate = heroSection.querySelector('.hero-content');
         if (heroContentAnimate) {
             heroContentAnimate.style.opacity = '0';
@@ -315,7 +297,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 heroContentAnimate.style.transition = 'opacity 0.6s var(--animation-timing), transform 0.6s var(--animation-timing)';
                 heroContentAnimate.style.opacity = '1';
                 heroContentAnimate.style.transform = 'translateY(0)';
-            }, 100); // Small delay
+            }, 100); 
         }
     };
 
@@ -328,14 +310,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateHeroUI(hotItems[currentHeroIndex]);
             }, HERO_SLIDESHOW_INTERVAL);
         } else if (hotItems.length === 1) {
-            updateHeroUI(hotItems[0]); // Show the single hot item
+            updateHeroUI(hotItems[0]); 
         } else {
-            // Fallback if no hot items: Show a default or the first item from allMovies/allSeries
             const fallbackData = window.allMovies.length > 0 ? window.allMovies[0] : (window.allSeries.length > 0 ? window.allSeries[0] : null);
             if (fallbackData) {
                 updateHeroUI(fallbackData);
             } else {
-                updateHeroUI(null); // Show a very generic hero
+                updateHeroUI(null); 
             }
         }
     };
@@ -411,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         genres.sort().forEach(genre => {
             const label = document.createElement('label');
-            label.className = 'block px-3 py-1.5 hover:bg-gray-600 rounded cursor-pointer flex items-center';
+            label.className = 'block px-3 py-1.5 hover:bg-gray-600 rounded cursor-pointer flex items-center'; // Tailwind for styling
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox'; checkbox.value = genre; checkbox.className = 'mr-2 accent-primary';
             checkbox.checked = window.currentFilters.genres.includes(genre);
@@ -451,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
          if (yearSliderInstance) yearSliderInstance.destroy(); yearSliderInstance = null;
          if (yearSliderElement && minYear !== null && maxYear !== null && minYear <= maxYear) {
-             yearSliderElement.innerHTML = '';
+             yearSliderElement.innerHTML = ''; // Clear placeholder
              try {
                  yearSliderInstance = noUiSlider.create(yearSliderElement, { range: { 'min': minYear, 'max': maxYear }, start: [window.currentFilters.yearRange[0] ?? minYear, window.currentFilters.yearRange[1] ?? maxYear], connect: true, step: 1, format: wNumb({ decimals: 0 }), behaviour: 'tap-drag' });
                  yearSliderInstance.on('update', debounceFilter((values) => {
@@ -470,7 +451,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
          if (ratingSliderInstance) ratingSliderInstance.destroy(); ratingSliderInstance = null;
          if (ratingSliderElement) {
-             ratingSliderElement.innerHTML = '';
+             ratingSliderElement.innerHTML = ''; // Clear placeholder
              try {
                  ratingSliderInstance = noUiSlider.create(ratingSliderElement, { range: { 'min': ratingMin, 'max': ratingMax }, start: [window.currentFilters.ratingRange[0] ?? ratingMin, window.currentFilters.ratingRange[1] ?? ratingMax], connect: true, step: 0.1, format: wNumb({ decimals: 1 }), behaviour: 'tap-drag' });
                  ratingSliderInstance.on('update', debounceFilter((values) => {
@@ -543,17 +524,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const filterAndSortContent = () => {
         if (!window.dataLoaded) { showSkeletonCards(); return; }
-        showSkeletonCards();
+        showSkeletonCards(); // Show skeletons while filtering
         const dataPool = currentContentType === 'movies' ? window.allMovies : window.allSeries;
         const { search, genres: selectedGenres, yearRange, ratingRange, sort: selectedSort, format: selectedFormat } = window.currentFilters;
         const [minYear, maxYear] = yearRange;
         const [minRating, maxRating] = ratingRange;
         let filtered = [...dataPool]; 
         let gridTitleText = currentContentType === 'movies' ? "Phim Lẻ & Anime Movie" : "Phim Bộ & Anime Series"; 
-        let filterDescriptions = [];
+        let filterDescriptions = []; // For building the subtitle
 
         if (search) {
-            filtered = filtered.filter(item => item.title && item.title.toLowerCase().includes(search));
+            const normalizedSearch = SearchUtils.normalizeText(search); // Normalize search term
+            filtered = filtered.filter(item => item.title && SearchUtils.normalizeText(item.title).includes(normalizedSearch));
             gridTitleText = `Kết quả tìm kiếm cho "${search}"`;
         }
         if (selectedGenres.length > 0) {
@@ -588,15 +570,15 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'title_desc': filtered.sort((a, b) => (b.title || '').localeCompare(a.title || '')); break;
         }
 
-        setTimeout(() => renderContentList(filtered, currentContentType), 150);
+        setTimeout(() => renderContentList(filtered, currentContentType), 150); // Small delay for skeleton display
     };
-    window.filterAndSortContent = filterAndSortContent; 
+    window.filterAndSortContent = filterAndSortContent; // Expose to global scope
 
     const handleFilterChange = () => {
         window.currentFilters.sort = sortFilter?.value || 'default';
         filterAndSortContent(); updateUrlParams(); updateFilterTags();
     };
-    window.handleFilterChange = handleFilterChange;
+    window.handleFilterChange = handleFilterChange; // Expose for inline JS if needed
 
     const handleFormatChange = () => {
         window.currentFilters.format = formatFilter?.value || 'all';
@@ -604,25 +586,29 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     const initObserver = () => {
-        if (!('IntersectionObserver' in window)) { document.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('is-visible')); return; }
-        const options = { root: null, rootMargin: '0px', threshold: 0.1 };
+        if (!('IntersectionObserver' in window)) { // Fallback for older browsers
+            document.querySelectorAll('.animate-on-scroll').forEach(el => el.classList.add('is-visible'));
+            return;
+        }
+        const options = { root: null, rootMargin: '0px', threshold: 0.1 }; // Trigger when 10% visible
         observer = new IntersectionObserver((entries, observerInstance) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     const delayIndex = parseInt(entry.target.dataset.index || '0', 10);
-                    entry.target.style.animationDelay = `${delayIndex * 100}ms`;
+                    entry.target.style.animationDelay = `${delayIndex * 100}ms`; // Stagger animation
                     entry.target.classList.add('is-visible');
-                    // observerInstance.unobserve(entry.target); 
+                    // observerInstance.unobserve(entry.target); // Stop observing once animated if preferred
                 }
             });
         }, options);
-        observeElements(document.querySelectorAll('.animate-on-scroll'));
+        observeElements(document.querySelectorAll('.stagger-item')); // Observe items with stagger-item class
     };
 
     const observeElements = (elements) => {
         if (!observer) return;
         elements.forEach((el) => {
-            if (el.classList.contains('animate-on-scroll') && !el.classList.contains('is-visible')) {
+            // Only observe if it has the class and hasn't been made visible yet
+            if (el.classList.contains('stagger-item') && !el.classList.contains('is-visible')) {
                  observer.observe(el);
             }
         });
@@ -649,8 +635,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 tabSeries.setAttribute('aria-selected', String(newType === 'series'));
             }
 
+            // Reset filters for the new tab
             const defaultYears = window.dataLoaded ? minMaxYears[currentContentType] : [null, null];
             window.currentFilters = { genres: [], yearRange: [defaultYears[0], defaultYears[1]], ratingRange: [0, 10], sort: 'default', search: '', format: 'all' };
+            // Reset UI elements
             const searchInputDesktop = document.getElementById('search-input-desktop'); const searchInputMobile = document.getElementById('search-input-mobile');
             if (searchInputDesktop) searchInputDesktop.value = ''; if (searchInputMobile) searchInputMobile.value = '';
             if (sortFilter) sortFilter.value = 'default'; if (formatFilter) formatFilter.value = 'all';
@@ -664,17 +652,17 @@ document.addEventListener('DOMContentLoaded', function() {
                  if (ratingSliderValues) ratingSliderValues.textContent = '0.0 - 10.0';
              } else if (ratingSliderValues) { ratingSliderValues.textContent = 'Tất cả'; }
 
-            updateFilterTags();
-            showSkeletonCards();
+            updateFilterTags(); // Update tags for the new default filters
+            showSkeletonCards(); // Show skeletons for the new tab
             movieGrid.classList.remove(slideOutClass);
             movieGrid.classList.add(slideInClass);
-            filterAndSortContent();
-            void movieGrid.offsetWidth;
-            movieGrid.classList.add('is-visible');
+            filterAndSortContent(); // This will re-render based on new defaults
+            void movieGrid.offsetWidth; // Force reflow
+            movieGrid.classList.add('is-visible'); // Animate in
             setTimeout(() => {
                 if (movieGrid) movieGrid.classList.remove(slideInClass);
             }, TAB_TRANSITION_DURATION);
-            updateUrlParams();
+            updateUrlParams(); // Update URL for new tab
         }, TAB_TRANSITION_DURATION); 
     };
 
@@ -692,7 +680,7 @@ document.addEventListener('DOMContentLoaded', function() {
              tabSeries.classList.add('active'); tabSeries.setAttribute('aria-selected', 'true');
              filtersChanged = true; 
          } else {
-             currentContentType = 'movies'; 
+             currentContentType = 'movies'; // Default to movies if no tab or invalid tab
              if (tabMovies) { tabMovies.classList.add('active'); tabMovies.setAttribute('aria-selected', 'true'); }
              if (tabSeries) { tabSeries.classList.remove('active'); tabSeries.setAttribute('aria-selected', 'false'); }
          }
@@ -702,11 +690,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
          if (genresParam) { initialFilters.genres = genresParam.split(',').map(g => g.trim()).filter(Boolean); filtersChanged = true; }
          const parsedMinYear = minYearParam ? parseInt(minYearParam) : null; const parsedMaxYear = maxYearParam ? parseInt(maxYearParam) : null;
-         if (defaultYears[0] !== null && defaultYears[1] !== null) {
+         if (defaultYears[0] !== null && defaultYears[1] !== null) { // Check if default years are valid
               initialFilters.yearRange[0] = parsedMinYear !== null ? parsedMinYear : defaultYears[0];
               initialFilters.yearRange[1] = parsedMaxYear !== null ? parsedMaxYear : defaultYears[1];
               if ((parsedMinYear !== null && parsedMinYear !== defaultYears[0]) || (parsedMaxYear !== null && parsedMaxYear !== defaultYears[1])) filtersChanged = true;
-         } else {
+         } else { // If default years are not valid (e.g., data not loaded), use URL params or null
               initialFilters.yearRange[0] = parsedMinYear;
               initialFilters.yearRange[1] = parsedMaxYear;
               if (parsedMinYear !== null || parsedMaxYear !== null) filtersChanged = true;
@@ -742,55 +730,66 @@ document.addEventListener('DOMContentLoaded', function() {
     if (filterTagsContainer) filterTagsContainer.addEventListener('click', handleRemoveTag);
     if (clearFiltersButton) clearFiltersButton.addEventListener('click', handleClearFilters);
     
+    // --- Initialization ---
     const initializeApp = async () => {
-        showSkeletonCards(); window.dataLoaded = false;
+        showSkeletonCards(); window.dataLoaded = false; // Show skeletons and mark data as not loaded
         try {
+            // Fetch all three JSON files concurrently
             const [moviesResponse, seriesResponse, animeResponse] = await Promise.all([
-                fetch('json/filmData.json').catch(e => ({ ok: false, error: e })),
+                fetch('json/filmData.json').catch(e => ({ ok: false, error: e })), // Catch network errors
                 fetch('json/filmData_phimBo.json').catch(e => ({ ok: false, error: e })),
                 fetch('json/animeData.json').catch(e => ({ ok: false, error: e })) 
             ]);
+
+            // Process responses, defaulting to empty array on error
             const moviesData = moviesResponse.ok ? await moviesResponse.json() : [];
             const seriesData = seriesResponse.ok ? await seriesResponse.json() : [];
             const animeData = animeResponse.ok ? await animeResponse.json() : [];
 
+            // Log errors if any fetch failed
             if (!moviesResponse.ok) console.error("Error fetching movies:", moviesResponse.error || `Status: ${moviesResponse.status}`);
             if (!seriesResponse.ok) console.error("Error fetching series:", seriesResponse.error || `Status: ${seriesResponse.status}`);
             if (!animeResponse.ok) console.error("Error fetching anime:", animeResponse.error || `Status: ${animeResponse.status}`);
 
+            // Combine data into appropriate global arrays
             window.allMovies = [
-                ...(moviesData || []).map(item => ({ ...item, itemType: item.itemType || 'movies' })), 
-                ...(animeData || []).filter(item => item.itemType === 'anime-movie').map(item => ({ ...item, itemType: 'anime-movie' })) 
+                ...(moviesData || []).map(item => ({ ...item, itemType: item.itemType || 'movies' })), // Assign default type if missing
+                ...(animeData || []).filter(item => item.itemType === 'anime-movie').map(item => ({ ...item, itemType: 'anime-movie' })) // Explicitly type anime movies
             ];
             window.allSeries = [
-                ...(seriesData || []).map(item => ({ ...item, itemType: item.itemType || 'series' })), 
-                ...(animeData || []).filter(item => item.itemType === 'anime-series').map(item => ({ ...item, itemType: 'anime-series' })) 
+                ...(seriesData || []).map(item => ({ ...item, itemType: item.itemType || 'series' })), // Assign default type if missing
+                ...(animeData || []).filter(item => item.itemType === 'anime-series').map(item => ({ ...item, itemType: 'anime-series' })) // Explicitly type anime series
             ];
-            window.dataLoaded = true;
+            window.dataLoaded = true; // Mark data as loaded
 
+            // Prepare data for Hero Slideshow (items marked as 'isHot')
             const allItemsForHero = [ ...window.allMovies, ...window.allSeries ];
             hotItems = allItemsForHero
                 .filter(item => item.isHot === true && typeof item.hotnumber === 'number')
-                .sort((a, b) => a.hotnumber - b.hotnumber);
+                .sort((a, b) => a.hotnumber - b.hotnumber); // Sort by hotnumber
 
+             // Calculate min/max years for sliders AFTER data is loaded
              const calculateMinMaxYears = (data) => {
                  let min = Infinity, max = -Infinity;
                  data.forEach(item => { if (item.releaseYear && typeof item.releaseYear === 'number') { min = Math.min(min, item.releaseYear); max = Math.max(max, item.releaseYear); } });
                  const currentYear = new Date().getFullYear();
-                 const finalMin = (min === Infinity || min > currentYear) ? currentYear - 20 : min;
+                 // Ensure minYear is not in the future or too far in the past if data is sparse
+                 const finalMin = (min === Infinity || min > currentYear) ? currentYear - 20 : min; // Default to 20 years back if no data
+                 // Ensure maxYear is not less than minYear or too far in the past
                  const finalMax = (max === -Infinity || max < finalMin) ? currentYear : max;
                  return [finalMin, finalMax];
              };
              minMaxYears.movies = calculateMinMaxYears(window.allMovies);
              minMaxYears.series = calculateMinMaxYears(window.allSeries);
 
+            // Extract unique genres for filters AFTER data is loaded
             const extractUniqueGenres = (data) => {
                 const genres = new Set();
                 data.forEach(item => {
-                    const itemGenres = item.genre || item.genres; // Handle both 'genre' and 'genres'
+                    const itemGenres = item.genre || item.genres; // Handle both 'genre' and 'genres' field names
                     if (Array.isArray(itemGenres)) {
                         itemGenres.forEach(genre => { if(typeof genre === 'string') genres.add(genre.trim())});
-                    } else if (typeof itemGenres === 'string') {
+                    } else if (typeof itemGenres === 'string') { // Handle single string genre
                         genres.add(itemGenres.trim());
                     }
                 });
@@ -799,12 +798,14 @@ document.addEventListener('DOMContentLoaded', function() {
             uniqueGenres.movies = extractUniqueGenres(window.allMovies);
             uniqueGenres.series = extractUniqueGenres(window.allSeries);
 
-            const filtersAppliedFromUrl = readUrlParamsAndApplyFilters(); // This now calls setup and render
+            // Read URL parameters and apply filters (this now calls setupGenreFilter, setupSliders, filterAndSortContent)
+            const filtersAppliedFromUrl = readUrlParamsAndApplyFilters(); 
 
+            // Update Hero section based on hot items or fallback
             // Only update hero from slideshow if no specific filters were applied from URL that might imply specific content view
             if (!filtersAppliedFromUrl || !window.currentFilters.search) { // Also check if not a search result page
                 if (hotItems.length > 0) {
-                    updateHeroUI(hotItems[0]); 
+                    updateHeroUI(hotItems[0]); // Show the first hot item immediately
                     startHeroSlideshow();
                 } else {
                      // Fallback to the first item of the current tab if no hot items
@@ -812,14 +813,14 @@ document.addEventListener('DOMContentLoaded', function() {
                                          currentContentType === 'series' && window.allSeries.length > 0 ? window.allSeries[0] : null;
                     updateHeroUI(fallbackData);
                 }
-            } else if (window.currentFilters.search && window.allMovies.length > 0) {
-                // If there was a search, maybe show the first search result in hero
-                // Or keep the default "hot" item logic
-                const firstSearchResult = currentContentType === 'movies' ? window.allMovies[0] : window.allSeries[0];
+            } else if (window.currentFilters.search && window.allMovies.length > 0) { // If there was a search
+                // Show the first search result in hero, or fallback to hot item
+                const firstSearchResult = currentContentType === 'movies' ? window.allMovies[0] : window.allSeries[0]; // This logic might need refinement to get actual first search result
                 if (firstSearchResult) updateHeroUI(firstSearchResult);
                 else if (hotItems.length > 0) updateHeroUI(hotItems[0]); // Fallback to hot item
-            } else if (hotItems.length > 0) {
-                 updateHeroUI(hotItems[0]); // Default to hot item
+            } else if (hotItems.length > 0) { // Default to hot item if filters from URL but no search
+                 updateHeroUI(hotItems[0]);
+                 startHeroSlideshow();
             }
 
 
@@ -829,7 +830,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (tabMovies) tabMovies.classList.toggle('active', currentContentType === 'movies');
                 if (tabSeries) tabSeries.classList.toggle('active', currentContentType === 'series');
             }
-            initObserver();
+            initObserver(); // Initialize Intersection Observer for animations
         } catch (error) {
             console.error("Error initializing app:", error);
             if (movieGrid) movieGrid.innerHTML = `<p class="text-red-500 col-span-full text-center py-8">Đã xảy ra lỗi khi tải dữ liệu. Vui lòng làm mới trang hoặc thử lại sau.</p>`;
@@ -841,6 +842,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("Trang chủ web xem phim đã sẵn sàng (v2.0)!");
 
     // Search functionality (from inline script, now integrated here)
+    // Ensure SearchUtils is available
     const searchInputDesktop = document.getElementById('search-input-desktop');
     const searchSuggestionsDesktop = document.getElementById('search-suggestions-desktop');
     const searchInputMobile = document.getElementById('search-input-mobile');
@@ -856,9 +858,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         SearchUtils.debounce(() => { // Debounce suggestions
             if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.displaySearchSuggestions === 'function') {
-                const allItems = [...(window.allMovies || []), ...(window.allSeries || [])];
+                const allItems = [...(window.allMovies || []), ...(window.allSeries || [])]; // Use combined data for suggestions
                 SearchUtils.displaySearchSuggestions(term, inputEl, suggestionsEl, allItems, {
-                    maxResults: 8
+                    maxResults: 8 // Example: limit to 8 suggestions
                 });
             }
         }, 150)();
@@ -869,11 +871,11 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             const searchTerm = event.target.value.trim();
             window.currentFilters.search = searchTerm.toLowerCase();
-            filterAndSortContent();
+            filterAndSortContent(); // Apply search filter
             if (typeof SearchUtils !== 'undefined' && typeof SearchUtils.hideAllSearchSuggestions === 'function') {
                 SearchUtils.hideAllSearchSuggestions();
             }
-            event.target.blur();
+            event.target.blur(); // Remove focus from input
         }
     };
 

@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Điều Khoản Sử Dụng - Flick Take</title>
-    <meta name="description" content="Đọc kỹ Điều Khoản Sử Dụng của Flick Take trước khi sử dụng dịch vụ xem phim trực tuyến của chúng tôi.">
-    <meta name="keywords" content="điều khoản sử dụng, flick take, xem phim, quy định, chính sách">
+    <title>Điều Khoản Sử Dụng - Flick Tale</title> <!-- Updated Site Name -->
+    <meta name="description" content="Đọc kỹ Điều Khoản Sử Dụng của Flick Tale trước khi sử dụng dịch vụ xem phim trực tuyến của chúng tôi.">
+    <meta name="keywords" content="điều khoản sử dụng, flick tale, xem phim, quy định, chính sách">
 
     <link rel="icon" href="../../favicon.ico" sizes="any">
-    <link rel="icon" href="../../access/img/FlickTale.jpg" type="image/jpeg"> <link rel="apple-touch-icon" href="../../apple-touch-icon.png"> <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="../../access/img/FlickTale.jpg" type="image/jpeg"> 
+    <link rel="apple-touch-icon" href="../../apple-touch-icon.png"> 
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../../css/style.css">
 
@@ -24,18 +26,26 @@
                 extend: {
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
+                        'heading': ['Montserrat', 'sans-serif'],
                     },
                     colors: {
-                        'primary': '#e50914', // Netflix Red
-                        'primary-hover': '#f40612', // Brighter Red
-                        'secondary': '#141414', // Dark background
-                        'light-gray': '#222222',
-                        'dark-gray': '#181818',
-                        'text-color': '#e0e0e0',
-                        'text-muted': '#8c8c8c',
-                        'border-color': '#333333',
-                        'indigo-600': '#4f46e5', // Added for button color match
-                        'indigo-700': '#4338ca', // Added for button hover color match
+                        // Light Theme Palette for Policy Pages
+                        'primary': 'var(--primary-color)', // Keep brand red for accents
+                        'primary-hover': 'var(--primary-hover-color)',
+                        'secondary': '#ffffff', // Main background for light theme
+                        'light-gray': '#f3f4f6', // gray-100 (Subtle backgrounds, borders)
+                        'medium-gray': '#e5e7eb', // gray-200 (Borders, progress bg)
+                        'dark-gray': '#1f2937',   // gray-800 (Headings)
+                        'text-color': '#111827',  // gray-900 (Main text on light bg)
+                        'text-muted': '#6b7280',  // gray-500 (Muted text on light bg)
+                        'border-color': '#d1d5db',// gray-300
+                        'accent-blue': '#4f46e5', // indigo-600 (Main accent for light theme pages)
+                        'accent-blue-darker': '#4338ca', // indigo-700 (Hover for accent)
+                        'footer-bg': '#111827',      // gray-900 for footer
+                        'footer-text': '#9ca3af',    // gray-400 for footer text
+                        'footer-link-hover': '#ffffff',
+                        'white': '#ffffff',
+                        'black': '#000000',
                     }
                 }
             }
@@ -43,13 +53,13 @@
     </script>
 
     <style>
-        /* Custom styles for Terms of Service page */
-        html { scroll-behavior: smooth; } /* Smooth scrolling for sidebar links */
+        /* Custom styles for Terms of Service page (Light Theme V2) */
+        html { scroll-behavior: smooth; }
 
         body {
-            background-color: #f9fafb; /* Light gray background similar to React example */
-            color: #1f2937; /* Darker text color for better readability on light bg */
-            font-family: 'Inter', sans-serif;
+            background-color: theme('colors.light-gray'); /* Light gray page background */
+            color: theme('colors.text-color');
+            font-family: var(--body-font);
         }
 
         /* Progress Bar */
@@ -58,148 +68,180 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 4px; /* Thicker bar */
-            background-color: #e5e7eb; /* gray-200 */
+            height: 4px;
+            background-color: theme('colors.medium-gray'); /* gray-200 */
             z-index: 100;
         }
         #progress-bar {
             height: 100%;
-            background-color: #4f46e5; /* indigo-600 */
+            background-color: theme('colors.accent-blue'); /* indigo-600 */
             width: 0%;
-            transition: width 0.1s linear; /* Smooth progress update */
+            transition: width 0.1s linear;
         }
 
         /* Header */
         header {
-            background-color: #ffffff; /* White header */
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            background-color: theme('colors.white'); /* White header */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.07); /* Subtle shadow */
             position: sticky;
             top: 4px; /* Account for progress bar */
             z-index: 90;
+            border-bottom: 1px solid theme('colors.medium-gray');
         }
         .header-logo { height: 32px; max-height: 40px; width: auto; object-fit: contain; vertical-align: middle; }
         @media (max-width: 640px) { .header-logo { height: 28px; } }
+        header .header-logo-link { color: theme('colors.text-color'); } /* Black logo text */
         header a, header button { color: #4b5563; /* gray-600 */}
-        header a:hover, header button:hover { color: #1f2937; /* gray-800 */}
+        header a:hover, header button:hover { color: theme('colors.accent-blue'); /* Indigo hover */ }
 
         /* Main Content Area */
-        main { padding-top: 2rem; padding-bottom: 2rem; }
+        main { padding-top: 3rem; padding-bottom: 3rem; } /* Increased padding */
         .content-card {
-            background-color: #ffffff;
+            background-color: theme('colors.white');
             border-radius: 1rem; /* rounded-2xl */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-            overflow: hidden; /* Ensure content stays within rounded corners */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Softer shadow */
+            overflow: hidden; 
+            border: 1px solid theme('colors.medium-gray');
         }
         .content-scroll-area {
-            max-height: calc(100vh - 250px); /* Adjust height based on header/footer/padding */
+            max-height: calc(100vh - 260px); /* Adjust based on final header/footer */
             overflow-y: auto;
-            padding: 1.5rem; /* p-6 */
+            padding: 2rem; /* Increased padding */
         }
+         .content-scroll-area::-webkit-scrollbar { width: 6px; }
+         .content-scroll-area::-webkit-scrollbar-track { background: #f1f5f9; /* slate-100 */ border-radius: 3px; }
+         .content-scroll-area::-webkit-scrollbar-thumb { background: #cbd5e1; /* slate-300 */ border-radius: 3px; }
+         .content-scroll-area::-webkit-scrollbar-thumb:hover { background: #94a3b8; /* slate-400 */ }
+
 
         /* Sidebar */
         aside {
-            background-color: #ffffff;
-            border-radius: 1rem; /* rounded-2xl */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow */
-            padding: 1rem; /* p-4 */
-            height: fit-content; /* Fit content height */
+            background-color: theme('colors.white');
+            border-radius: 1rem; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem; 
+            height: fit-content; 
             position: sticky;
-            top: 70px; /* Adjust based on header height + progress bar */
+            top: 80px; /* Adjust based on final header height */
+            border: 1px solid theme('colors.medium-gray');
         }
-        aside h3 { color: #111827; /* gray-900 */ }
-        aside a { color: #4b5563; /* gray-600 */ transition: color 0.2s ease; }
-        aside a:hover { color: #4f46e5; /* indigo-600 */ }
+        aside h3 { color: theme('colors.text-color'); font-weight: 600; font-family: var(--heading-font); }
+        aside a {
+            color: theme('colors.text-muted');
+            transition: color 0.2s ease, padding-left 0.2s ease, border-color 0.2s ease;
+            display: block;
+            padding: 0.35rem 0.5rem; /* py-1.5 px-2 */
+            border-left: 3px solid transparent;
+            border-radius: 0.25rem; /* rounded */
+        }
+        aside a:hover, aside a.active-toc { /* Added .active-toc for JS highlighting */
+            color: theme('colors.accent-blue');
+            padding-left: 0.75rem; /* px-3 */
+            border-left-color: theme('colors.accent-blue');
+            background-color: #eff6ff; /* indigo-50 */
+        }
 
         /* Section Styling */
-        section { margin-bottom: 2rem; /* mb-8 */ scroll-margin-top: 80px; /* Offset for sticky header */ }
+        section { margin-bottom: 2.5rem; scroll-margin-top: 90px; }
         section h2 {
+            font-family: var(--heading-font);
             font-size: 1.25rem; /* text-xl */
             font-weight: 600; /* font-semibold */
-            color: #111827; /* gray-900 */
+            color: theme('colors.dark-gray'); /* gray-800 */
             margin-bottom: 0.75rem; /* mb-3 */
-            border-bottom: 1px solid #e5e7eb; /* gray-200 */
+            border-bottom: 1px solid theme('colors.medium-gray'); /* gray-200 */
             padding-bottom: 0.5rem; /* pb-2 */
+            display: flex;
+            align-items: center;
         }
-        section p {
+         section h2 i { /* For potential icons next to section titles */
+             margin-right: 0.6rem;
+             color: theme('colors.accent-blue');
+             font-size: 1.1em; 
+             width: 20px; /* Ensure consistent icon spacing */
+             text-align: center;
+         }
+        section p, section ul {
             font-size: 1rem; /* text-base */
             line-height: 1.75; /* leading-relaxed */
             color: #374151; /* gray-700 */
         }
+        section ul { list-style: disc; padding-left: 1.5rem; margin-top: 0.5rem;}
+        section li { margin-bottom: 0.25rem; }
+        section a { color: theme('colors.accent-blue'); text-decoration: underline; font-weight: 500; }
+        section a:hover { color: theme('colors.accent-blue-darker'); }
+
 
         /* Input */
         input[type="text"] {
-            border-color: #d1d5db; /* gray-300 */
-            color: #1f2937;
+            border-color: theme('colors.border-color'); /* gray-300 */
+            color: theme('colors.text-color');
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
         input[type="text"]:focus {
-            border-color: #4f46e5; /* indigo-600 */
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+            border-color: theme('colors.accent-blue'); 
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2); /* Lighter focus shadow */
             outline: none;
         }
 
         /* Button */
         .agree-button {
-            background-color: #4f46e5; /* indigo-600 */
-            color: #ffffff;
-            transition: background-color 0.2s ease;
+            background-color: theme('colors.accent-blue'); 
+            color: theme('colors.white');
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            font-weight: 600; /* semibold */
+            padding: 0.6rem 1.5rem; /* py-2.5 px-6 */
+            border-radius: 0.5rem; /* rounded-lg */
         }
-        .agree-button:hover { background-color: #4338ca; /* indigo-700 */ }
-        .agree-button:disabled { background-color: #9ca3af; /* gray-400 */ cursor: not-allowed; }
+        .agree-button:hover { 
+            background-color: theme('colors.accent-blue-darker'); 
+            transform: translateY(-1px);
+        }
+        .agree-button:disabled { background-color: #9ca3af; cursor: not-allowed; transform: none; }
 
-        /* Thank You Message */
+
+        /* Thank You Message Modal */
         #thank-you-message {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 110; /* Above everything */
-            opacity: 0;
-            visibility: hidden;
+            position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.6); /* Darker overlay */
+            display: flex; align-items: center; justify-content: center;
+            z-index: 110; opacity: 0; visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
         }
         #thank-you-message.visible { opacity: 1; visibility: visible; }
         #thank-you-message > div {
-            background-color: white;
-            padding: 2rem; /* p-8 */
-            border-radius: 1rem; /* rounded-2xl */
-            text-align: center;
-            max-width: 24rem; /* max-w-sm */
-            margin: 1rem;
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
+            background-color: white; padding: 2rem; border-radius: 1rem; text-align: center;
+            max-width: 24rem; margin: 1rem; transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Playful bounce */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         #thank-you-message.visible > div { transform: scale(1); }
+        #thank-you-message h2 { color: theme('colors.dark-gray'); font-family: var(--heading-font); }
+        #thank-you-message p { color: theme('colors.text-muted'); }
 
         /* Scroll-to-top button */
         #scroll-to-top {
-            background-color: #ffffff;
-            color: #4b5563; /* gray-600 */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-            transition: background-color 0.2s ease, opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(10px);
+            background-color: theme('colors.white');
+            color: theme('colors.accent-blue'); 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s ease, color 0.2s ease, opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+            opacity: 0; visibility: hidden; transform: translateY(10px);
+            width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            border: 1px solid theme('colors.medium-gray');
         }
         #scroll-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0); }
-        #scroll-to-top:hover { background-color: #f3f4f6; /* gray-100 */ }
+        #scroll-to-top:hover { background-color: theme('colors.accent-blue'); color: theme('colors.white'); }
 
         /* Footer */
         footer {
-            background-color: #111827; /* gray-900 */
-            color: #9ca3af; /* gray-400 */
+            background-color: theme('colors.footer-bg'); 
+            color: theme('colors.footer-text'); 
             border-top: 1px solid #374151; /* gray-700 */
         }
-        footer a { color: #9ca3af; }
-        footer a:hover { color: #ffffff; }
-        footer h3 { color: #ffffff; }
-
-        /* Custom scrollbar for content area */
-        .content-scroll-area::-webkit-scrollbar { width: 6px; }
-        .content-scroll-area::-webkit-scrollbar-track { background: #f1f5f9; /* slate-100 */ border-radius: 3px; }
-        .content-scroll-area::-webkit-scrollbar-thumb { background: #94a3b8; /* slate-400 */ border-radius: 3px; }
-        .content-scroll-area::-webkit-scrollbar-thumb:hover { background: #64748b; /* slate-500 */ }
+        footer a { color: theme('colors.footer-text'); }
+        footer a:hover { color: theme('colors.footer-link-hover'); }
+        footer h3 { color: theme('colors.footer-link-hover'); font-family: var(--heading-font); }
 
     </style>
 </head>
@@ -211,14 +253,14 @@
 
     <header class="py-3 px-4 sm:px-6 md:px-10">
         <div class="container mx-auto flex justify-between items-center max-w-screen-xl">
-            <a href="../../index.html" class="header-logo-link" aria-label="Về trang chủ Flick Take">
-                <img src="../../access/img/logo.png" alt="Logo Flick Take" class="header-logo"> </a>
+            <a href="../../index.html" class="header-logo-link" aria-label="Về trang chủ Flick Tale"> <!-- Updated site name -->
+                <img src="../../access/img/FlickTale.jpg" alt="Logo Flick Tale" class="header-logo"> </a> <!-- Updated path and alt -->
             <div>
-                <a href="../../index.html" class="hover:text-gray-900 transition duration-300 mr-2 sm:mr-4 inline-flex items-center p-2 rounded" aria-label="Quay lại trang chủ">
+                <a href="../../index.html" class="hover:text-accent-blue transition duration-300 mr-2 sm:mr-4 inline-flex items-center p-2 rounded" aria-label="Quay lại trang chủ">
                     <i class="fas fa-arrow-left mr-0 sm:mr-1" aria-hidden="true"></i>
                     <span class="hidden sm:inline">Trang Chủ</span>
                 </a>
-                 <button class="hover:text-gray-900 transition duration-300 p-2 rounded-full" aria-label="Tài khoản người dùng">
+                 <button class="hover:text-accent-blue transition duration-300 p-2 rounded-full" aria-label="Tài khoản người dùng">
                     <i class="fas fa-user text-lg sm:text-xl" aria-hidden="true"></i>
                 </button>
             </div>
@@ -226,29 +268,30 @@
     </header>
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 flex-grow">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-8 mt-10">
 
             <aside class="hidden lg:block">
                 <h3 class="text-lg font-semibold mb-4">Mục lục</h3>
-                <nav id="toc-nav" class="space-y-2">
+                <nav id="toc-nav" class="space-y-1"> <!-- Updated from space-y-2 -->
                     <p class="text-sm text-gray-500">Đang tải mục lục...</p>
                 </nav>
             </aside>
 
             <div class="lg:col-span-3 flex flex-col">
-                <h1 class="text-3xl font-bold mb-6 text-gray-900">Điều Khoản Sử Dụng Flick Take</h1>
-                <div class="flex items-center mb-4 space-x-2">
-                    <input type="text" id="search-terms" placeholder="Tìm kiếm mục điều khoản..." class="block w-full px-4 py-2 border rounded-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" aria-label="Tìm kiếm điều khoản">
-                    </div>
+                <h1 class="text-3xl font-bold mb-8 text-dark-gray font-heading">Điều Khoản Sử Dụng Flick Tale</h1> <!-- Updated site name and font -->
+                <div class="flex items-center mb-6 space-x-3"> <!-- Increased margin bottom -->
+                    <input type="text" id="search-terms" placeholder="Tìm kiếm mục điều khoản..." class="block w-full px-4 py-2.5 border rounded-lg focus:ring-accent-blue focus:border-accent-blue sm:text-sm" aria-label="Tìm kiếm điều khoản">
+                </div>
 
                 <div class="content-card flex-grow flex flex-col">
                     <div id="terms-content-area" class="content-scroll-area flex-grow">
-                        <p id="loading-terms" class="text-center text-gray-500 py-10">Đang tải điều khoản...</p>
+                        <p id="loading-terms" class="text-center text-text-muted py-10">Đang tải điều khoản...</p>
+                        <!-- Terms sections will be populated by JS -->
                     </div>
                 </div>
 
-                <div class="mt-6 flex justify-end">
-                    <button id="agree-button" class="agree-button font-semibold py-2 px-6 rounded-md text-lg">
+                <div class="mt-8 flex justify-end"> <!-- Increased margin top -->
+                    <button id="agree-button" class="agree-button font-semibold py-2.5 px-8 text-base rounded-md"> <!-- Adjusted padding and font-size -->
                         Tôi đồng ý
                     </button>
                 </div>
@@ -259,8 +302,8 @@
     <footer class="py-12 px-4 sm:px-6 lg:px-8 mt-16" role="contentinfo">
         <div class="container mx-auto max-w-screen-xl grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="space-y-4">
-                <a href="../../index.html" class="inline-block mb-2" aria-label="Trang chủ Flick Take">
-                    <img src="../../access/img/logo.png" alt="Logo Flick Take" class="h-10 hover:opacity-80 transition-opacity duration-300">
+                <a href="../../index.html" class="header-logo-link inline-block mb-2" aria-label="Trang chủ Flick Tale">
+                    <img src="../../access/img/FlickTale.jpg" alt="Logo Flick Tale" class="h-10 hover:opacity-80 transition-opacity duration-300">
                 </a>
                 <p class="text-sm pr-4">
                     Khám phá thế giới điện ảnh với hàng ngàn phim lẻ và phim bộ hấp dẫn. Cập nhật liên tục, chất lượng cao.
@@ -269,26 +312,27 @@
             <div>
                 <h3 class="text-lg font-semibold mb-4">Liên Kết Nhanh</h3>
                 <nav class="space-y-2" aria-label="Liên kết phụ">
-                    <a href="#" class="block hover:text-white hover:underline transition duration-300 text-sm">Về Chúng Tôi</a>
-                    <a href="dieu_khoan_su_dung.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
-                    <a href="#" class="block hover:text-white hover:underline transition duration-300 text-sm">Chính Sách Bảo Mật</a>
-                    <a href="#" class="block hover:text-white hover:underline transition duration-300 text-sm">Liên Hệ Hỗ Trợ</a>
-                    <a href="../hoat_hinh_2D_3D.html" class="block hover:text-white hover:underline transition duration-300 text-sm">Phim 2D/3D</a>
+                    <a href="../../about.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Về Chúng Tôi</a>
+                    <a href="dieu_khoan_su_dung.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Điều Khoản Sử Dụng</a>
+                    <a href="chinh_sach_bao_mat.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Chính Sách Bảo Mật</a>
+                    <a href="lien_he_ho_tro.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Liên Hệ Hỗ Trợ</a>
+                    <a href="../hoat_hinh_2D_3D.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Phim 2D/3D</a>
+                    <a href="../anime.html" class="block hover:text-footer-link-hover hover:underline transition duration-300 text-sm">Anime</a>
                 </nav>
             </div>
             <div>
                 <h3 class="text-lg font-semibold mb-4">Theo Dõi Chúng Tôi</h3>
                 <div class="flex space-x-4 mb-4" aria-label="Liên kết mạng xã hội">
-                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="hover:text-white transition duration-300 text-xl" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
+                    <a href="#" class="hover:text-footer-link-hover transition duration-300 text-xl" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="hover:text-footer-link-hover transition duration-300 text-xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="hover:text-footer-link-hover transition duration-300 text-xl" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="hover:text-footer-link-hover transition duration-300 text-xl" aria-label="Youtube"><i class="fab fa-youtube"></i></a>
                 </div>
                  <h3 class="text-lg font-semibold mb-2 mt-6">Thông Tin Liên Hệ</h3>
-                 <p class="text-sm">Email: support@flicktake.com</p> <p class="text-sm">Hotline: 1900-1234</p> </div>
+                 <p class="text-sm">Email: support@flicktale.com</p> <p class="text-sm">Hotline: 1900-1234</p> </div>
         </div>
         <div class="mt-10 pt-8 border-t border-gray-700 text-center">
-            <p class="text-sm">© <span id="footer-year">2025</span> Flick Take. Mọi quyền được bảo lưu.</p>
+            <p class="text-sm">© <span id="footer-year">2025</span> Flick Tale. Mọi quyền được bảo lưu.</p>
             <p class="text-xs mt-2 opacity-70">
                 Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn và học tập.
             </p>
@@ -296,13 +340,13 @@
     </footer>
 
     <button id="scroll-to-top" class="hidden fixed bottom-6 right-6 p-3 rounded-full z-50" aria-label="Cuộn lên đầu trang">
-        <i class="fas fa-arrow-up"></i>
+        <i class="fas fa-arrow-up text-lg"></i> <!-- Ensured icon size -->
     </button>
 
     <div id="thank-you-message">
         <div>
-            <h2 class="text-2xl font-bold mb-4 text-gray-900">Cảm ơn bạn!</h2>
-            <p class="text-base mb-6 text-gray-700">Bạn đã đồng ý với Điều Khoản Sử Dụng. Chúc bạn xem phim vui vẻ!</p>
+            <h2 class="text-2xl font-bold mb-4">Cảm ơn bạn!</h2>
+            <p class="text-base mb-6">Bạn đã đồng ý với Điều Khoản Sử Dụng. Chúc bạn xem phim vui vẻ!</p>
             <p class="text-sm text-gray-500">Đang chuyển hướng về trang chủ...</p>
         </div>
     </div>
@@ -310,19 +354,18 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const sectionsData = [
-                // Dữ liệu các mục điều khoản được sao chép từ React code
-                { id: 'definitions', title: 'Định nghĩa', content: '“Flick Take” là nền tảng xem phim trực tuyến do Công ty Cổ phần Flick Take (“Chúng tôi”, “Dịch vụ”) vận hành. “Bạn” ("Người dùng") là cá nhân đã đăng ký hoặc sử dụng Dịch vụ.' },
-                { id: 'license', title: 'Giấy phép sử dụng', content: 'Chúng tôi cấp cho Bạn quyền hạn hạn chế, không độc quyền, không thể chuyển nhượng để truy cập và sử dụng Dịch vụ cho mục đích cá nhân và phi thương mại theo các điều khoản này.' },
-                { id: 'userContent', title: 'Nội dung do Người dùng tạo', content: 'Bạn chịu trách nhiệm về mọi nội dung (bình luận, đánh giá) mà Bạn đăng lên Dịch vụ. Bạn cam kết không đăng nội dung vi phạm pháp luật, bản quyền, hoặc gây hại đến người khác.' },
-                { id: 'payments', title: 'Thanh toán & Đăng ký', content: 'Một số nội dung yêu cầu gói cước có phí. Giá tiền và phương thức thanh toán sẽ được thông báo trước khi xác nhận mua. Mọi khoản phí sẽ không được hoàn trả, trừ khi luật pháp có quy định khác.' },
-                { id: 'cancellation', title: 'Hủy & Hoàn tiền', content: 'Bạn có quyền hủy gói cước trước khi kết thúc chu kỳ và tiếp tục sử dụng đến hết thời hạn đã thanh toán. Chính sách hoàn tiền được quy định rõ trong trang hướng dẫn Thanh toán.' },
-                { id: 'termination', title: 'Chấm dứt dịch vụ', content: 'Chúng tôi có quyền tạm ngưng hoặc chấm dứt quyền truy cập của Bạn nếu phát hiện vi phạm các điều khoản này mà không cần thông báo trước.' },
-                { id: 'privacy', title: 'Bảo mật & Riêng tư', content: 'Chính sách bảo mật của Flick Take mô tả cách chúng tôi thu thập, sử dụng và chia sẻ thông tin cá nhân của Bạn. Vui lòng tham khảo trang Chính sách Bảo mật.' },
-                { id: 'intellectualProperty', title: 'Sở hữu trí tuệ', content: 'Tất cả quyền sở hữu trí tuệ liên quan đến Dịch vụ, bao gồm phần mềm, giao diện, nội dung gốc, logo, là tài sản của Flick Take hoặc bên cấp phép.' },
-                { id: 'liability', title: 'Giới hạn trách nhiệm', content: 'Chúng tôi không chịu trách nhiệm về bất kỳ thiệt hại trực tiếp, gián tiếp, ngẫu nhiên hoặc hệ quả nào phát sinh từ việc sử dụng hoặc không thể sử dụng Dịch vụ.' },
-                { id: 'changes', title: 'Thay đổi điều khoản', content: 'Chúng tôi có quyền sửa đổi Điều khoản này vào bất kỳ lúc nào. Mọi thay đổi sẽ được đăng tải tại trang Điều khoản và có hiệu lực ngay khi công bố.' },
-                { id: 'governingLaw', title: 'Luật áp dụng & Giải quyết tranh chấp', content: 'Điều khoản này được điều chỉnh bởi pháp luật Việt Nam. Mọi tranh chấp sẽ được giải quyết tại Tòa án nhân dân có thẩm quyền tại Hà Nội.' },
-                { id: 'contact', title: 'Liên hệ', content: 'Mọi thắc mắc xin liên hệ: support@flicktake.com hoặc hotline: 1900-1234.' }
+                 { id: 'definitions', title: '1. Định nghĩa', icon: 'fa-book-open', content: '“Flick Tale” là nền tảng xem phim trực tuyến do Công ty Cổ phần Flick Tale (“Chúng tôi”, “Dịch vụ”) vận hành. “Bạn” ("Người dùng") là cá nhân đã đăng ký hoặc sử dụng Dịch vụ.' },
+                 { id: 'license', title: '2. Giấy phép sử dụng', icon: 'fa-id-badge', content: 'Chúng tôi cấp cho Bạn quyền hạn hạn chế, không độc quyền, không thể chuyển nhượng để truy cập và sử dụng Dịch vụ cho mục đích cá nhân và phi thương mại theo các điều khoản này.' },
+                 { id: 'userContent', title: '3. Nội dung Người dùng', icon: 'fa-comments', content: 'Bạn chịu trách nhiệm về mọi nội dung (bình luận, đánh giá) mà Bạn đăng lên Dịch vụ. Bạn cam kết không đăng nội dung vi phạm pháp luật, bản quyền, hoặc gây hại đến người khác.' },
+                 { id: 'payments', title: '4. Thanh toán & Đăng ký', icon: 'fa-credit-card', content: 'Một số nội dung yêu cầu gói cước có phí. Giá tiền và phương thức thanh toán sẽ được thông báo trước khi xác nhận mua. Mọi khoản phí sẽ không được hoàn trả, trừ khi luật pháp có quy định khác.' },
+                 { id: 'cancellation', title: '5. Hủy & Hoàn tiền', icon: 'fa-ban', content: 'Bạn có quyền hủy gói cước trước khi kết thúc chu kỳ và tiếp tục sử dụng đến hết thời hạn đã thanh toán. Chính sách hoàn tiền được quy định rõ trong trang hướng dẫn Thanh toán.' },
+                 { id: 'termination', title: '6. Chấm dứt dịch vụ', icon: 'fa-power-off', content: 'Chúng tôi có quyền tạm ngưng hoặc chấm dứt quyền truy cập của Bạn nếu phát hiện vi phạm các điều khoản này mà không cần thông báo trước.' },
+                 { id: 'privacy', title: '7. Bảo mật & Riêng tư', icon: 'fa-user-secret', content: 'Chính sách bảo mật của Flick Tale mô tả cách chúng tôi thu thập, sử dụng và chia sẻ thông tin cá nhân của Bạn. Vui lòng tham khảo trang <a href="chinh_sach_bao_mat.html" class="text-accent-blue underline hover:text-accent-blue-darker font-medium">Chính sách Bảo mật</a>.' },
+                 { id: 'intellectualProperty', title: '8. Sở hữu trí tuệ', icon: 'fa-copyright', content: 'Tất cả quyền sở hữu trí tuệ liên quan đến Dịch vụ, bao gồm phần mềm, giao diện, nội dung gốc, logo, là tài sản của Flick Tale hoặc bên cấp phép.' },
+                 { id: 'liability', title: '9. Giới hạn trách nhiệm', icon: 'fa-triangle-exclamation', content: 'Chúng tôi không chịu trách nhiệm về bất kỳ thiệt hại trực tiếp, gián tiếp, ngẫu nhiên hoặc hệ quả nào phát sinh từ việc sử dụng hoặc không thể sử dụng Dịch vụ.' },
+                 { id: 'changes', title: '10. Thay đổi điều khoản', icon: 'fa-file-signature', content: 'Chúng tôi có quyền sửa đổi Điều khoản này vào bất kỳ lúc nào. Mọi thay đổi sẽ được đăng tải tại trang Điều khoản và có hiệu lực ngay khi công bố.' },
+                 { id: 'governingLaw', title: '11. Luật áp dụng', icon: 'fa-gavel', content: 'Điều khoản này được điều chỉnh bởi pháp luật Việt Nam. Mọi tranh chấp sẽ được giải quyết tại Tòa án nhân dân có thẩm quyền tại Hà Nội.' },
+                 { id: 'contact', title: '12. Liên hệ', icon: 'fa-envelope', content: 'Mọi thắc mắc xin liên hệ: <a href="mailto:support@flicktale.com" class="text-accent-blue underline hover:text-accent-blue-darker font-medium">support@flicktale.com</a> hoặc hotline: <a href="tel:19001234" class="text-accent-blue underline hover:text-accent-blue-darker font-medium">1900-1234</a>.' }
             ];
 
             const termsContentArea = document.getElementById('terms-content-area');
@@ -333,103 +376,134 @@
             const thankYouMessage = document.getElementById('thank-you-message');
             const scrollToTopBtn = document.getElementById('scroll-to-top');
             const footerYear = document.getElementById('footer-year');
+            const searchInput = document.getElementById('search-terms');
 
-            // Set footer year
-            if (footerYear) {
-                footerYear.textContent = new Date().getFullYear();
-            }
 
-            // Generate Terms Content and Table of Contents
-            let termsHTML = '';
-            let tocHTML = '';
+            if (footerYear) footerYear.textContent = new Date().getFullYear();
+
+            let termsHTML = ''; let tocHTML = '';
             if (termsContentArea && tocNav && loadingTerms) {
                 sectionsData.forEach(sec => {
-                    termsHTML += `
-                        <section id="${sec.id}">
-                            <h2>${sec.title}</h2>
-                            <p>${sec.content}</p>
-                        </section>
-                    `;
-                    tocHTML += `
-                        <a href="#${sec.id}" class="block text-sm hover:text-indigo-600">${sec.title}</a>
-                    `;
+                    const updatedContent = sec.content.replace('class="text-accent-blue', 'class="text-accent-blue font-medium'); // Ensure links are styled
+                    termsHTML += `<section id="${sec.id}"><h2 class="flex items-center"><i class="fas ${sec.icon} mr-2.5 text-accent-blue text-base"></i>${sec.title.substring(sec.title.indexOf('.') + 2)}</h2><div>${updatedContent}</div></section>`;
+                    tocHTML += `<a href="#${sec.id}" class="block text-sm hover:text-accent-blue">${sec.title.substring(sec.title.indexOf('.') + 2)}</a>`;
                 });
-                termsContentArea.innerHTML = termsHTML;
-                tocNav.innerHTML = tocHTML;
-                loadingTerms.style.display = 'none'; // Hide loading text
-            } else {
-                console.error("Could not find necessary elements for terms content or TOC.");
-                if(loadingTerms) loadingTerms.textContent = "Lỗi tải nội dung.";
-            }
+                termsContentArea.innerHTML = termsHTML; tocNav.innerHTML = tocHTML;
+                loadingTerms.style.display = 'none';
+            } else { if(loadingTerms) loadingTerms.textContent = "Lỗi tải nội dung."; }
 
-            // Progress Bar Logic
+            const contentScrollArea = document.querySelector('.content-scroll-area');
             const updateProgressBar = () => {
-                if (!termsContentArea || !progressBar) return;
-                const { scrollTop, scrollHeight, clientHeight } = termsContentArea;
-                // Prevent division by zero if scrollHeight equals clientHeight
+                if (!contentScrollArea || !progressBar) return;
+                const { scrollTop, scrollHeight, clientHeight } = contentScrollArea;
                 const scrollableHeight = scrollHeight - clientHeight;
                 const progress = scrollableHeight > 0 ? (scrollTop / scrollableHeight) * 100 : 0;
-                progressBar.style.width = `${progress}%`;
+                progressBar.style.width = `${Math.min(progress, 100)}%`;
             };
 
-            if (termsContentArea) {
-                termsContentArea.addEventListener('scroll', updateProgressBar);
-                updateProgressBar(); // Initial calculation
-            }
+             if (contentScrollArea) {
+                 contentScrollArea.addEventListener('scroll', updateProgressBar);
+                 updateProgressBar(); 
+             } else { // Fallback for window scroll
+                 const updateProgressBarWindow = () => {
+                     if (!progressBar) return;
+                     const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                     const progress = scrollHeight > 0 ? (window.scrollY / scrollHeight) * 100 : 0;
+                     progressBar.style.width = `${Math.min(progress, 100)}%`;
+                 };
+                 window.addEventListener('scroll', updateProgressBarWindow);
+                 updateProgressBarWindow();
+             }
 
-            // Agree Button Logic
+
             const handleAgree = () => {
                 if (thankYouMessage) {
                     thankYouMessage.classList.add('visible');
-                    if (agreeButton) agreeButton.disabled = true; // Disable button after agreeing
-
-                    // Redirect after a delay - Updated Path
-                    setTimeout(() => {
-                        window.location.href = '../../index.html'; // Redirect to homepage
-                    }, 5000); // 5-second delay
+                    if (agreeButton) agreeButton.disabled = true;
+                    setTimeout(() => { window.location.href = '../../index.html'; }, 3000); // Shorter delay
                 }
             };
+            if (agreeButton) agreeButton.addEventListener('click', handleAgree);
 
-            if (agreeButton) {
-                agreeButton.addEventListener('click', handleAgree);
-            }
-
-            // Scroll-to-top Button Logic
             const handleScroll = () => {
                 if (!scrollToTopBtn) return;
-                const isVisible = window.scrollY > 200; // Show after scrolling down 200px
+                const isVisible = window.scrollY > 200;
                 scrollToTopBtn.classList.toggle('visible', isVisible);
                 scrollToTopBtn.classList.toggle('hidden', !isVisible);
-            };
 
-            const scrollToTopFunc = () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            };
+                // TOC active link highlighting
+                let currentSectionId = '';
+                sectionsData.forEach(secData => {
+                    const sectionEl = document.getElementById(secData.id);
+                    if (sectionEl) {
+                        const rect = sectionEl.getBoundingClientRect();
+                        // Check if section is at the top of the viewport or partially visible
+                        if (rect.top <= 100 && rect.bottom >=100) { // Adjust 100px offset as needed
+                            currentSectionId = secData.id;
+                        }
+                    }
+                });
 
+                tocNav.querySelectorAll('a').forEach(link => {
+                    link.classList.remove('active-toc');
+                    if (link.getAttribute('href') === `#${currentSectionId}`) {
+                        link.classList.add('active-toc');
+                    }
+                });
+
+            };
+            const scrollToTopFunc = () => window.scrollTo({ top: 0, behavior: 'smooth' });
             window.addEventListener('scroll', handleScroll);
-            if (scrollToTopBtn) {
-                scrollToTopBtn.addEventListener('click', scrollToTopFunc);
-            }
-            handleScroll(); // Initial check
+            if (scrollToTopBtn) scrollToTopBtn.addEventListener('click', scrollToTopFunc);
+            handleScroll(); 
 
-            // Simple Search (Filters sections visibility - basic implementation)
-            const searchInput = document.getElementById('search-terms');
             if (searchInput && termsContentArea) {
                 searchInput.addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase().trim();
                     const sections = termsContentArea.querySelectorAll('section');
-                    let found = false;
+                    let firstMatch = null;
                     sections.forEach(sec => {
-                        const title = sec.querySelector('h2')?.textContent.toLowerCase() || '';
-                        const content = sec.querySelector('p')?.textContent.toLowerCase() || '';
-                        const isMatch = title.includes(searchTerm) || content.includes(searchTerm);
-                        sec.style.display = isMatch ? 'block' : 'none';
-                        if (isMatch) found = true;
+                        const titleEl = sec.querySelector('h2');
+                        const contentEl = sec.querySelector('div'); // Assuming content is in a div after h2
+                        const title = titleEl ? titleEl.textContent.toLowerCase() : '';
+                        const content = contentEl ? contentEl.innerHTML.toLowerCase() : ''; // Search in HTML content for flexibility
+                        
+                        // Reset highlighting
+                        if (contentEl) {
+                            contentEl.innerHTML = contentEl.innerHTML.replace(/<mark class="search-highlight-terms">(.*?)<\/mark>/gi, '$1');
+                        }
+
+                        if (searchTerm.length > 0 && (title.includes(searchTerm) || content.includes(searchTerm))) {
+                            sec.style.display = 'block';
+                            if (!firstMatch) firstMatch = sec;
+
+                            // Highlight in title
+                            if (titleEl && title.includes(searchTerm)) {
+                                const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                                titleEl.innerHTML = titleEl.textContent.replace(regex, '<mark class="search-highlight-terms">$1</mark>');
+                            }
+                            // Highlight in content
+                            if (contentEl && content.includes(searchTerm)) {
+                                const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                                contentEl.innerHTML = contentEl.innerHTML.replace(regex, '<mark class="search-highlight-terms">$1</mark>');
+                            }
+                        } else if (searchTerm.length > 0) {
+                            sec.style.display = 'none';
+                        } else {
+                            sec.style.display = 'block'; // Show all if search is empty
+                             if (titleEl) titleEl.innerHTML = titleEl.textContent; // Remove highlight from title
+                        }
                     });
-                    // You might want to add a "No results found" message if !found
+                    // Scroll to first match if any
+                    if (firstMatch && contentScrollArea) {
+                        contentScrollArea.scrollTo({ top: firstMatch.offsetTop - contentScrollArea.offsetTop - 20, behavior: 'smooth' });
+                    }
                 });
             }
-
+            // Add style for search highlight
+            const styleSheet = document.createElement("style");
+            styleSheet.innerText = ".search-highlight-terms { background-color: var(--highlight-color); color: var(--text-color); border-radius: 3px; padding: 0 2px; }";
+            document.head.appendChild(styleSheet);
         });
     </script>
 

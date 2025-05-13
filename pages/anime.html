@@ -19,7 +19,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@500;600;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../css/style.css">
 
@@ -29,32 +29,58 @@
                 extend: {
                     fontFamily: {
                         'sans': ['Inter', 'sans-serif'],
+                        'heading': ['Montserrat', 'sans-serif'],
+                        'orbitron': ['Orbitron', 'sans-serif'], 
                     },
                     colors: {
-                        'primary': '#e50914', // Netflix Red
-                        'primary-hover': '#f40612',
-                        'secondary': '#101010', // Main Dark Background
-                        'light-gray': '#1f1f1f', // Lighter gray elements
-                        'dark-gray': '#181818', // Even darker gray
-                        'text-color': '#e0e0e0', // Main text color
-                        'text-muted': '#8c8c8c', // Muted text color
-                        'border-color': '#333333', // Subtle border color
-                        'anime-accent': '#6a0dad', // Vibrant Purple Accent for Anime page
-                        'anime-accent-hover': '#8a2be2', // Brighter Purple on hover
-                        'gold-accent': '#ffd700', // Gold for highlights/ratings
-                        'highlight': '#facc15', // Yellow for highlighting search terms
+                        'primary': 'var(--primary-color)',
+                        'primary-hover': 'var(--primary-hover-color)',
+                        'secondary': 'var(--secondary-color)',
+                        'light-gray': 'var(--light-gray-color)',
+                        'dark-gray': 'var(--dark-gray-color)',
+                        'darker-gray': 'var(--darker-gray-color)',
+                        'text-color': 'var(--text-color)',
+                        'text-muted': 'var(--text-muted-color)',
+                        'text-bright': 'var(--text-bright-color)',
+                        'border-color': 'var(--border-color)',
+                        'anime-accent': 'var(--anime-accent)',
+                        'anime-accent-hover': 'var(--anime-accent-hover)',
+                        'gold-accent': 'var(--gold-accent)',
+                        'highlight': 'var(--highlight-color)',
                     },
                     animation: {
-                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-                        'subtle-pulse': 'subtlePulse 2s infinite ease-in-out',
-                        'gradient-shift': 'gradientShift 15s ease infinite',
-                        'pageFadeIn': 'pageFadeIn 0.6s ease-out forwards 0.2s',
+                        'pageFadeIn': 'pageFadeIn var(--animation-duration) var(--animation-timing) forwards',
+                        'fadeInUp': 'fadeInUp 0.8s ease-out forwards',
+                        'fadeInUpDelayed': 'fadeInUp 0.8s ease-out 0.3s forwards', 
+                        'heroTitleSlideIn': 'heroTitleSlideIn 1s cubic-bezier(0.23, 1, 0.32, 1) 0.2s forwards',
+                        'heroDescSlideIn': 'heroDescSlideIn 1s cubic-bezier(0.23, 1, 0.32, 1) 0.4s forwards',
+                        'heroGenresFadeIn': 'heroGenresFadeIn 1s ease 0.6s forwards',
+                        'heroButtonPulse': 'heroButtonPulse 2.5s infinite ease-in-out',
+                        'heroButtonShine': 'heroButtonShine 3s infinite linear',
                     },
                     keyframes: {
-                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' }, },
-                        subtlePulse: { '0%, 100%': { transform: 'scale(1)' }, '50%': { transform: 'scale(1.03)' }, },
-                        gradientShift: { '0%, 100%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' }, },
-                        pageFadeIn: { 'from': { opacity: '0' }, 'to': { opacity: '1' }, }
+                        pageFadeIn: { 'from': { opacity: '0' }, 'to': { opacity: '1' }, },
+                        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(30px)' }, '100%': { opacity: '1', transform: 'translateY(0)' }, },
+                        heroTitleSlideIn: {
+                            '0%': { opacity: '0', transform: 'translateY(50px) skewY(5deg)' },
+                            '100%': { opacity: '1', transform: 'translateY(0) skewY(0deg)' },
+                        },
+                        heroDescSlideIn: {
+                            '0%': { opacity: '0', transform: 'translateY(40px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        heroGenresFadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        heroButtonPulse: {
+                            '0%, 100%': { transform: 'scale(1)', boxShadow: '0 4px 15px rgba(138, 43, 226, 0.4)' },
+                            '50%': { transform: 'scale(1.05)', boxShadow: '0 8px 25px rgba(138, 43, 226, 0.6)' },
+                        },
+                        heroButtonShine: {
+                            '0%': { backgroundPosition: '-200% center' },
+                            '100%': { backgroundPosition: '200% center' },
+                        }
                     }
                 }
             }
@@ -62,166 +88,122 @@
     </script>
 
     <style>
-        html { scroll-behavior: smooth; }
-        body { background-color: var(--secondary-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; opacity: 0; animation: pageFadeIn var(--animation-duration) var(--animation-timing) forwards; animation-delay: 0.2s; }
-
-        /* Header Styling */
-        header#main-header { position: sticky; top: 0; z-index: 50; background-color: rgba(16, 16, 16, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); transition: background-color 0.3s ease, box-shadow 0.3s ease; }
-        .header-logo-link { display: inline-block; transition: transform 0.3s ease, opacity 0.3s ease; flex-shrink: 0; }
-        .header-logo-link:hover { transform: scale(1.05); opacity: 0.9; }
-        .header-logo { height: 32px; max-height: 40px; width: auto; object-fit: contain; vertical-align: middle; }
-        @media (max-width: 640px) { .header-logo { height: 28px; } }
-        header nav a { color: var(--text-muted-color); transition: color 0.3s ease, border-color 0.3s ease; padding-bottom: 2px; border-bottom: 2px solid transparent; font-weight: 500; }
-        header nav a:hover { color: var(--text-color); }
-        header nav a.active-link-anime { color: var(--anime-accent); font-weight: 600; border-bottom-color: var(--anime-accent); }
+        .anime-hero {
+            /* Styles from style.css or inline if needed */
+        }
         
-        /* Unified Search Input Styling - applied via .search-input class in style.css or here if specific override needed */
-        /* header input[type="text"] { ... } /* Removed specific styling here, rely on .search-input from style.css */
+        .hero-content-anime {
+            position: relative;
+            z-index: 2;
+            padding: 2rem 1.5rem;
+            max-width: 750px;
+            opacity: 0; /* Start hidden for animation */
+        }
+
+        @media (min-width: 768px) {
+            .hero-content-anime {
+                padding: 3rem 4rem; 
+                margin-left: 2rem; 
+            }
+        }
+
+        #anime-hero-title {
+            font-family: 'Orbitron', var(--heading-font); 
+            font-size: 2.8rem; 
+            font-weight: 900; 
+            line-height: 1.15;
+            text-shadow: 0 3px 15px rgba(0, 0, 0, 0.6), 0 0 5px var(--anime-accent-hover); 
+            margin-bottom: 1rem;
+            color: var(--text-bright-color);
+            opacity: 0; 
+        }
+        @media (min-width: 768px) {
+            #anime-hero-title {
+                font-size: 4rem; 
+            }
+        }
+
+        .hero-content-anime .genres {
+            margin-bottom: 1.25rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            opacity: 0; 
+        }
+
+        .hero-content-anime .genres span {
+            background-color: var(--anime-accent-hover); 
+            color: var(--text-bright-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--border-radius-round, 50px);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .hero-content-anime .genres span:hover {
+            transform: translateY(-2px);
+            background-color: var(--anime-accent);
+        }
+
+        .hero-content-anime > p { 
+            font-size: 1.05rem;
+            color: var(--text-color); 
+            line-height: 1.65;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7);
+            margin-bottom: 1.75rem;
+            max-width: 600px; 
+            opacity: 0; 
+        }
+        @media (min-width: 768px) {
+             .hero-content-anime > p {
+                 font-size: 1.15rem;
+             }
+        }
+
+        .anime-hero .hero-button { 
+            background: linear-gradient(135deg, var(--anime-accent) 0%, var(--anime-accent-hover) 100%);
+            color: white;
+            font-family: var(--heading-font);
+            font-weight: 700; 
+            padding: 0.9rem 2rem; 
+            border-radius: var(--border-radius-round, 50px);
+            transition: transform 0.2s ease, box-shadow 0.3s ease, background-size 0.4s ease;
+            box-shadow: 0 5px 20px rgba(138, 43, 226, 0.45);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.95rem;
+            opacity: 1; 
+            animation-delay: 0.8s; 
+            background-size: 200% auto; 
+        }
+
+        .anime-hero .hero-button:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 30px rgba(138, 43, 226, 0.6);
+            background-position: right center; 
+        }
         
-        /* Focus specific to anime page's accent color */
-        #search-input-desktop-anime:focus, #search-input-mobile-anime:focus { 
-            border-color: var(--anime-accent) !important; /* Use !important if needed to override general .search-input:focus */
-            box-shadow: 0 0 0 3px rgba(106, 13, 173, 0.3) !important; 
-        }
-        header button, header a.filter-icon-button { color: var(--text-muted-color); transition: color 0.3s ease, background-color 0.3s ease; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
-        header button:hover, header a.filter-icon-button:hover { color: var(--text-color); background-color: var(--light-gray-color); }
-
-        /* Filter Icon Button Style */
-        .filter-icon-button { padding: 0.5rem; border-radius: 9999px; }
-        .filter-icon-button i { font-size: 1.125rem; }
-
-        /* Anime Filter Section Transition */
-        #anime-filter-section {
-            transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, padding 0.5s ease-in-out, margin 0.5s ease-in-out, border-width 0.5s ease-in-out;
-            overflow: visible; max-height: 0; opacity: 0; visibility: hidden; padding-top: 0; padding-bottom: 0; margin-bottom: 0; border-width: 0;
-            background-color: var(--light-gray-color); border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border: 1px solid var(--border-color);
-            position: relative; 
-            z-index: 10; 
-        }
-        #anime-filter-section:not(.hidden) { max-height: 1000px; opacity: 1; visibility: visible; padding-top: 1rem; padding-bottom: 1rem; margin-bottom: 1.5rem; border-width: 1px; overflow: visible; }
-        #anime-filter-section select {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%238c8c8c' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.5rem center; background-repeat: no-repeat; background-size: 1.5em 1.5em; appearance: none; -webkit-appearance: none; -moz-appearance: none;
+        .anime-hero .hero-button.animate-heroButtonShine:hover { 
+             animation-name: heroButtonShine, heroButtonPulse; 
         }
 
-        /* Anime Genre Dropdown Styles */
-        #anime-genre-dropdown {
-            position: absolute;
-            background-color: var(--dark-gray-color);
-            border: 1px solid var(--border-color);
-            border-radius: 0.375rem;
-            margin-top: 0.25rem;
-            width: 100%;
-            max-height: 240px;
-            overflow-y: auto;
-            z-index: 50; 
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); 
-            opacity: 0; visibility: hidden; transform: translateY(-10px);
-            transition: opacity 0.2s ease-out, transform 0.2s ease-out, visibility 0.2s ease-out;
-            scrollbar-width: thin; scrollbar-color: #555 var(--dark-gray-color);
+        .anime-hero .hero-button i {
+            font-size: 1em; 
+            margin-right: 0.6rem;
+            transition: transform 0.3s ease;
         }
-        #anime-genre-dropdown:not(.hidden) { opacity: 1; visibility: visible; transform: translateY(0); }
-        #anime-genre-dropdown label { display: flex; align-items: center; padding: 0.5rem 0.75rem; font-size: 0.875rem; color: var(--text-color); cursor: pointer; border-radius: 0.25rem; transition: background-color 0.2s ease; }
-        #anime-genre-dropdown label:hover { background-color: var(--light-gray-color); }
-        #anime-genre-dropdown input[type="checkbox"] { margin-right: 0.5rem; accent-color: var(--anime-accent); width: 0.875rem; height: 0.875rem; cursor: pointer; flex-shrink: 0; }
-        #anime-genre-dropdown .italic { padding: 0.75rem; font-size: 0.875rem; color: var(--text-muted-color); }
-        #anime-genre-dropdown::-webkit-scrollbar { width: 6px; }
-        #anime-genre-dropdown::-webkit-scrollbar-track { background: var(--dark-gray-color); border-radius: 3px; }
-        #anime-genre-dropdown::-webkit-scrollbar-thumb { background: #555; border-radius: 3px; }
-        #anime-genre-dropdown::-webkit-scrollbar-thumb:hover { background: #777; }
-
-        /* Anime Hero Section */
-        .anime-hero { position: relative; height: 65vh; min-height: 400px; display: flex; align-items: flex-end; color: white; background-size: cover; background-position: center center; border-radius: 0 0 20px 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); margin-bottom: 2rem; }
-        .anime-hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(16, 16, 16, 0.95) 15%, rgba(16, 16, 16, 0.7) 40%, transparent 80%); z-index: 1; }
-        .hero-content-anime { position: relative; z-index: 2; padding: 2rem 1.5rem; max-width: 700px; opacity: 0; }
-        @media (min-width: 768px) { .hero-content-anime { padding: 3rem; } }
-        .hero-content-anime h1 { font-size: 2.5rem; font-weight: 800; line-height: 1.2; text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7); margin-bottom: 0.75rem; }
-        @media (min-width: 768px) { .hero-content-anime h1 { font-size: 3.5rem; } }
-        .hero-content-anime .genres span { background-color: rgba(255, 255, 255, 0.15); backdrop-filter: blur(5px); border: 1px solid rgba(255, 255, 255, 0.2); @apply px-2 py-1 rounded-full text-xs font-medium; }
-        .hero-content-anime p { font-size: 1rem; color: #ccc; line-height: 1.6; text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6); margin-bottom: 1.5rem; }
-        .hero-button { background: linear-gradient(90deg, var(--anime-accent), var(--anime-accent-hover)); color: white; font-weight: 600; padding: 0.75rem 1.75rem; border-radius: 50px; transition: transform 0.2s ease, box-shadow 0.3s ease; box-shadow: 0 4px 15px rgba(106, 13, 173, 0.4); display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; }
-        .hero-button:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 6px 20px rgba(106, 13, 173, 0.6); }
-        .hero-button i { font-size: 1.1em; }
-
-        /* Anime Grid & Cards */
-        .section-title { font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; padding-left: 1rem; border-left: 4px solid var(--anime-accent); color: var(--text-color); }
-        .anime-card { background-color: var(--light-gray-color); border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; position: relative; border: 1px solid var(--border-color); opacity: 0; }
-        .anime-card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6); border-color: var(--anime-accent); }
-        .anime-card-poster-link { display: block; position: relative; }
-        .anime-card img { display: block; width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; transition: transform 0.4s ease; }
-        .anime-card:hover img { transform: scale(1.08); }
-        .anime-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 50%); opacity: 0; transition: opacity 0.3s ease; display: flex; align-items: center; justify-content: center; }
-        .anime-card:hover .anime-card-overlay { opacity: 1; }
-        .anime-card-play-icon { color: white; font-size: 3rem; background-color: rgba(0, 0, 0, 0.5); border-radius: 50%; padding: 0.5rem; transform: scale(0.8); opacity: 0; transition: transform 0.3s ease, opacity 0.3s ease; }
-        .anime-card:hover .anime-card-play-icon { transform: scale(1); opacity: 1; }
-        .anime-card-info { padding: 0.75rem; }
-        .anime-card-title { font-weight: 600; color: var(--text-color); font-size: 0.95rem; margin-bottom: 0.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .anime-card-meta { font-size: 0.75rem; color: var(--text-muted-color); display: flex; justify-content: space-between; align-items: center; }
-        .anime-card-rating { display: inline-flex; align-items: center; color: var(--gold-accent); font-weight: 600; }
-        .anime-card-rating i { margin-right: 0.25rem; font-size: 0.8em; }
-        .anime-card-episodes { background-color: var(--anime-accent); color: white; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.7rem; }
-
-        /* Skeleton Styles */
-        .skeleton { background-color: #333; border-radius: 4px; position: relative; overflow: hidden; }
-        .skeleton::before { content: ''; position: absolute; top: 0; left: -150%; height: 100%; width: 150%; background: linear-gradient(to right, transparent 0%, #444 50%, transparent 100%); animation: shimmer 1.5s infinite linear; }
-        .skeleton-card { background-color: var(--light-gray-color); border-radius: 12px; overflow: hidden; }
-        .skeleton-image { height: 0; padding-bottom: 150%; background-color: #333; }
-        .skeleton-title { height: 16px; width: 80%; margin: 8px 12px 4px 12px; border-radius: 4px; background-color: #444; }
-        .skeleton-text { height: 12px; width: 50%; margin: 0 12px 8px 12px; border-radius: 4px; background-color: #444; }
-
-        /* Search Suggestions Styles */
-        .search-suggestions { 
-            background-color: var(--dark-gray-color, #181818); 
-            border: 1px solid var(--border-color, #333); 
-            border-radius: 8px; 
-            max-height: 350px; 
-            overflow-y: auto; 
-            z-index: 100; 
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); 
-            display: none; 
-            scrollbar-width: thin; 
-            scrollbar-color: #555 var(--dark-gray-color); 
-            position: absolute; 
-            width: 100%; 
-            left: 0; 
+        .anime-hero .hero-button:hover i {
+            transform: rotate(-15deg) scale(1.1);
         }
-        .search-suggestions.visible {
-            display: block;
+        .skeleton-card {
+            background-color: var(--light-gray-color);
+            border-radius: 12px; 
+            overflow: hidden;
         }
-        .suggestion-item { padding: 10px 15px; cursor: pointer; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-color, #333); transition: background-color 0.2s ease; color: inherit; text-decoration: none; }
-        .suggestion-item:first-child { border-top-left-radius: 8px; border-top-right-radius: 8px; }
-        .suggestion-item:last-child { border-bottom: none; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; }
-        .suggestion-item:hover, .suggestion-item.active { 
-             background-color: var(--light-gray-color, #222); 
-        }
-        .suggestion-item img { width: 40px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0; border: 1px solid #444; }
-        .suggestion-item-info { display: flex; flex-direction: column; overflow: hidden; flex-grow: 1; }
-        .suggestion-item-title { font-weight: 500; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-color, #e0e0e0); }
-        .suggestion-item-year { font-size: 0.75rem; color: var(--text-muted-color, #8c8c8c); }
-        .no-suggestions-placeholder { padding: 20px; text-align: center; color: var(--text-muted-color); font-style: italic; font-size: 0.9rem; }
-        .search-highlight { font-weight: bold; color: var(--highlight-color, #facc15); background-color: rgba(250, 204, 21, 0.1); padding: 0 2px; border-radius: 2px; }
-
-        /* Footer Styling */
-        footer { background-color: var(--dark-gray-color); color: var(--text-muted-color); border-top: 1px solid var(--border-color); margin-top: 4rem; }
-        footer a:hover { color: var(--text-color); }
-        footer h3 { color: var(--text-color); }
-
-        /* Scroll-to-top button */
-        #scroll-to-top { position: fixed; bottom: 20px; right: 20px; background-color: rgba(229, 9, 20, 0.85); color: white; border: none; border-radius: 50%; width: 48px; height: 48px; font-size: 1.1rem; cursor: pointer; display: grid; place-items: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease; z-index: 999; opacity: 0; visibility: hidden; transform: translateY(20px) scale(0.9); }
-        #scroll-to-top.visible { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-        #scroll-to-top:hover { background-color: var(--primary-hover-color); transform: scale(1.1); }
-
-        /* Apply fade-in animation */
-        .animate-fade-in-up { opacity: 0; }
-        html, body { height: 100%; }
-        body { display: flex; flex-direction: column; }
-        main { flex-grow: 1; }
-
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/wnumb/1.2.0/wNumb.min.js"></script>
-    <script src="../js/searchUtils.js"></script> 
-    <script src="../js/anime.js" defer></script>
 </head>
 <body class="bg-secondary text-text-color font-sans">
 
@@ -232,14 +214,14 @@
             </a>
 
             <nav class="hidden md:flex flex-grow justify-center space-x-5 lg:space-x-7 items-center" aria-label="Điều hướng chính">
-                <a href="../index.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">Trang Chủ</a>
-                <a href="anime.html" id="nav-anime" class="active-link-anime transition duration-300 font-medium" aria-current="page">Anime</a>
-                <a href="hoat_hinh_2D_3D.html" class="text-gray-300 hover:text-white transition duration-300 font-medium">Phim 2D/3D</a>
+                <a href="../index.html">Trang Chủ</a>
+                <a href="anime.html" id="nav-anime" class="active-link-anime" aria-current="page">Anime</a>
+                <a href="hoat_hinh_2D_3D.html">Phim 2D/3D</a>
             </nav>
 
             <div class="hidden md:flex items-center space-x-3 lg:space-x-4 flex-shrink-0">
-                <a href="#anime-filter-section" id="nav-filter-icon-anime" class="filter-icon-button" aria-label="Mở bộ lọc Anime">
-                    <i class="fas fa-filter"></i>
+                <a href="#anime-filter-section" id="nav-filter-icon-anime" class="filter-icon-button p-2 rounded-full hover:bg-light-gray" aria-label="Mở bộ lọc Anime">
+                    <i class="fas fa-filter text-lg"></i>
                 </a>
                 <div class="relative search-container"> 
                     <label for="search-input-desktop-anime" class="sr-only">Tìm kiếm Anime</label>
@@ -261,8 +243,8 @@
             </div>
 
             <div class="md:hidden flex items-center space-x-2">
-                 <a href="#anime-filter-section" id="mobile-nav-filter-icon-anime" class="filter-icon-button" aria-label="Mở bộ lọc Anime">
-                     <i class="fas fa-filter"></i>
+                 <a href="#anime-filter-section" id="mobile-nav-filter-icon-anime" class="filter-icon-button p-2 rounded-full hover:bg-light-gray" aria-label="Mở bộ lọc Anime">
+                     <i class="fas fa-filter text-xl"></i>
                  </a>
                 <button id="search-icon-mobile-anime" class="text-gray-300 hover:text-white transition duration-300 p-2 rounded-full hover:bg-light-gray" aria-label="Mở tìm kiếm" aria-expanded="false" aria-controls="mobile-search-container-anime">
                     <i class="fas fa-search text-xl"></i>
@@ -291,7 +273,7 @@
         </div>
     </header>
 
-    <div id="mobile-menu-overlay-anime" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden hidden"></div>
+     <div id="mobile-menu-overlay-anime" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden hidden"></div>
     <div id="mobile-menu-panel-anime" class="fixed top-0 right-0 bottom-0 w-64 bg-light-gray p-5 pt-16 shadow-lg z-50 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden">
         <button id="close-mobile-menu-button-anime" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white" aria-label="Đóng menu">
             <i class="fas fa-times text-2xl"></i>
@@ -307,49 +289,52 @@
         </nav>
     </div>
 
+
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-screen-xl">
 
-        <section class="anime-hero" style="background-image: url('https://placehold.co/1920x700/1a1a1a/666666?text=Loading+Anime+Hero...');" aria-labelledby="anime-hero-title">
-            <div class="hero-content-anime animate-fade-in-up">
-                <h1 id="anime-hero-title">Đang tải...</h1>
-                <div class="genres mb-4 flex flex-wrap gap-2 text-xs">
+        <section class="anime-hero relative bg-cover bg-center rounded-lg shadow-xl overflow-hidden mb-10" style="background-image: url('https://placehold.co/1920x700/101010/6a0dad?text=Loading+Anime+Hero...'); min-height: 65vh;" aria-labelledby="anime-hero-title">
+            <div class="absolute inset-0 bg-gradient-to-t from-secondary via-secondary/70 to-transparent z-0"></div>
+            <div class="hero-content-anime relative flex flex-col justify-end h-full animate-fadeInUpDelayed">
+                <h1 id="anime-hero-title" class="animate-heroTitleSlideIn">Đang tải...</h1>
+                <div class="genres mb-4 flex flex-wrap gap-2 text-xs animate-heroGenresFadeIn">
                     </div>
-                <p class="line-clamp-3">
+                <p class="line-clamp-3 animate-heroDescSlideIn">
                     Đang tải mô tả...
                 </p>
-                <button class="hero-button" style="display: none;">
+                <button class="hero-button animate-fadeInUp animate-heroButtonPulse" style="display: none;"> 
                     <i class="fas fa-play"></i> Đang tải...
                 </button>
             </div>
         </section>
 
-        <section id="anime-filter-section" aria-labelledby="anime-filter-heading" class="mb-6 p-4 hidden">
+        <section id="anime-filter-section" aria-labelledby="anime-filter-heading" class="mb-6 p-4 bg-dark-gray rounded-lg shadow-lg hidden">
             <div class="flex flex-wrap gap-4 items-start">
-                <h2 id="anime-filter-heading" class="text-lg sm:text-xl font-semibold text-gray-100 w-full sm:w-auto flex-shrink-0 mb-2 sm:mb-0">Bộ Lọc Anime</h2>
+                <h2 id="anime-filter-heading" class="text-lg sm:text-xl font-semibold text-bright-color w-full sm:w-auto flex-shrink-0 mb-2 sm:mb-0 font-heading">Bộ Lọc Anime</h2>
                 <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
                     <div id="anime-genre-filter-container" class="relative">
-                        <label for="anime-genre-filter-button" class="block text-sm font-medium text-gray-300 mb-1">Thể loại Anime</label>
-                        <button id="anime-genre-filter-button" type="button" class="w-full bg-dark-gray border border-border-color text-white text-sm rounded-lg focus:ring-anime-accent focus:border-anime-accent p-2.5 text-left flex justify-between items-center" aria-haspopup="true" aria-expanded="false" aria-controls="anime-genre-dropdown">
+                        <label for="anime-genre-filter-button" class="block text-sm font-medium text-text-muted mb-1">Thể loại Anime</label>
+                        <button id="anime-genre-filter-button" type="button" class="w-full bg-light-gray border border-border-color text-text-color text-sm rounded-lg focus:ring-anime-accent focus:border-anime-accent p-2.5 text-left flex justify-between items-center appearance-none" aria-haspopup="true" aria-expanded="false" aria-controls="anime-genre-dropdown">
                             <span class="truncate">Chọn thể loại...</span>
                             <i class="fas fa-chevron-down text-xs text-gray-400 ml-2 flex-shrink-0"></i>
                         </button>
-                        <div id="anime-genre-dropdown" class="hidden" role="listbox" aria-label="Danh sách thể loại Anime">
+                        <div id="anime-genre-dropdown" class="absolute hidden mt-1 w-full rounded-md shadow-lg bg-light-gray ring-1 ring-black ring-opacity-5 z-30 p-2 space-y-1 max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-dark-gray" role="listbox" aria-label="Danh sách thể loại Anime">
                             <div class="p-3 text-sm text-text-muted italic">Đang tải thể loại...</div>
                         </div>
                     </div>
 
                     <div>
-                        <label for="anime-status-filter" class="block text-sm font-medium text-gray-300 mb-1">Trạng thái</label>
-                        <select id="anime-status-filter" name="status" class="w-full bg-dark-gray border border-border-color text-white text-sm rounded-lg focus:ring-anime-accent focus:border-anime-accent p-2.5" aria-label="Lọc theo trạng thái Anime">
+                        <label for="anime-status-filter" class="block text-sm font-medium text-text-muted mb-1">Trạng thái</label>
+                        <select id="anime-status-filter" name="status" class="w-full bg-light-gray border border-border-color text-text-color text-sm rounded-lg focus:ring-anime-accent focus:border-anime-accent p-2.5 appearance-none custom-select-arrow" aria-label="Lọc theo trạng thái Anime">
                             <option selected value="all">Tất cả trạng thái</option>
                             <option value="Đang chiếu">Đang chiếu</option>
                             <option value="Hoàn thành">Hoàn thành</option>
-                            </select>
+                            <option value="Sắp chiếu">Sắp chiếu</option> 
+                        </select>
                     </div>
 
                     <div>
-                        <label for="anime-sort-filter" class="block text-sm font-medium text-gray-300 mb-1">Sắp xếp theo</label>
-                        <select id="anime-sort-filter" name="sort" class="w-full bg-dark-gray border border-border-color text-white text-sm rounded-lg focus:ring-anime-accent focus:border-anime-accent p-2.5" aria-label="Chọn tiêu chí sắp xếp Anime">
+                        <label for="anime-sort-filter" class="block text-sm font-medium text-text-muted mb-1">Sắp xếp theo</label>
+                        <select id="anime-sort-filter" name="sort" class="w-full bg-light-gray border border-border-color text-text-color text-sm rounded-lg focus:ring-anime-accent focus:border-anime-accent p-2.5 appearance-none custom-select-arrow" aria-label="Chọn tiêu chí sắp xếp Anime">
                             <option selected value="default">Mặc định</option>
                             <option value="newest">Mới nhất</option>
                             <option value="rating_desc">Đánh giá cao nhất</option>
@@ -360,37 +345,32 @@
                     </div>
                 </div>
                 <div class="w-full sm:w-auto flex items-end flex-shrink-0 mt-4 sm:mt-0">
-                    <button id="clear-anime-filters-button" title="Xóa bộ lọc Anime" class="hidden p-2 text-gray-400 hover:text-white bg-dark-gray rounded-lg border border-border-color hover:bg-gray-700 transition duration-200 ml-auto sm:ml-2" aria-label="Xóa bộ lọc Anime">
+                    <button id="clear-anime-filters-button" title="Xóa bộ lọc Anime" class="hidden p-2.5 text-text-muted hover:text-text-bright bg-light-gray rounded-lg border border-border-color hover:bg-dark-gray/70 transition duration-200 ml-auto sm:ml-2" aria-label="Xóa bộ lọc Anime">
                         <span class="material-icons-outlined text-lg">close</span>
                     </button>
                 </div>
             </div>
         </section>
-        <div id="anime-filter-tags-container" class="mb-4 flex flex-wrap gap-2">
-            </div>
+        <div id="anime-filter-tags-container" class="mb-6 flex flex-wrap gap-2">
+        </div>
+
         <section class="mb-12">
-            <h2 id="anime-grid-title" class="section-title">Tất Cả Anime</h2> <div id="all-anime-grid" class="anime-grid grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-5">
-                <div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
-                 <div class="skeleton-card"><div class="skeleton-image"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
-                 <div class="skeleton-card hidden sm:block"><div class="skeleton-image"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
-                 <div class="skeleton-card hidden md:block"><div class="skeleton-image"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
-                 <div class="skeleton-card hidden lg:block"><div class="skeleton-image"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
-                 <div class="skeleton-card hidden xl:block"><div class="skeleton-image"></div><div class="skeleton-title"></div><div class="skeleton-text"></div></div>
-                 <p id="loading-anime" class="text-text-muted col-span-full text-center py-8 hidden">Đang tải Anime...</p>
-                 <p id="no-anime-found" class="text-text-muted col-span-full hidden text-center py-8">Không tìm thấy Anime nào phù hợp.</p>
-            </div>
+            <h2 id="anime-grid-title" class="section-title font-heading text-2xl mb-6">Tất Cả Anime</h2> 
+            <div id="all-anime-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-5">
+                </div>
+            <p id="loading-anime" class="text-text-muted col-span-full text-center py-8 hidden"><i class="fas fa-spinner fa-spin mr-2"></i>Đang tải Anime...</p>
+            <p id="no-anime-found" class_name="text-text-muted col-span-full hidden text-center py-8">Không tìm thấy Anime nào phù hợp.</p>
         </section>
+    </main>
 
-        </main>
-
-    <footer class="bg-dark-gray text-gray-400 py-12 px-4 sm:px-6 lg:px-8 mt-16 border-t border-gray-700" role="contentinfo">
+    <footer class="bg-darker-gray text-gray-400 py-12 px-4 sm:px-6 lg:px-8 mt-16 border-t border-border-color" role="contentinfo">
         <div class="container mx-auto max-w-screen-xl grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="space-y-4">
                 <a href="../index.html" class="inline-block mb-2" aria-label="Trang chủ Flick Tale">
                     <span class="text-xl font-bold text-white">Flick Tale</span>
-                     </a>
+                    </a>
                 <p class="text-sm pr-4">
-                    Khám phá thế giới điện ảnh và anime với hàng ngàn tựa phim hấp dẫn. Cập nhật liên tục, chất lượng cao.
+                    Khám phá thế giới điện ảnh với hàng ngàn phim lẻ và phim bộ hấp dẫn. Cập nhật liên tục, chất lượng cao.
                 </p>
             </div>
 
@@ -419,14 +399,16 @@
        </div>
        <div class="mt-10 pt-8 border-t border-gray-700 text-center">
            <p class="text-sm">© <span id="footer-year">2025</span> Flick Tale. Mọi quyền được bảo lưu.</p> <p class="text-xs mt-2 opacity-70">
-               Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn và học tập. Nội dung Anime được cung cấp bởi các nguồn bên thứ ba.
+               Tuyên bố miễn trừ trách nhiệm: Trang web này chỉ dành cho mục đích trình diễn và học tập.
            </p>
        </div>
     </footer>
 
-    <button id="scroll-to-top" class="hidden" aria-label="Cuộn lên đầu trang">
+     <button id="scroll-to-top" class="hidden fixed bottom-5 right-5 w-12 h-12 rounded-full shadow-lg flex items-center justify-center text-lg transition-opacity duration-300 z-50" aria-label="Cuộn lên đầu trang">
         <i class="fas fa-arrow-up"></i>
     </button>
-
+    
+    <script src="../js/searchUtils.js"></script>
+    <script src="../js/anime.js" defer></script>
 </body>
 </html>
